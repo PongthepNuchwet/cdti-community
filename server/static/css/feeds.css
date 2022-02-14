@@ -1,0 +1,26 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    background-color: #F2F2F2;
+}
+
+Header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.feeds-g {
+    display: grid;
+    grid-template-columns: 25% 50% 25%;
+}
+
+.feeds-center {
+    display: flex;
+    flex-direction: column;
+}
