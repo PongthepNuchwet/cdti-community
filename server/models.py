@@ -1,24 +1,74 @@
+import profile
+from venv import create
 from . import db
 from flask_login import UserMixin
 from sqlalchemy.sql import func
 
-class User(db.Model, UserMixin):
 
-    id = db.Column(db.Integer, primary_key = True)
+class Users(db.Model, UserMixin):
+
+    id = db.Column(db.Integer, primary_key=True)
+    profile = db.Column(db.String(150))
     email = db.Column(db.String(150), unique=True)
     password = db.Column(db.String(150))
-    firstName = db.Column(db.String(150))
-    notes = db.relationship('Note')
+    fullName = db.Column(db.String(150))
+    created_at = db.Column(db.DateTime(timezone=True), default=func.now())
+    update_at = db.Column(db.DateTime(timezone=True), default=func.now())
+
+    feeds = db.relationship("Feeds")
+    likes = db.relationship("Likes")
+    comments = db.relationship("Comments")
+    follow = db.relationship("Follow")
 
     def __repr__(self):
-        return '<User %r>' % self.firstName
+        return "<User %r>" % self.fullName
 
-class Note(db.Model):
+
+class Feeds(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    data = db.Column(db.String(10000))
-    date = db.Column(db.DateTime(timezone=True),default=func.now())
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    content = db.Column(db.String(300))
+    img1 = db.Column(db.String(50))
+    created_at = db.Column(db.DateTime(timezone=True), default=func.now())
+    update_at = db.Column(db.DateTime(timezone=True), default=func.now())
+
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"))
+
+    likes = db.relationship("Likes")
+    comments = db.relationship("Comments")
 
     def __repr__(self):
-        return '<Note %r>' % self.id
+        return "<Feeds %r>" % self.id
+
+
+class Likes(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    created_at = db.Column(db.DateTime(timezone=True), default=func.now())
+
+    feed_id = db.Column(db.Integer, db.ForeignKey("feeds.id"))
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"))
+
+    def __repr__(self):
+        return "<Likes %r>" % self.id
+
+
+class Comments(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    content = db.Column(db.String(300))
+    created_at = db.Column(db.DateTime(timezone=True), default=func.now())
     
+    feed_id = db.Column(db.Integer, db.ForeignKey("feeds.id"))
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"))
+
+    def __repr__(self):
+        return "<Comments %r>" % self.id
+
+
+class Follow(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    following = db.Column(db.Integer)
+    created_at = db.Column(db.DateTime(timezone=True), default=func.now())
+    
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"))
+
+    def __repr__(self):
+        return "<Follow %r>" % self.id
