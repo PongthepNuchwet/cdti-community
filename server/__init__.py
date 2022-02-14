@@ -20,7 +20,7 @@ def create_app():
     app.register_blueprint(auth, url_prefix="/")
     app.register_blueprint(feeds, url_prefix="/feeds")
 
-    from .models import User, Note
+    from .models import Users, Feeds, Likes, Comments, Follow
 
     create_database(app)
 
