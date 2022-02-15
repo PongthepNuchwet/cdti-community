@@ -6,23 +6,27 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
+    <!-- socket.io -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>
+    <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script> -->
     <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/dropzone@5.2.0/dist/min/dropzone.min.css" type="text/css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
     <link href="{{ url_for('static', filename='css/feeds.css')}}" rel="stylesheet" media="screen">
     <title>{% block title %}{% endblock %}</title>
 </head>
 
 <body>
-    {% include "./feeds/components/header.html" ignore missing %}
+    {% include "components/header.html" ignore missing %}
     <div class="feeds-g">
         <div class="feeds-left">
-            {% include "./feeds/components/nav.html" ignore missing %}
+            {% include "components/nav.html" ignore missing %}
         </div>
         <div class="feeds-center">
-            {% include "./feeds/components/feeds.html" ignore missing %}
+            {% include "components/newFeed.html" ignore missing %} {% include "components/feed.html" ignore missing %}
         </div>
         <div class="feeds-right">
-            {% include "./feeds/components/requests.html" ignore missing %} {% include "./feeds/components/contacts.html" ignore missing %}
+            {% include "components/requests.html" ignore missing %} {% include "components/contacts.html" ignore missing %}
         </div>
 
     </div>
@@ -39,6 +43,8 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js" integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js" integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13" crossorigin="anonymous"></script>
     -->
+    <script src="https://cdn.jsdelivr.net/npm/dropzone@5.2.0/dist/dropzone.min.js"></script>
+
     <script type="text/javascript" src="{{ url_for('static', filename='js/feeds.js')}}"></script>
 </body>
 
