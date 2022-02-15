@@ -17,13 +17,13 @@ def login():
     if request.method == 'POST':
         email = request.form.get('email')
         password = request.form.get('password')
-        user = User.query.filter_by(email=email).first()
+        user = Users.query.filter_by(email=email).first()
 
         if user :
             if check_password_hash(user.password,password):
                 flash('Logged in successfully!', category='success')
                 login_user(user,remember=True)
-                return redirect(url_for('auth.home'))
+                return redirect(url_for('feeds.home'))
             else :
                 flash('Incorrect password ,try align',category='error')
         else:
@@ -42,24 +42,24 @@ def logout():
 def sign_up():
     if request.method == 'POST':
         email = request.form.get('email')
-        firstName = request.form.get('firstName')
+        fullName = request.form.get('fullName')
         password1 = request.form.get('password1')
         password2 = request.form.get('password2')
 
-        user = User.query.filter_by(email=email).first()
+        user = Users.query.filter_by(email=email).first()
 
         if user :
             flash('Email already exist',category='error')
         elif len(email) < 4:
             flash('Email must be greater than 3 characters.', category='error')
-        elif len(firstName) < 2:
+        elif len(fullName) < 2:
             flash('First name must be greater than 1 character.', category='error')
         elif password1 != password2:
             flash('Passwords don\'t match.', category='error')
         elif len(password1) < 7:
             flash('Password must be at least 7 characters.', category='error')
         else:
-            new_user = User(email=email,firstName=firstName ,password=generate_password_hash(password1,method='sha256'))
+            new_user = Users(email=email,fullName=fullName ,password=generate_password_hash(password1,method='sha256'))
             db.session.add(new_user)
             db.session.commit()
             flash('Account created!', category='success')
