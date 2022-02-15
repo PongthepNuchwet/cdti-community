@@ -1,7 +1,7 @@
 venv/
-server/__pycache__/
-server/controllers/__pycache__/
-server/socket/__pycache__
+/server/__pycache__/
+/server/controllers/__pycache__/
+/server/socket/__pycache__/
 .vscode/
-server/database.db
-server/static/uploads
+/server/database.db
+/server/static/uploads/*
