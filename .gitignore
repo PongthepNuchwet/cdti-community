@@ -4,3 +4,4 @@ server/controllers/__pycache__/
 server/socket/__pycache__
 .vscode/
 server/database.db
+server/static/uploads
