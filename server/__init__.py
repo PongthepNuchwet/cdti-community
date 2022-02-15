@@ -1,6 +1,8 @@
-from flask import Flask
+from flask import Flask, request
 from flask_sqlalchemy import SQLAlchemy
+from flask_socketio import SocketIO, send,emit
 from os import path
+from .socket.feeds import FeedsNamespace
 
 from flask_login import LoginManager
 
@@ -30,9 +32,14 @@ def create_app():
 
     @login_manager.user_loader
     def load_user(id):
-        return User.query.get(int(id))
+        return Users.query.get(int(id))
 
-    return app
+    socketio = SocketIO(app, logger=True, engineio_logger=True)
+    socketio.on_namespace(FeedsNamespace('/feeds'))
+
+
+    return  app
+    # return socketio, app
 
 
 def create_database(app):
