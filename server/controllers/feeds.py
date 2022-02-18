@@ -1,5 +1,6 @@
 from distutils.command.upload import upload
-from flask import Blueprint, render_template, request,jsonify
+from flask import Blueprint, render_template, request,jsonify, session
+from flask_login import login_required
 from werkzeug.utils import secure_filename
 import os
 
@@ -11,6 +12,7 @@ feeds = Blueprint('feeds', __name__)
 
 
 @feeds.route('/')
+@login_required
 def home():
     return render_template("feeds.html")
 
@@ -21,9 +23,9 @@ def handle_upload():
         imgPath = []
         for key, f in request.files.items():
             if key.startswith('file'):
-                path = os.path.join("server/static/uploads/",secure_filename(f.filename))
-                imgPath.append(path)
-                f.save(path)
+                newName = secure_filename(f.filename)
+                imgPath.append(f"/static/feedImage/{newName}")
+                f.save(os.path.join("server/static/feedImage/",newName))
         return jsonify(imgPath=imgPath)
     else :
         return "upload"

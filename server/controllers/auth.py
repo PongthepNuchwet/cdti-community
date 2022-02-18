@@ -1,5 +1,5 @@
 from urllib.parse import urldefrag
-from flask import Blueprint, render_template, request, flash , redirect,url_for
+from flask import Blueprint, render_template, request, flash , redirect,url_for,session
 
 from flask_login import login_user, login_required,logout_user,current_user
 from werkzeug.security import generate_password_hash,check_password_hash
@@ -21,11 +21,12 @@ def login():
         email = request.form.get('email')
         password = request.form.get('password')
         user = Users.query.filter_by(email=email).first()
-
         if user :
             if check_password_hash(user.password,password):
                 flash('Logged in successfully!', category='success')
-                # session['uid'] = user.
+                session['uId'] = user.id
+                session['uName'] = user.fullName
+                session['uProfile'] = user.profile if user.profile != None else ''
                 login_user(user,remember=True)
                 return redirect(url_for('feeds.home'))
             else :
@@ -67,6 +68,6 @@ def sign_up():
             db.session.add(new_user)
             db.session.commit()
             flash('Account created!', category='success')
-            return redirect(url_for('auth.home'))
+            return redirect(url_for('auth.login'))
 
     return render_template("signup.html")

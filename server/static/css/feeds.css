@@ -24,3 +24,12 @@ Header {
     display: flex;
     flex-direction: column;
 }
+
+.Feed {
+    margin-bottom: 10px;
+}
+
+.FeedImg {
+    transition: height 1s;
+    transition-timing-function: linear;
+}

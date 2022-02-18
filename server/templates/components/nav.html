@@ -2,13 +2,13 @@
     <div class="profile">
         <img class="img" src="" alt="">
         <div class="name">
-            pongthep
+            {{ session['uProfile'] }} {{ session['uName'] }}
         </div>
     </div>
     <nav>
         <a href="#">News feed</a>
         <a href="#">People</a>
         <a href="#">profile</a>
-        <a href="#">logout</a>
+        <a href="{{ url_for('auth.logout')}}">logout</a>
     </nav>
 </div>
