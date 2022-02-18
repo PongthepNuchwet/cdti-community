@@ -1,0 +1,89 @@
+.nav {
+    position: sticky;
+    top: 56px;
+    z-index: 1020;
+    .profile {
+        width: 100%;
+        margin-bottom: 15px;
+        background-color: #ffffff;
+        padding: 10px 20px;
+        border-radius: 10%;
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        column-gap: 10px;
+        .img {
+            height: 50px;
+            width: 50px;
+            @include profile-over;
+            img {
+                width: 100%;
+            }
+        }
+        .text {
+            display: flex;
+            flex-direction: column;
+            .name {
+                color: $title-primary;
+                font-size: 20px;
+            }
+            .email {
+                color: $text-color;
+                font-size: 14px;
+            }
+        }
+    }
+    nav {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        background-color: #ffffff;
+        border-radius: 10px;
+        padding: 20px 0;
+        .nav-list {
+            padding: 12px 20px;
+            background-color: #ffffff;
+            width: 100%;
+            transition: .3s;
+            border-bottom: 1px solid $bg-nav-action;
+            &:hover {
+                background-color: $bg-nav-action;
+            }
+            a {
+                text-decoration: none;
+                font-size: 20px;
+                color: $color-secondary;
+                font-weight: 500;
+                svg {
+                    color: #857E7E;
+                    font-size: 20px;
+                    margin-bottom: 5px;
+                }
+                i::before {
+                    color: #857E7E;
+                    font-size: 20px;
+                    margin-bottom: 5px;
+                }
+            }
+        }
+        .logout {
+            a {
+                color: #FF553E;
+                i::before {
+                    color: #FF553E;
+                }
+            }
+        }
+        .action {
+            border-left: $color-primary 5px solid;
+            background-color: $bg-nav-action;
+            a {
+                color: #00BDEF;
+                i::before {
+                    color: #00BDEF;
+                }
+            }
+        }
+    }
+}

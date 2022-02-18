@@ -1,14 +1,31 @@
-<div class="nav">
+<div class="nav ">
     <div class="profile">
-        <img class="img" src="" alt="">
-        <div class="name">
-            {{ session['uProfile'] }} {{ session['uName'] }}
+        <div class="img">
+            <img class="img" src="https://www.w3schools.com/howto/img_avatar.png" alt="">
         </div>
+        <div class="text">
+            <div class="name">
+                {{ session['uName'] }}
+            </div>
+            <div class="email">
+                {{ session['email'] }}
+            </div>
+        </div>
+
     </div>
     <nav>
-        <a href="#">News feed</a>
-        <a href="#">People</a>
-        <a href="#">profile</a>
-        <a href="{{ url_for('auth.logout')}}">logout</a>
+        <div class="nav-list action">
+            <a href="#"><i class="bi bi-card-heading"></i> News feed</a>
+        </div>
+
+        <div class="nav-list">
+            <a href="#"><i class="bi bi-people-fill"></i> People</a>
+        </div>
+        <div class="nav-list">
+            <a href="#"><i class="bi bi-person-lines-fill"></i> profile</a>
+        </div>
+        <div class="nav-list logout">
+            <a href="{{ url_for('auth.logout')}}"><i class="bi bi-door-open"></i> logout</a>
+        </div>
     </nav>
 </div>

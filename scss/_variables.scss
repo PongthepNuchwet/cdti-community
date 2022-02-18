@@ -1,0 +1,27 @@
+$mitr:'Mitr',
+sans-serif;
+$white: #ffffff;
+$color-primary: #00BFFF;
+$color-secondary: #3D3D3D;
+$title-primary: $color-primary;
+$text-color:$color-secondary;
+$text-secondary: #B1BBD0;
+$hr-color:#DCE1EA;
+$bg-nav-action: #EDEDED;
+$color-danger: #FF553E;
+@mixin flex-aCenter-jCentent {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+@mixin profile-over {
+    border-radius: 20%;
+    overflow: hidden;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    background-color: $text-secondary;
+}

@@ -26,6 +26,7 @@ def login():
                 flash('Logged in successfully!', category='success')
                 session['uId'] = user.id
                 session['uName'] = user.fullName
+                session['email'] = user.email
                 session['uProfile'] = user.profile if user.profile != None else ''
                 login_user(user,remember=True)
                 return redirect(url_for('feeds.home'))

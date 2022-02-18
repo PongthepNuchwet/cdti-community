@@ -1,0 +1,72 @@
+header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1030;
+    background-color: $white;
+    height: auto;
+    border-bottom: 1px solid $hr-color;
+    padding: 3px 10px;
+    .header-flex {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        .logo {
+            @include flex-aCenter-jCentent;
+            column-gap: 5px;
+            color: $title-primary;
+            font-size: 25px;
+            font-weight: 500;
+            img {
+                height: 30px;
+            }
+        }
+        .search {
+            .input-group {
+                background-color: #EAECF0;
+                border-radius: 5px;
+                .input-group-text {
+                    padding: .375rem 0.5rem;
+                    border: none;
+                    i::before {
+                        margin-bottom: 4px;
+                        color: $text-secondary;
+                    }
+                }
+                input {
+                    background-color: #EAECF0;
+                    border: none;
+                    padding-left: 0;
+                    color: $text-color;
+                }
+            }
+        }
+        .profile {
+            @include flex-aCenter-jCentent;
+            column-gap: 5px;
+            .img {
+                @include profile-over;
+                height: 30px;
+                width: 30px;
+                img {
+                    width: 100%;
+                }
+            }
+            button {
+                position: relative;
+                padding-right: 0;
+                margin-right: 10px;
+                i::before {
+                    margin-bottom: 2px;
+                    color: $text-secondary;
+                }
+                span {
+                    font-weight: 400;
+                    font-size: 12px;
+                }
+            }
+        }
+    }
+}
