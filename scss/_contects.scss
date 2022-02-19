@@ -1,0 +1,53 @@
+.friendsContects {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    row-gap: 10px;
+    .topic {
+        text-transform: uppercase;
+        color: $topic-color;
+        font-size: 14px;
+        line-height: 1;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        .badge {
+            background-color: $color-primary;
+        }
+    }
+    .friends {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        background-color: white;
+        border-radius: 10px;
+        padding: 10px 20px;
+        overflow-y: auto;
+        height: 240px;
+        row-gap: 10px;
+        .friend {
+            display: flex;
+            flex-direction: column;
+            row-gap: 10px;
+            .profile {
+                display: grid;
+                grid-template-columns: 10% 90%;
+                column-gap: 10px;
+                .img {
+                    height: 35px;
+                    width: 35px;
+                    justify-self: center;
+                    @include profile-over
+                }
+                .fullname {
+                    align-self: center;
+                    color: $color-primary;
+                    line-height: 1;
+                    margin-bottom: 5px;
+                    font-size: 16px;
+                }
+            }
+        }
+    }
+}

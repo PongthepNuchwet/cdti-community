@@ -125,6 +125,10 @@ header .header-flex .profile .img img {
   width: 100%;
 }
 
+header .header-flex .profile .img img {
+  width: 100%;
+}
+
 header .header-flex .profile button {
   position: relative;
   padding-right: 0;
@@ -139,13 +143,6 @@ header .header-flex .profile button i::before {
 header .header-flex .profile button span {
   font-weight: 400;
   font-size: 12px;
-}
-
-.nav {
-  position: -webkit-sticky;
-  position: sticky;
-  top: 56px;
-  z-index: 1020;
 }
 
 .nav .profile {
@@ -190,6 +187,10 @@ header .header-flex .profile button span {
       -ms-flex-pack: center;
           justify-content: center;
   background-color: #B1BBD0;
+}
+
+.nav .profile .img img {
+  width: 100%;
 }
 
 .nav .profile .img img {
@@ -289,6 +290,13 @@ header .header-flex .profile button span {
   margin: 0 auto;
   padding: 10px 10px;
   border-radius: 5px;
+  -webkit-transition: 1s;
+  transition: 1s;
+}
+
+.newFeed .content {
+  -webkit-transition: 1s;
+  transition: 1s;
 }
 
 .newFeed .content .grid-row {
@@ -326,6 +334,10 @@ header .header-flex .profile button span {
   width: 100%;
 }
 
+.newFeed .content .grid-row .img img {
+  width: 100%;
+}
+
 .newFeed .content .grid-row .flex-col {
   display: -webkit-box;
   display: -ms-flexbox;
@@ -340,9 +352,12 @@ header .header-flex .profile button span {
 .newFeed .content .grid-row .flex-col textarea {
   background-color: #EAECF0;
   border: none;
+  padding: 2px 3px;
 }
 
 .newFeed .content .grid-row .flex-col .dropzone {
+  -webkit-transition: 1s;
+  transition: 1s;
   background-color: #EAECF0;
   border: none;
   padding: 0;
@@ -381,6 +396,8 @@ header .header-flex .profile button span {
 }
 
 .newFeed .content .grid-row .flex-col button {
+  -webkit-transition: 1s;
+  transition: 1s;
   background-color: #00BFFF;
   color: white;
   border: none;
@@ -394,6 +411,723 @@ header .header-flex .profile button span {
   font-size: 18;
 }
 
+.feeds {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  row-gap: 10px;
+  margin-top: 10px;
+}
+
+.feeds .feed {
+  width: 500px;
+  margin: 0 auto;
+  background-color: white;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+
+.feeds .feed .feedHead {
+  max-width: 500px;
+  display: -ms-grid;
+  display: grid;
+  -ms-grid-columns: 10% 75% 10%;
+      grid-template-columns: 10% 75% 10%;
+  -webkit-column-gap: 10px;
+          column-gap: 10px;
+  padding: 10px 10px 5px 10px;
+}
+
+.feeds .feed .feedHead .img {
+  height: 40px;
+  width: 40px;
+  border-radius: 20%;
+  overflow: hidden;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  background-color: #B1BBD0;
+  justify-self: center;
+}
+
+.feeds .feed .feedHead .img img {
+  width: 100%;
+}
+
+.feeds .feed .feedHead .img img {
+  width: 100%;
+}
+
+.feeds .feed .feedHead .text {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+}
+
+.feeds .feed .feedHead .text .name {
+  color: #00BFFF;
+  font-size: 18px;
+  line-height: 1;
+}
+
+.feeds .feed .feedHead .text .dateTime {
+  color: #3D3D3D;
+  font-size: 14px;
+  line-height: 1;
+}
+
+.feeds .feed .feedHead .action {
+  -ms-grid-column-align: end;
+      justify-self: end;
+  -ms-flex-item-align: top;
+      -ms-grid-row-align: top;
+      align-self: top;
+}
+
+.feeds .feed .feedHead .action button {
+  margin: 0;
+  border: solid 1px #FFC54B;
+  border-radius: 15px;
+  background-color: white;
+  padding: 0 10px;
+}
+
+.feeds .feed .feedHead .action button i::before {
+  color: #FFC54B;
+  font-size: 20px;
+  margin-bottom: 2px;
+}
+
+.feeds .feed .feedContent {
+  padding: 2px 14px;
+  font-size: 14px;
+  color: #3D3D3D;
+}
+
+.feeds .feed .feedFooter {
+  border-bottom: 1px #DCE1EA solid;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: start;
+  padding: 5px 20px;
+}
+
+.feeds .feed .feedFooter i::before {
+  margin-bottom: 4px;
+  color: #B1BBD0;
+}
+
+.feeds .feed .feedFooter div {
+  margin-right: 10px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-column-gap: 5px;
+          column-gap: 5px;
+  color: #3D3D3D;
+}
+
+.feeds .feed .feedsComment {
+  border-bottom: 1px #DCE1EA solid;
+}
+
+.feeds .feed .feedsComment .feedComment {
+  max-width: 500px;
+  display: -ms-grid;
+  display: grid;
+  -ms-grid-columns: 10% 90%;
+      grid-template-columns: 10% 90%;
+  padding: 10px 10px 5px 10px;
+  margin-bottom: 4px;
+}
+
+.feeds .feed .feedsComment .feedComment .img {
+  height: 30px;
+  width: 30px;
+  justify-self: center;
+  border-radius: 20%;
+  overflow: hidden;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  background-color: #B1BBD0;
+}
+
+.feeds .feed .feedsComment .feedComment .img img {
+  width: 100%;
+}
+
+.feeds .feed .feedsComment .feedComment .text {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  row-gap: 5px;
+}
+
+.feeds .feed .feedsComment .feedComment .text .profile .name {
+  font-size: 16px;
+  color: #00BFFF;
+  line-height: 1;
+}
+
+.feeds .feed .feedsComment .feedComment .text .profile .dateTime {
+  line-height: 1;
+  color: #3D3D3D;
+}
+
+.feeds .feed .feedsComment .feedComment .text .content {
+  font-size: 14px;
+  color: #3D3D3D;
+}
+
+.feeds .feed .comment {
+  padding: 12px 0px;
+  display: -ms-grid;
+  display: grid;
+  -ms-grid-columns: 10% 75% 15%;
+      grid-template-columns: 10% 75% 15%;
+}
+
+.feeds .feed .comment .img {
+  justify-self: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 20%;
+  overflow: hidden;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  background-color: #B1BBD0;
+}
+
+.feeds .feed .comment .img img {
+  width: 100%;
+}
+
+.feeds .feed .comment .img img {
+  width: 100px;
+}
+
+.feeds .feed .comment .user-input-comment {
+  padding: 0 5px;
+}
+
+.feeds .feed .comment .user-input-comment textarea {
+  background-color: #EAECF0;
+  border: none;
+  padding: 2px 3px;
+  width: 100%;
+}
+
+.feeds .feed .comment button {
+  border: none;
+  border-radius: 5px;
+  overflow: hidden;
+  padding: 3px 7px;
+  color: white;
+  background-color: #00ADE9;
+  font-size: 16px;
+  -webkit-transition: .2s;
+  transition: .2s;
+}
+
+.feeds .feed .comment button:hover {
+  background-color: #0193c4;
+}
+
+.friendsRecommend {
+  width: 100%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  row-gap: 10px;
+  margin-bottom: 10px;
+}
+
+.friendsRecommend .topic {
+  text-transform: uppercase;
+  color: #B1BBD0;
+  font-size: 14px;
+  line-height: 1;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+}
+
+.friendsRecommend .topic .badge {
+  background-color: #00BFFF;
+}
+
+.friendsRecommend .friends {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  row-gap: 5px;
+}
+
+.friendsRecommend .friends .friend {
+  width: 100%;
+  background-color: white;
+  border-radius: 10px;
+  padding: 10px 20px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  row-gap: 10px;
+}
+
+.friendsRecommend .friends .friend .profile {
+  display: -ms-grid;
+  display: grid;
+  -ms-grid-columns: 10% 90%;
+      grid-template-columns: 10% 90%;
+  -webkit-column-gap: 10px;
+          column-gap: 10px;
+}
+
+.friendsRecommend .friends .friend .profile .img {
+  height: 35px;
+  width: 35px;
+  justify-self: center;
+  border-radius: 20%;
+  overflow: hidden;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  background-color: #B1BBD0;
+}
+
+.friendsRecommend .friends .friend .profile .img img {
+  width: 100%;
+}
+
+.friendsRecommend .friends .friend .profile .fullname {
+  color: #00BFFF;
+  line-height: 1;
+  margin-bottom: 5px;
+  font-size: 20px;
+}
+
+.friendsRecommend .friends .friend .profile .fullname span {
+  color: #B1BBD0;
+  display: block;
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.friendsRecommend .friends .friend .action {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -ms-flex-pack: distribute;
+      justify-content: space-around;
+}
+
+.friendsRecommend .friends .friend .action .action-add {
+  border: none;
+  border-radius: 5px;
+  overflow: hidden;
+  padding: 3px 7px;
+  color: white;
+  background-color: #00ADE9;
+  font-size: 16px;
+  -webkit-transition: .2s;
+  transition: .2s;
+  font-size: 14px;
+}
+
+.friendsRecommend .friends .friend .action .action-add:hover {
+  background-color: #0193c4;
+}
+
+.friendsRecommend .friends .friend .action .action-remove {
+  border: 2px solid #9F9F9F;
+  border-radius: 5px;
+  overflow: hidden;
+  padding: 3px 7px;
+  color: #9F9F9F;
+  font-size: 16px;
+  -webkit-transition: .2s;
+  transition: .2s;
+  background-color: white;
+  font-size: 14px;
+  padding: 3px 17px;
+}
+
+.friendsRecommend .friends .friend .action .action-remove:hover {
+  background-color: #9F9F9F;
+  color: #ffffff;
+}
+
+.friendsRequired {
+  width: 100%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  row-gap: 10px;
+  margin-bottom: 10px;
+}
+
+.friendsRequired .topic {
+  text-transform: uppercase;
+  color: #B1BBD0;
+  font-size: 14px;
+  line-height: 1;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+}
+
+.friendsRequired .topic .badge {
+  background-color: #00BFFF;
+}
+
+.friendsRequired .friends {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  row-gap: 5px;
+}
+
+.friendsRequired .friends .friend {
+  width: 100%;
+  background-color: white;
+  border-radius: 10px;
+  padding: 10px 20px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  row-gap: 10px;
+}
+
+.friendsRequired .friends .friend .profile {
+  display: -ms-grid;
+  display: grid;
+  -ms-grid-columns: 10% 90%;
+      grid-template-columns: 10% 90%;
+  -webkit-column-gap: 10px;
+          column-gap: 10px;
+}
+
+.friendsRequired .friends .friend .profile .img {
+  height: 35px;
+  width: 35px;
+  justify-self: center;
+  border-radius: 20%;
+  overflow: hidden;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  background-color: #B1BBD0;
+}
+
+.friendsRequired .friends .friend .profile .img img {
+  width: 100%;
+}
+
+.friendsRequired .friends .friend .profile .fullname {
+  color: #00BFFF;
+  line-height: 1;
+  margin-bottom: 5px;
+  font-size: 20px;
+}
+
+.friendsRequired .friends .friend .profile .fullname span {
+  color: #B1BBD0;
+  display: block;
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.friendsRequired .friends .friend .action {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -ms-flex-pack: distribute;
+      justify-content: space-around;
+}
+
+.friendsRequired .friends .friend .action .action-add {
+  border: none;
+  border-radius: 5px;
+  overflow: hidden;
+  padding: 3px 7px;
+  color: white;
+  background-color: #00ADE9;
+  font-size: 16px;
+  -webkit-transition: .2s;
+  transition: .2s;
+  font-size: 14px;
+}
+
+.friendsRequired .friends .friend .action .action-add:hover {
+  background-color: #0193c4;
+}
+
+.friendsRequired .friends .friend .action .action-remove {
+  border: 2px solid #9F9F9F;
+  border-radius: 5px;
+  overflow: hidden;
+  padding: 3px 7px;
+  color: #9F9F9F;
+  font-size: 16px;
+  -webkit-transition: .2s;
+  transition: .2s;
+  background-color: white;
+  font-size: 14px;
+  padding: 3px 17px;
+}
+
+.friendsRequired .friends .friend .action .action-remove:hover {
+  background-color: #9F9F9F;
+  color: #ffffff;
+}
+
+.friendsContects {
+  width: 100%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  row-gap: 10px;
+}
+
+.friendsContects .topic {
+  text-transform: uppercase;
+  color: #B1BBD0;
+  font-size: 14px;
+  line-height: 1;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+}
+
+.friendsContects .topic .badge {
+  background-color: #00BFFF;
+}
+
+.friendsContects .friends {
+  width: 100%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  background-color: white;
+  border-radius: 10px;
+  padding: 10px 20px;
+  overflow-y: auto;
+  height: 240px;
+  row-gap: 10px;
+}
+
+.friendsContects .friends .friend {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  row-gap: 10px;
+}
+
+.friendsContects .friends .friend .profile {
+  display: -ms-grid;
+  display: grid;
+  -ms-grid-columns: 10% 90%;
+      grid-template-columns: 10% 90%;
+  -webkit-column-gap: 10px;
+          column-gap: 10px;
+}
+
+.friendsContects .friends .friend .profile .img {
+  height: 35px;
+  width: 35px;
+  justify-self: center;
+  border-radius: 20%;
+  overflow: hidden;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  background-color: #B1BBD0;
+}
+
+.friendsContects .friends .friend .profile .img img {
+  width: 100%;
+}
+
+.friendsContects .friends .friend .profile .fullname {
+  -ms-flex-item-align: center;
+      -ms-grid-row-align: center;
+      align-self: center;
+  color: #00BFFF;
+  line-height: 1;
+  margin-bottom: 5px;
+  font-size: 16px;
+}
+
 .grid-content {
   margin-top: 56px;
+}
+
+.sticky-56 {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 56px;
+  z-index: 1020;
 }

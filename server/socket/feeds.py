@@ -26,7 +26,7 @@ class FeedsNamespace(Namespace):
             new_feed = Feeds(
                 content=msg["content"],
                 img1=json.dumps(msg["imagePath"]),
-                user_id=session["uid"],
+                user_id=session["uId"],
             )
             db.session.add(new_feed)
             db.session.commit()

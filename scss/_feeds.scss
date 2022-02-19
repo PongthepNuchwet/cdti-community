@@ -1,0 +1,146 @@
+.feeds {
+    display: flex;
+    flex-direction: column;
+    row-gap: 10px;
+    margin-top: 10px;
+    .feed {
+        width: 500px;
+        margin: 0 auto;
+        background-color: $background-feed-color;
+        border-radius: 10px;
+        overflow: hidden;
+        margin-bottom: 10px;
+        .feedHead {
+            max-width: 500px;
+            display: grid;
+            grid-template-columns: 10% 75% 10%;
+            column-gap: 10px;
+            padding: 10px 10px 5px 10px;
+            .img {
+                height: 40px;
+                width: 40px;
+                @include profile-over;
+                justify-self: center;
+                img {
+                    width: 100%;
+                }
+            }
+            .text {
+                display: flex;
+                flex-direction: column;
+                .name {
+                    color: $title-primary;
+                    font-size: 18px;
+                    line-height: 1;
+                }
+                .dateTime {
+                    color: $text-color;
+                    font-size: 14px;
+                    line-height: 1;
+                }
+            }
+            .action {
+                justify-self: end;
+                align-self: top;
+                button {
+                    margin: 0;
+                    border: solid 1px $bd-feed-action;
+                    border-radius: 15px;
+                    background-color: $bg-feed-action;
+                    padding: 0 10px;
+                    i::before {
+                        color: $icon-feed-action;
+                        font-size: 20px;
+                        margin-bottom: 2px;
+                    }
+                }
+            }
+        }
+        .feedContent {
+            padding: 2px 14px;
+            font-size: 14px;
+            color: $text-color;
+        }
+        .feedFooter {
+            border-bottom: 1px $hr-color solid;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: start;
+            padding: 5px 20px;
+            i::before {
+                margin-bottom: 4px;
+                color: #B1BBD0;
+            }
+            div {
+                margin-right: 10px;
+                display: flex;
+                flex-direction: row;
+                column-gap: 5px;
+                color: $text-color;
+            }
+        }
+        .feedsComment {
+            border-bottom: 1px $hr-color solid;
+            .feedComment {
+                max-width: 500px;
+                display: grid;
+                grid-template-columns: 10% 90%;
+                padding: 10px 10px 5px 10px;
+                margin-bottom: 4px;
+                .img {
+                    height: 30px;
+                    width: 30px;
+                    justify-self: center;
+                    @include profile-over
+                }
+                .text {
+                    display: flex;
+                    flex-direction: column;
+                    row-gap: 5px;
+                    .profile {
+                        .name {
+                            font-size: 16px;
+                            color: $color-primary;
+                            line-height: 1;
+                        }
+                        .dateTime {
+                            line-height: 1;
+                            color: $text-color;
+                        }
+                    }
+                    .content {
+                        font-size: 14px;
+                        color: $text-color;
+                    }
+                }
+            }
+        }
+        .comment {
+            padding: 12px 0px;
+            display: grid;
+            grid-template-columns: 10% 75% 15%;
+            .img {
+                justify-self: center;
+                width: 40px;
+                height: 40px;
+                @include profile-over;
+                img {
+                    width: 100px;
+                }
+            }
+            .user-input-comment {
+                padding: 0 5px;
+                textarea {
+                    background-color: #EAECF0;
+                    border: none;
+                    padding: 2px 3px;
+                    width: 100%;
+                }
+            }
+            button {
+                @include btn-primary
+            }
+        }
+    }
+}

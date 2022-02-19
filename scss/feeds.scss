@@ -4,6 +4,16 @@
 @import 'header';
 @import 'nav';
 @import 'newfeed';
+@import 'feeds';
+@import 'friendRecommend';
+@import 'friendRequired';
+@import 'contects';
 .grid-content {
     margin-top: 56px;
+}
+
+.sticky-56 {
+    position: sticky;
+    top: 56px;
+    z-index: 1020;
 }

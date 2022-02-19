@@ -3,12 +3,30 @@ sans-serif;
 $white: #ffffff;
 $color-primary: #00BFFF;
 $color-secondary: #3D3D3D;
+$color-danger: #FF553E;
+$color-warning: #FFC54B;
 $title-primary: $color-primary;
 $text-color:$color-secondary;
 $text-secondary: #B1BBD0;
 $hr-color:#DCE1EA;
 $bg-nav-action: #EDEDED;
-$color-danger: #FF553E;
+$background-feed-color: white;
+$bg-feed-action: white;
+$bd-feed-action: $color-warning;
+$icon-feed-action :$color-warning;
+$btn-bg-primary-hover: #0193c4;
+$btn-bg-primary: #00ADE9;
+$btn-color-primary: white;
+$btn-bg-primary-hover-outline: #ffffff;
+$btn-bg-primary-outline: white;
+$btn-color-primary-outline: #00ADE9;
+$btn-br-primary-outline: #00ADE9;
+$btn-bg-secondary-hover-outline: #9F9F9F;
+$btn-bg-secondary-outline: white;
+$btn-color-secondary-hover-outline: #ffffff;
+$btn-color-secondary-outline: #9F9F9F;
+$btn-br-secondary-outline: #9F9F9F;
+$topic-color: #B1BBD0;
 @mixin flex-aCenter-jCentent {
     display: flex;
     flex-direction: row;
@@ -24,4 +42,50 @@ $color-danger: #FF553E;
     align-items: center;
     justify-content: center;
     background-color: $text-secondary;
+    img {
+        width: 100%;
+    }
+}
+
+@mixin btn-primary {
+    border: none;
+    border-radius: 5px;
+    overflow: hidden;
+    padding: 3px 7px;
+    color: $btn-color-primary;
+    background-color: $btn-bg-primary;
+    font-size: 16px;
+    transition: .2s;
+    &:hover {
+        background-color: $btn-bg-primary-hover;
+    }
+}
+
+@mixin btn-primary-outline {
+    border: 2px solid $btn-br-primary-outline;
+    border-radius: 5px;
+    overflow: hidden;
+    padding: 3px 7px;
+    color: $btn-color-primary-outline;
+    font-size: 16px;
+    transition: .2s;
+    background-color: $btn-bg-primary-hover-outline;
+    &:hover {
+        background-color: $btn-bg-primary-hover-outline;
+    }
+}
+
+@mixin btn-secondary-outline {
+    border: 2px solid $btn-br-secondary-outline;
+    border-radius: 5px;
+    overflow: hidden;
+    padding: 3px 7px;
+    color: $btn-color-secondary-outline;
+    font-size: 16px;
+    transition: .2s;
+    background-color: $btn-bg-secondary-outline;
+    &:hover {
+        background-color: $btn-bg-secondary-hover-outline;
+        color: $btn-color-secondary-hover-outline;
+    }
 }

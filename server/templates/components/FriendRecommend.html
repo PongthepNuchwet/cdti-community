@@ -1,8 +1,25 @@
-People You May Know
-<div class="FriendsRecommend" id="FriendsRecommend">
-    <div class="FriendRecommend" id="FriendRecommend" uid="">
-        <img src="" alt="">
-        <div class="fullname">1111</div>
-        <button id="newFriend">Add Friend</button>
+<div class="friendsRecommend" id="friendsRecommend">
+    <div class="topic">
+        People You May Know
+        <span class="badge rounded-pill ">2</span>
     </div>
+    <div class="friends">
+        <div class="friend" id="friend" uid="">
+            <div class="profile">
+                <div class="img">
+                    <img class="img" src="https://www.w3schools.com/howto/img_avatar.png" alt="">
+                </div>
+                <div class="fullname">{{ session['uName'] }}
+                    <span>Recommend friends for you</span>
+                </div>
+            </div>
+            <div class="action">
+                <button id="newFriend" class="action-add">Add Friend</button>
+                <button id="newFriend" class="action-remove">Remove</button>
+            </div>
+
+        </div>
+
+    </div>
+
 </div>

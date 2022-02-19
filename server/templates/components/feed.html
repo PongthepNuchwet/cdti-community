@@ -1,33 +1,89 @@
-<div class="Feed">
-    <div class="FeedHead">
-        <img src="" alt="">
-        <div class="name"></div>
-        <div class="datetime"></div>
-    </div>
-    <div class="FeedContent">
-        1231
-    </div>
-    <div class="FeedImg">
-        <div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
-            <div class="carousel-inner">
-                <div class="carousel-item active">
-                    <img src="https://img.freepik.com/free-vector/white-abstract-background_23-2148810113.jpg?size=626&ext=jpg" class="d-block w-100" alt="...">
+<div class="feeds">
+    <div class="feed">
+        <div class="feedHead">
+            <div class="img">
+                <img class="img" src="https://www.w3schools.com/howto/img_avatar.png" alt="">
+            </div>
+            <div class="text">
+                <div class="name">
+                    {{ session['uName'] }}
                 </div>
-                <div class="carousel-item">
-                    <img src="https://img.freepik.com/free-photo/hand-painted-watercolor-background-with-sky-clouds-shape_24972-1095.jpg" class="d-block w-100" alt="...">
-                </div>
-                <div class="carousel-item">
-                    <img src="https://static.vecteezy.com/system/resources/thumbnails/001/984/880/small/abstract-colorful-geometric-overlapping-background-and-texture-free-vector.jpg" class="d-block w-100" alt="...">
+                <div class="dateTime">
+                    5 hours ago
                 </div>
             </div>
-            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
-              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-              <span class="visually-hidden">Previous</span>
-            </button>
-            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
-              <span class="carousel-control-next-icon" aria-hidden="true"></span>
-              <span class="visually-hidden">Next</span>
-            </button>
+            <div class="action">
+                <button class="feed-action"><i class="bi bi-three-dots"></i></button>
+            </div>
+        </div>
+        <div class="feedContent">
+            1231 1231 1231 1231 1231 1231 1231 1231 1231 1231 1231 1231 1231 1231 1231 1231 1231 1231 1231 1231 1231 1231 1231 1231 1231 1231 1231 1231 1231 1231 1231 1231 1231 1231 1231 1231 1231 1231 1231 1231
+        </div>
+        <div class="feedImg">
+            <div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    <div class="carousel-item active">
+                        <img src="https://img.freepik.com/free-vector/white-abstract-background_23-2148810113.jpg?size=626&ext=jpg" class="d-block w-100 animate__animated animate__fadeIn" alt="...">
+                    </div>
+                    <div class="carousel-item">
+                        <img src="https://img.freepik.com/free-photo/hand-painted-watercolor-background-with-sky-clouds-shape_24972-1095.jpg" class="d-block w-100 animate__animated animate__fadeIn" alt="...">
+                    </div>
+                    <div class="carousel-item">
+                        <img src="https://static.vecteezy.com/system/resources/thumbnails/001/984/880/small/abstract-colorful-geometric-overlapping-background-and-texture-free-vector.jpg" class="d-block w-100 animate__animated animate__fadeIn" alt="...">
+                    </div>
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
+                  <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                  <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
+                  <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                  <span class="visually-hidden">Next</span>
+                </button>
+            </div>
+        </div>
+        <div class="feedFooter">
+            <div class="love-count">
+                <i class="bi bi-suit-heart-fill"></i>
+                <div id="count_like">5</div>
+            </div>
+
+            <div class="comment-count">
+                <i class="bi bi-chat-fill"></i>
+                <div id="count_comtent">2</div>
+            </div>
+        </div>
+        <div class="feedsComment">
+            <div class="feedComment">
+                <div class="img">
+                    <img class="img" src="https://www.w3schools.com/howto/img_avatar.png" alt="">
+                </div>
+                <div class="text">
+                    <div class="profile">
+                        <div class="name">
+                            {{ session['uName'] }}
+                        </div>
+                        <div class="dateTime">
+                            5 hours ago
+                        </div>
+                    </div>
+                    <div class="content">
+                        1231 1231 1231 1231 1231 1231 1231 1231 1231 1231 1231 1231 1231 1231
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="comment">
+            <div class="img">
+                <img class="img" src="https://www.w3schools.com/howto/img_avatar.png" alt="">
+            </div>
+            <div class="user-input-comment">
+                <textarea name="newFeed-content" class="" id="newFeed-content" placeholder="Write a comment..."></textarea>
+            </div>
+            <div class="action">
+                <button class="feed-action">Submit</button>
+            </div>
         </div>
     </div>
 </div>

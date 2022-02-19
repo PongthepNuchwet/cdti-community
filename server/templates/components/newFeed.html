@@ -1,15 +1,13 @@
-<div class="newFeed">
+<div class="newFeed" id="newFeed" class="animate__animated animate__bounce animate__delay-2s">
     <div class="content">
         <div class="grid-row">
             <div class="img">
                 <img src="https://www.w3schools.com/howto/img_avatar.png" width="100px" alt="">
             </div>
             <div class="flex-col">
-                <textarea name="newFeed-content" class="" id="newFeed-content"></textarea>
-                <div class="input-file">
-                    <div class="dropzone" id="myDropzone"></div>
-                </div>
-                <button id="upload-btn"><i class="bi bi-link-45deg"></i> Post It.</button>
+                <textarea name="newFeed-content" class="" id="newFeed-content" placeholder="What’s new, {{ session['uName'] }}?"></textarea>
+                <div class="dropzone d-none animate__animated animate__fadeIn animate__fast" id="myDropzone"></div>
+                <button id="newFeed-upload-btn" class="d-none animate__animated animate__fadeIn animate__fast"><i class="bi bi-link-45deg"></i> Post It.</button>
             </div>
         </div>
     </div>

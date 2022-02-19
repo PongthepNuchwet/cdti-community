@@ -83,6 +83,26 @@ function displayDate() {
     console.log(Date())
 }
 
+// start newFeed 
+var myDropzone = document.getElementById("myDropzone")
+var newFeed_upload_btn = document.getElementById("newFeed-upload-btn")
+var newFeed_content = document.getElementById("newFeed")
+newFeed_content.addEventListener('mouseover', () => {
+    console.log("mouseover")
+    document.getElementById("myDropzone").classList.remove("d-none");
+    document.getElementById("myDropzone").classList.add("d-block");
+    document.getElementById("newFeed-upload-btn").classList.add("d-block");
+    document.getElementById("newFeed-upload-btn").classList.remove("d-none");
+})
+newFeed_content.addEventListener('mouseout', () => {
+        console.log("mouseout")
+        document.getElementById("myDropzone").classList.remove("d-block")
+        document.getElementById("myDropzone").classList.add("d-none");
+        document.getElementById("newFeed-upload-btn").classList.remove("d-block")
+        document.getElementById("newFeed-upload-btn").classList.add("d-none");
+    })
+    // end newfeed
+
 
 socket.on("connect", () => {
     console.log(socket.id);
@@ -107,14 +127,14 @@ socket.on('message', function(msg) {
 });
 
 socket.on('friend_recommend', function(msg) {
-    FriendRecomSchedule.addFriends(msg);
-    FriendRecomSchedule.schedule();
+    // FriendRecomSchedule.addFriends(msg);
+    // FriendRecomSchedule.schedule();
 });
 
 Dropzone.options.myDropzone = {
     init: function() {
         dz = this;
-        document.getElementById("upload-btn").addEventListener("click", function handler(e) {
+        document.getElementById("newFeed-upload-btn").addEventListener("click", function handler(e) {
             e.preventDefault();
             dz.processQueue();
         });
