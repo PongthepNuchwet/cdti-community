@@ -8,6 +8,9 @@ import json
 class FeedsNamespace(Namespace):
     def on_connect(self):
         follwing = Follow.query.filter_by(user_id=session["uId"]).all()
+        print(session['uId'])
+        follwing.append(session['uId'])
+        print("follwing: " ,follwing)
         friend_recommend = [
             {"id": i.id, "profile": i.profile, "fullName": i.fullName, "email": i.email}
             for i in [j for j in Users.query.filter(Users.id.notin_(follwing)).limit(5).all()]

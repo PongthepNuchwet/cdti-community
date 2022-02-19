@@ -3,6 +3,8 @@ from flask import Blueprint, render_template, request, flash , redirect,url_for,
 
 from flask_login import login_user, login_required,logout_user,current_user
 from werkzeug.security import generate_password_hash,check_password_hash
+from werkzeug.utils import secure_filename
+import os
 
 from ..models import Users
 from .. import db
@@ -47,6 +49,10 @@ def logout():
 @auth.route('/signup', methods=['GET', 'POST'])
 def sign_up():
     if request.method == 'POST':
+        f = request.files.get('file')
+        newName = secure_filename(f.filename)
+        profilePath = f"/static/profile/{newName}"
+        f.save(os.path.join("server/static/profile/",newName))
         email = request.form.get('email')
         fullName = request.form.get('fullName')
         password1 = request.form.get('password1')
@@ -65,7 +71,7 @@ def sign_up():
         elif len(password1) < 7:
             flash('Password must be at least 7 characters.', category='error')
         else:
-            new_user = Users(email=email,fullName=fullName ,password=generate_password_hash(password1,method='sha256'))
+            new_user = Users(profile=profilePath ,email=email,fullName=fullName ,password=generate_password_hash(password1,method='sha256'))
             db.session.add(new_user)
             db.session.commit()
             flash('Account created!', category='success')

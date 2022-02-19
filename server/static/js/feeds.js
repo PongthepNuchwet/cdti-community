@@ -20,12 +20,13 @@ var alertMini = Swal.mixin({
 class FriendRecommendSchedule {
     constructor() {
         this.queue = [];
-        this.parent = document.getElementById('FriendsRecommend');
-        this.child;
-        this.setChild();
+        this.execute = [];
+        this.count = 2
+        this.parent = document.getElementById('friendsRecommend_friends');
     }
 
     addFriend(friend) {
+        console.log('addFriend')
         this.queue.push(friend);
     }
 
@@ -37,42 +38,87 @@ class FriendRecommendSchedule {
         }
     }
 
-    schedule() {
-        this.removeChild()
-        this.createElement(this.queue[0]);
-        this.removeQueue();
-        this.setChild();
-
+    createElement(friend) {
+        console.log('createElement')
+        let profile = friend.profile;
+        if (profile === null) { profile = '' }
+        let element = document.createElement('div');
+        element.setAttribute('id', `FriendRecommend_${friend.id}`);
+        element.setAttribute('class', 'friend animate__animated animate__fadeIn');
+        element.innerHTML = `
+        <div class="profile">
+        <div class="img">
+            <img class="img" src="${profile}" alt="">
+        </div>
+        <div class="fullname">${friend.fullName}
+            <span>Recommend friends for you</span>
+        </div>
+    </div>
+    <div class="action">
+        <button id="newFriend" onClick="addFriendRecInFeed();" class="action-add">Add Friend</button>
+        <button id="newFriend" class="action-remove">Remove</button>
+    </div>`;
+        this.parent.appendChild(element);
     }
-    removeQueue() {
-        this.queue.shift();
+
+    displayNone() {
+        console.log('displayNone')
+        this.parent.innerHTML = 'NONE'
     }
 
-    setChild() {
-        this.child = document.getElementById('FriendRecommend')
-    }
-
-    removeChild() {
-        if (this.parent.children.length > 0) {
-            this.parent.removeChild(this.parent.children[0]);
+    Execute() {
+        if (this.execute.length > 0) {
+            for (let i = 0; i < this.execute.length; i++) {
+                if (this.execute[i] !== undefined) {
+                    this.createElement(this.execute[i]);
+                } else {
+                    this.displayNone()
+                }
+            }
         }
     }
 
-    createElement(friend) {
-        let profile = friend.profile
-        if (profile === null) { profile = '' }
+    schedule() {
+        console.log('schedule', this.execute)
+        this.removeChild()
+        if (this.execute.length < this.count) {
+            if (this.queue.length > 0 || this.execute.length > 0) {
+                if (this.queue.length > 0) {
+                    for (let i = 0; i < this.count; i++) {
+                        this.execute.push(this.queue.shift())
+                    }
+                }
+                this.Execute()
+            } else {
+                this.displayNone()
+            }
 
-        this.parent.innerHTML = `
-        <div class="FriendRecommend" uid="${friend.id}">
-        <img src="${profile}" alt="${friend.id}">
-        <div class="fullname">${friend.fullName}</div>
-        <button id="newFriend">Add Friend</button>
-    </div>`;
+        }
+    }
+    removeQueue() {
+        console.log('removeQueue')
+        this.execute.shift();
     }
 
+
+
+    removeChild() {
+        if (this.parent.children.length > 0) {
+            let len = this.parent.children.length
+            for (let i = 0; i < len; i++) {
+                this.parent.removeChild(this.parent.children[0]);
+            }
+        }
+    }
 }
 
 var FriendRecomSchedule = new FriendRecommendSchedule();
+
+function addFriendRecInFeed() {
+    console.log("click")
+    FriendRecomSchedule.removeQueue()
+    FriendRecomSchedule.schedule();
+}
 
 function clickMessage() {
     console.log("click")
@@ -88,14 +134,12 @@ var myDropzone = document.getElementById("myDropzone")
 var newFeed_upload_btn = document.getElementById("newFeed-upload-btn")
 var newFeed_content = document.getElementById("newFeed")
 newFeed_content.addEventListener('mouseover', () => {
-    console.log("mouseover")
     document.getElementById("myDropzone").classList.remove("d-none");
     document.getElementById("myDropzone").classList.add("d-block");
     document.getElementById("newFeed-upload-btn").classList.add("d-block");
     document.getElementById("newFeed-upload-btn").classList.remove("d-none");
 })
 newFeed_content.addEventListener('mouseout', () => {
-        console.log("mouseout")
         document.getElementById("myDropzone").classList.remove("d-block")
         document.getElementById("myDropzone").classList.add("d-none");
         document.getElementById("newFeed-upload-btn").classList.remove("d-block")
@@ -127,8 +171,9 @@ socket.on('message', function(msg) {
 });
 
 socket.on('friend_recommend', function(msg) {
-    // FriendRecomSchedule.addFriends(msg);
-    // FriendRecomSchedule.schedule();
+    console.log(msg)
+    FriendRecomSchedule.addFriends(msg);
+    FriendRecomSchedule.schedule();
 });
 
 Dropzone.options.myDropzone = {
