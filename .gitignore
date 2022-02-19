@@ -5,3 +5,4 @@ venv/
 .vscode/
 /server/database.db
 /server/static/uploads/*
+server/static/uploads/*
