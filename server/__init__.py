@@ -1,6 +1,6 @@
 from flask import Flask, request
 from flask_sqlalchemy import SQLAlchemy
-from flask_socketio import SocketIO, send,emit
+from flask_socketio import SocketIO, send, emit
 from os import path
 
 
@@ -16,11 +16,10 @@ def create_app():
     app.config["SQLALCHEMY_DATABASE_URI"] = f"sqlite:///{DB_NAME}"
     db.init_app(app)
 
-    from .controllers.auth import auth
+    from .controllers.auth import Auth
     from .controllers.feeds import feeds
     from .socket.feeds import FeedsNamespace
 
-    app.register_blueprint(auth, url_prefix="/")
     app.register_blueprint(feeds, url_prefix="/feeds")
 
     from .models import Users, Feeds, Likes, Comments, Follow
@@ -35,12 +34,14 @@ def create_app():
     def load_user(id):
         return Users.query.get(int(id))
 
-    socketio = SocketIO(app, logger=True, engineio_logger=True)
-    socketio.on_namespace(FeedsNamespace('/feeds'))
+    socketio = SocketIO(app, logger=True, engineio_logger=True,async_handlers=True)
+    socketio.on_namespace(FeedsNamespace("/feeds"))
 
+    auth = Auth(socketio=socketio)
+    
+    app.register_blueprint(auth, url_prefix="/")
 
-    return  app
-    # return socketio, app
+    return app
 
 
 def create_database(app):

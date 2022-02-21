@@ -1,3 +1,4 @@
+from socket import socket
 from . import db
 from flask_login import UserMixin
 from sqlalchemy.sql import func
@@ -10,6 +11,7 @@ class Users(db.Model, UserMixin):
     email = db.Column(db.String(150), unique=True)
     password = db.Column(db.String(150))
     fullName = db.Column(db.String(150))
+    socket_id = db.Column(db.String(150))
     created_at = db.Column(db.DateTime(timezone=True), default=func.now())
     update_at = db.Column(db.DateTime(timezone=True), default=func.now())
 
@@ -64,8 +66,8 @@ class Comments(db.Model):
 class Follow(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     following = db.Column(db.Integer)
+    status = db.Column(db.Integer)
     created_at = db.Column(db.DateTime(timezone=True), default=func.now())
-    
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"))
 
     def __repr__(self):
