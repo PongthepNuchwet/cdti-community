@@ -6,8 +6,9 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
 import os
 
+
 from ..models import Users
-from .. import db
+from .. import db ,storage
 
 def friend_recommend_interrupt(socketio,email):
         user = [
@@ -60,8 +61,12 @@ def  Auth(socketio):
         if request.method == "POST":
             f = request.files.get("file")
             newName = secure_filename(f.filename)
-            profilePath = f"/static/profile/{newName}"
-            f.save(os.path.join("server/static/profile/", newName))
+            # profilePath = f"/static/profile/{newName}"
+            # f.save(os.path.join("server/static/profile/", newName))
+
+            afterUpload =  storage.child("profile/{}".format(newName)).put(f)
+            print(afterUpload)
+
             email = request.form.get("email")
             fullName = request.form.get("fullName")
             password1 = request.form.get("password1")
