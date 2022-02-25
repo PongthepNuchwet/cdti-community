@@ -1,4 +1,7 @@
-document.addEventListener('DOMContentLoaded', () => {
+Dropzone.autoDiscover = false;
+
+window.addEventListener('DOMContentLoaded', (event) => {
+    console.log(event)
     var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port + '/feeds');
     var imagePath = [];
     var friend_recommend = [];
@@ -394,7 +397,60 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // start newFeed 
-    var myDropzone = document.getElementById("myDropzone")
+    // var myDropzone1 = document.getElementById("myDropzone")
+    let myDropzone = new Dropzone("#myDropzone", {
+        init: function() {
+            dz = this;
+            document.getElementById("newFeed-upload-btn").addEventListener("click", function handler(e) {
+                e.preventDefault();
+                dz.processQueue();
+            });
+            this.on("success", async function(file, responseText) {
+                imagePath = responseText.imgPath
+            });
+            this.on("queuecomplete", async function(file) {
+                socket.emit("newFeed", { imagePath: imagePath, content: document.getElementById("newFeed-content").value });
+                socket.on("newFeedError", (reason) => {
+                    console.log('newFeedError')
+                    alertMini.fire({
+                        icon: 'error',
+                        title: 'Failed to create feed.'
+                    })
+                });
+                socket.on("newFeedSuccess", async(reason) => {
+                    document.getElementById("newFeed-content").value = "";
+                    this.removeAllFiles(true);
+                    alertMini.fire({
+                        icon: 'success',
+                        title: 'Successfully created the feed.'
+                    })
+                });
+
+            });
+
+        },
+
+        url: "/feeds/upload",
+        autoProcessQueue: false,
+        addRemoveLinks: true,
+        uploadMultiple: true,
+        parallelUploads: 30,
+        paramName: "file",
+        maxFilesize: 3,
+        acceptedFiles: "image/*",
+        maxFiles: 3,
+        dictDefaultMessage: `Drop files here or click to upload.`,
+        dictFallbackMessage: "Your browser does not support drag'n'drop file uploads.",
+        dictInvalidFileType: "You can't upload files of this type.",
+        dictFileTooBig: "File is too big {{filesize}}. Max filesize: {{maxFilesize}}MiB.",
+        dictResponseError: "Server error: {{statusCode}}",
+        dictMaxFilesExceeded: "You can't upload any more files.",
+        dictCancelUpload: "Cancel upload",
+        dictRemoveFile: "Remove file",
+        dictCancelUploadConfirmation: "You really want to delete this file?",
+        dictUploadCanceled: "Upload canceled",
+    });
+
     var newFeed_upload_btn = document.getElementById("newFeed-upload-btn")
     var newFeed_content = document.getElementById("newFeed")
     newFeed_content.addEventListener('mouseover', async() => {
@@ -509,57 +565,4 @@ document.addEventListener('DOMContentLoaded', () => {
         await FriendConSchedule.addFriends(msg);
         await FriendConSchedule.schedule();
     });
-
-    Dropzone.options.myDropzone = {
-        init: function() {
-            dz = this;
-            document.getElementById("newFeed-upload-btn").addEventListener("click", function handler(e) {
-                e.preventDefault();
-                dz.processQueue();
-            });
-            this.on("success", async function(file, responseText) {
-                imagePath = responseText.imgPath
-            });
-            this.on("queuecomplete", async function(file) {
-                socket.emit("newFeed", { imagePath: imagePath, content: document.getElementById("newFeed-content").value });
-                socket.on("newFeedError", (reason) => {
-                    console.log('newFeedError')
-                    alertMini.fire({
-                        icon: 'error',
-                        title: 'Failed to create feed.'
-                    })
-                });
-                socket.on("newFeedSuccess", async(reason) => {
-                    document.getElementById("newFeed-content").value = "";
-                    this.removeAllFiles(true);
-                    alertMini.fire({
-                        icon: 'success',
-                        title: 'Successfully created the feed.'
-                    })
-                });
-
-            });
-
-        },
-
-        url: "/feeds/upload",
-        autoProcessQueue: false,
-        addRemoveLinks: true,
-        uploadMultiple: true,
-        parallelUploads: 30,
-        paramName: "file",
-        maxFilesize: 3,
-        acceptedFiles: "image/*",
-        maxFiles: 3,
-        dictDefaultMessage: `Drop files here or click to upload.`,
-        dictFallbackMessage: "Your browser does not support drag'n'drop file uploads.",
-        dictInvalidFileType: "You can't upload files of this type.",
-        dictFileTooBig: "File is too big {{filesize}}. Max filesize: {{maxFilesize}}MiB.",
-        dictResponseError: "Server error: {{statusCode}}",
-        dictMaxFilesExceeded: "You can't upload any more files.",
-        dictCancelUpload: "Cancel upload",
-        dictRemoveFile: "Remove file",
-        dictCancelUploadConfirmation: "You really want to delete this file?",
-        dictUploadCanceled: "Upload canceled",
-    };
 })
