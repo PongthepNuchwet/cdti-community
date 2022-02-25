@@ -1,4 +1,5 @@
 var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port + '/feeds');
+// var socket = io.connect('http://127.0.0.1:5000/feeds/');
 var imagePath = [];
 var friend_recommend = [];
 
