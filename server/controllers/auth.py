@@ -63,6 +63,7 @@ def  Auth(socketio):
             newName = secure_filename(f.filename)
             profilePath = f"/static/profile/{newName}"
             f.save(os.path.join("server/static/profile/", newName))
+            # f.save(os.path.join(os.path.join(os.path.split(currDir)[0], "templates"), newName))
 
 
             email = request.form.get("email")
