@@ -34,11 +34,11 @@ def create_app():
     def load_user(id):
         return Users.query.get(int(id))
 
-    socketio = SocketIO(app, logger=True, engineio_logger=True,async_handlers=True)
+    socketio = SocketIO(app, logger=True, engineio_logger=True, async_handlers=True)
     socketio.on_namespace(FeedsNamespace("/feeds"))
 
     auth = Auth(socketio=socketio)
-    
+
     app.register_blueprint(auth, url_prefix="/")
 
     return app
