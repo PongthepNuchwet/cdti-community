@@ -261,12 +261,16 @@ window.addEventListener('DOMContentLoaded', (event) => {
         }
 
         removeChild() {
-            if (this.parent.children.length > 0) {
-                let len = this.parent.children.length
-                for (let i = 0; i < len; i++) {
-                    this.parent.removeChild(this.parent.children[0]);
+            console.log(this.parent, document.getElementById('friendsRequired_friends'))
+            if (this.parent) {
+                if (this.parent.children.length > 0) {
+                    let len = this.parent.children.length
+                    for (let i = 0; i < len; i++) {
+                        this.parent.removeChild(this.parent.children[0]);
+                    }
                 }
             }
+
         }
     }
     class FriendContactsSchedule {
