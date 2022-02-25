@@ -64,7 +64,8 @@ def  Auth(socketio):
             # profilePath = f"/static/profile/{newName}"
             # f.save(os.path.join("server/static/profile/", newName))
 
-            afterUpload =  storage.child("profile/{}".format(newName)).put(f)
+            storage.child("profile/{}".format(newName)).put(f)
+            afterUpload = storage.child("profile/{}".format(newName)).get_url()
             print(afterUpload)
 
             email = request.form.get("email")
@@ -86,7 +87,7 @@ def  Auth(socketio):
                 flash("Password must be at least 7 characters.", category="error")
             else:
                 new_user = Users(
-                    profile=profilePath,
+                    profile=newName,
                     email=email,
                     fullName=fullName,
                     password=generate_password_hash(password1, method="sha256"),

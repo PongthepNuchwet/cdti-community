@@ -18,6 +18,7 @@ config = {
     "messagingSenderId": "389183905844",
     "appId": "1:389183905844:web:d72c864521858774e1aa61",
     "measurementId": "G-KPD21GSQ88",
+    "databaseURL":'',
     "serviceAccount": {
         "type": "service_account",
         "project_id": "cdti-community",
