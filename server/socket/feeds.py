@@ -1,102 +1,105 @@
 from flask import request, session
 from flask_socketio import Namespace, emit, send
-from ..models import Feeds, Follow, Users
-from .. import db
+# from ..models import Feeds, Follow, Users
+# from .. import db
 import json
 import time
 
 
 class FeedsNamespace(Namespace):
-    def emitingProfile(self):
+    def __init__(self, namespace ,db,Feeds, Follow, Users) :
+        super().__init__(namespace)
+        self.db = db
+        self.Feeds= Feeds
+        self.Follow = Follow
+        self.Users = Users
+
+    def emiting_profile(self):
         data = [
-            {"profile": i.profile, "fullName": i.fullName, "email": i.email}
-            for i in [
-                j for j in Users.query.filter_by(id=session["uId"]).limit(5).all()
-            ]
+            {"profile": i.profile, "fullName": i.fullName, "email": i.email} for i in
+            list(self.Users.query.filter_by(id=session['uId']).limit(5).all())
         ]
         emit("profile", data, broadcast=False)
 
-    def emitingNew(self):
-        pass
-
-    def emitingFriendRequired(self):
+    def emiting_friend_required(self):
         requried = [
             i.user_id
-            for i in Follow.query.filter_by(following=session["uId"], status=0)
-            .limit(5)
+            for i in self.Follow.query.filter_by(following=session["uId"], status=0)
             .all()
         ]
+        print("requried", requried)
         friend_requried = [
-            {"id": i.id, "profile": i.profile, "fullName": i.fullName, "email": i.email}
-            for i in [j for j in Users.query.filter(Users.id.in_(requried)).all()]
+            {"id": i.id, "profile": i.profile,
+                "fullName": i.fullName, "email": i.email}
+            for i in list(self.Users.query.filter(self.Users.id.in_(requried)).all())
         ]
+        print("friend_requried", friend_requried)
         emit("friend_Required", friend_requried, broadcast=False)
 
-    def emitingFriendRecommend(self):
+    def emiting_friend_recommend(self):
         follwing = [
-            i.following for i in Follow.query.filter_by(user_id=session["uId"]).all()
+            i.following for i in self.Follow.query.filter_by(user_id=session["uId"]).all()
         ]
         follwing.append(session["uId"])
         friend_recommend = [
-            {"id": i.id, "profile": i.profile, "fullName": i.fullName, "email": i.email}
-            for i in [
-                j for j in Users.query.filter(Users.id.notin_(follwing)).limit(5).all()
-            ]
+            {"id": i.id, "profile": i.profile,
+                "fullName": i.fullName, "email": i.email}
+            for i in list(self.Users.query.filter(self.Users.id.notin_(follwing)).limit(5).all())
         ]
         emit("friend_recommend", friend_recommend, broadcast=False)
 
-    def getSecketIdByUid(self, id):
-        user = Users.query.filter_by(id=id).first()
+    def get_secket_id_by_uid(self, uid):
+        user = self.Users.query.filter_by(id=uid).first()
         return user.socket_id
 
-    def removeSecketId(self):
-        user = Users.query.filter_by(id=session["uId"]).first()
+    def remove_secket_id(self):
+        user = self.Users.query.filter_by(id=session["uId"]).first()
         user.socket_id = None
-        db.session.commit()
+        self.db.session.commit()
 
-    def updateSecketId(self, id):
-        user = Users.query.filter_by(id=session["uId"]).first()
-        user.socket_id = id
-        db.session.commit()
+    def update_secket_id(self, uid):
+        user = self.Users.query.filter_by(id=session["uId"]).first()
+        user.socket_id = uid
+        self.db.session.commit()
 
     def concacts(self):
         follwing = [
-            i.following for i in Follow.query.filter_by(user_id=session["uId"],status=1).all()
+            i.following for i in self.Follow.query.filter_by(user_id=session["uId"], status=1).all()
         ]
+        print("follwing", follwing)
         concacts = [
-            {"id": i.id, "profile": i.profile, "fullName": i.fullName, "email": i.email}
-            for i in [j for j in Users.query.filter(Users.id.in_(follwing)).all()]
+            {"id": i.id, "profile": i.profile,
+                "fullName": i.fullName, "email": i.email}
+            for i in list(self.Users.query.filter(self.Users.id.in_(follwing)).all())
         ]
         emit("concacts", concacts, broadcast=False)
 
-
     def on_connect(self):
         start = time.time()
-        self.emitingProfile()
-        self.updateSecketId(request.sid)
-        self.emitingFriendRecommend()
-        self.emitingFriendRequired()
+        self.emiting_profile()
+        self.update_secket_id(request.sid)
+        self.emiting_friend_recommend()
+        self.emiting_friend_required()
         self.concacts()
         end = time.time()
-        print("end - start",end - start)
+        print("end - start", end - start)
 
     def on_disconnect(self):
-        self.removeSecketId()
-        pass
+        self.remove_secket_id()
 
     def on_message(self, msg):
         send(msg, broadcast=True)
 
     def on_newFeed(self, msg):
         try:
-            new_feed = Feeds(
+            new_feed = self.Follow(
                 content=msg["content"],
                 img1=json.dumps(msg["imagePath"]),
                 user_id=session["uId"],
             )
-            db.session.add(new_feed)
-            db.session.commit()
-        except:
+            self.db.session.add(new_feed)
+            self.session.commit()
+        except IndexError:
             emit("newFeedError", broadcast=False)
         else:
             emit("newFeedSuccess", broadcast=False)
@@ -104,35 +107,50 @@ class FeedsNamespace(Namespace):
     def on_follow(self, msg):
         print("on_follow", msg)
         try:
-            new_Follow = Follow(
+            new_Follow = self.Follow(
                 following=msg["follow_id"], user_id=session["uId"], status=0
             )
-            db.session.add(new_Follow)
-            db.session.commit()
-        except:
+            self.db.session.add(new_Follow)
+            self.db.session.commit()
+        except IndexError:
             emit("newFollowError", broadcast=False)
         else:
             emit(
                 "follower",
-                "{} sent a request to follow you.".format(msg["name"]),
-                to=self.getSecketIdByUid(msg["follow_id"]),
+                f"{msg['name']} sent a request to follow you.",
+                to=self.get_secket_id_by_uid(msg["follow_id"]),
             )
             emit("newFollowSuccess", broadcast=False)
+            user = [
+                {"id": i.id, "profile": i.profile,
+                 "fullName": i.fullName, "email": i.email}
+                for i in [self.Users.query.filter_by(id=session["uId"]).first()]
+            ]
+            emit(
+                "friend_Required_interrupt", user[0], to=self.get_secket_id_by_uid(msg["follow_id"]),
+            )
 
     def on_accept(self, msg):
         print("on_accept", msg)
         try:
-            new_accept = Follow.query.filter_by(
+            new_accept = self.Follow.query.filter_by(
                 following=session["uId"], user_id=msg["follow_id"], status=0
             ).first()
             new_accept.status = 1
-            db.session.commit()
-        except:
+            self.db.session.commit()
+        except IndexError as e:
+            print(e)
             emit("newAcceptError", broadcast=False)
         else:
             emit(
-                "Accept",
-                "{} has accepted you to follow.".format(msg["name"]),
-                to=self.getSecketIdByUid(msg["follow_id"]),
+                "Accept", f"{msg['name']} has accepted you to follow.",
+                to=self.get_secket_id_by_uid(msg["follow_id"]),
             )
             emit("newAcceptSuccess", broadcast=False)
+            user = [
+                {"id": i.id, "profile": i.profile,
+                 "fullName": i.fullName, "email": i.email}
+                for i in [self.Users.query.filter_by(id=session["uId"]).first()]
+            ]
+            emit("concacts_interrupt",
+                 user[0], to=self.get_secket_id_by_uid(msg["follow_id"]))

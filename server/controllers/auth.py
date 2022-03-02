@@ -7,25 +7,24 @@ from werkzeug.utils import secure_filename
 import os
 
 
-from ..models import Users
-from .. import db 
 
-def friend_recommend_interrupt(socketio,email):
-        user = [
-            {"id": i.id, "profile": i.profile, "fullName": i.fullName, "email": i.email}
-            for i in [Users.query.filter_by(email=email).first()]
-        ]
-        print("user user ",user)
-        socketio.emit("friend_recommend_interrupt", user[0],namespace='/feeds')
 
-def  Auth(socketio):
+def friend_recommend_interrupt(socketio, email,Users):
+    user = [
+        {"id": i.id, "profile": i.profile, "fullName": i.fullName, "email": i.email}
+        for i in [Users.query.filter_by(email=email).first()]
+    ]
+    print("user user ", user)
+    socketio.emit("friend_recommend_interrupt", user[0], namespace='/feeds')
+
+
+def Auth(socketio,Users,db):
     auth = Blueprint("auth", __name__)
 
     @auth.route("/")
     @login_required
     def home():
         return render_template("home.html")
-
 
     @auth.route("/login", methods=["GET", "POST"])
     def login():
@@ -49,12 +48,10 @@ def  Auth(socketio):
 
         return render_template("login.html")
 
-
     @auth.route("/logout")
     def logout():
         logout_user()
         return redirect(url_for("auth.login"))
-
 
     @auth.route("/signup", methods=["GET", "POST"])
     def sign_up():
@@ -63,8 +60,6 @@ def  Auth(socketio):
             newName = secure_filename(f.filename)
             profilePath = f"/static/profile/{newName}"
             f.save(os.path.join("server/static/profile/", newName))
-            # f.save(os.path.join(os.path.join(os.path.split(currDir)[0], "templates"), newName))
-
 
             email = request.form.get("email")
             fullName = request.form.get("fullName")
@@ -78,7 +73,8 @@ def  Auth(socketio):
             elif len(email) < 4:
                 flash("Email must be greater than 3 characters.", category="error")
             elif len(fullName) < 2:
-                flash("First name must be greater than 1 character.", category="error")
+                flash("First name must be greater than 1 character.",
+                      category="error")
             elif password1 != password2:
                 flash("Passwords don't match.", category="error")
             elif len(password1) < 7:
@@ -88,14 +84,15 @@ def  Auth(socketio):
                     profile=profilePath,
                     email=email,
                     fullName=fullName,
-                    password=generate_password_hash(password1, method="sha256"),
+                    password=generate_password_hash(
+                        password1, method="sha256"),
                 )
                 db.session.add(new_user)
                 db.session.commit()
-                friend_recommend_interrupt(socketio=socketio,email=email)
+                friend_recommend_interrupt(socketio=socketio, email=email,Users=Users)
                 flash("Account created!", category="success")
                 return redirect(url_for("auth.login"))
 
         return render_template("signup.html")
-    
+
     return auth
