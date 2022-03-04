@@ -123,7 +123,7 @@ class FeedsNamespace(Namespace):
             user = [
                 {"id": i.id, "profile": i.profile,
                  "fullName": i.fullName, "email": i.email}
-                for i in list(self.Users.query.filter_by(id=session["uId"]).first())
+                for i in [self.Users.query.filter_by(id=session["uId"]).first()]
             ]
             self.emit_to(
                 "follower", f"{msg['name']} sent a request to follow you.", msg["follow_id"])
@@ -147,7 +147,7 @@ class FeedsNamespace(Namespace):
             user = [
                 {"id": i.id, "profile": i.profile,
                  "fullName": i.fullName, "email": i.email}
-                for i in list(self.Users.query.filter_by(id=session["uId"]).first())
+                for i in [self.Users.query.filter_by(id=session["uId"]).first()]
             ]
             self.emit_to(
                 "Accept", f"{msg['name']} has accepted you to follow.", msg["follow_id"])
