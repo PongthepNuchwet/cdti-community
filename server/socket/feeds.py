@@ -1,16 +1,14 @@
 from flask import request, session
 from flask_socketio import Namespace, emit, send
-# from ..models import Feeds, Follow, Users
-# from .. import db
 import json
 import time
 
 
 class FeedsNamespace(Namespace):
-    def __init__(self, namespace ,db,Feeds, Follow, Users) :
+    def __init__(self, namespace, db, Feeds, Follow, Users):
         super().__init__(namespace)
         self.db = db
-        self.Feeds= Feeds
+        self.Feeds = Feeds
         self.Follow = Follow
         self.Users = Users
 
@@ -50,6 +48,7 @@ class FeedsNamespace(Namespace):
 
     def get_secket_id_by_uid(self, uid):
         user = self.Users.query.filter_by(id=uid).first()
+        print("get_secket_id_by_uid", user.socket_id)
         return user.socket_id
 
     def remove_secket_id(self):
@@ -104,6 +103,11 @@ class FeedsNamespace(Namespace):
         else:
             emit("newFeedSuccess", broadcast=False)
 
+    def emit_to(self, event, data, uid):
+        to = self.get_secket_id_by_uid(uid)
+        if to is not None:
+            emit(event, data, to=to)
+
     def on_follow(self, msg):
         print("on_follow", msg)
         try:
@@ -115,20 +119,16 @@ class FeedsNamespace(Namespace):
         except IndexError:
             emit("newFollowError", broadcast=False)
         else:
-            emit(
-                "follower",
-                f"{msg['name']} sent a request to follow you.",
-                to=self.get_secket_id_by_uid(msg["follow_id"]),
-            )
             emit("newFollowSuccess", broadcast=False)
             user = [
                 {"id": i.id, "profile": i.profile,
                  "fullName": i.fullName, "email": i.email}
-                for i in [self.Users.query.filter_by(id=session["uId"]).first()]
+                for i in list(self.Users.query.filter_by(id=session["uId"]).first())
             ]
-            emit(
-                "friend_Required_interrupt", user[0], to=self.get_secket_id_by_uid(msg["follow_id"]),
-            )
+            self.emit_to(
+                "follower", f"{msg['name']} sent a request to follow you.", msg["follow_id"])
+            self.emit_to("friend_Required_interrupt",
+                         user[0], msg["follow_id"])
 
     def on_accept(self, msg):
         print("on_accept", msg)
@@ -142,15 +142,13 @@ class FeedsNamespace(Namespace):
             print(e)
             emit("newAcceptError", broadcast=False)
         else:
-            emit(
-                "Accept", f"{msg['name']} has accepted you to follow.",
-                to=self.get_secket_id_by_uid(msg["follow_id"]),
-            )
+
             emit("newAcceptSuccess", broadcast=False)
             user = [
                 {"id": i.id, "profile": i.profile,
                  "fullName": i.fullName, "email": i.email}
-                for i in [self.Users.query.filter_by(id=session["uId"]).first()]
+                for i in list(self.Users.query.filter_by(id=session["uId"]).first())
             ]
-            emit("concacts_interrupt",
-                 user[0], to=self.get_secket_id_by_uid(msg["follow_id"]))
+            self.emit_to(
+                "Accept", f"{msg['name']} has accepted you to follow.", msg["follow_id"])
+            self.emit_to("concacts_interrupt", user[0], msg["follow_id"])

@@ -313,6 +313,7 @@ class FriendContactsSchedule {
     }
 
     Execute() {
+        this.removeChild()
         if (this.execute.length > 0) {
             for (let i = 0; i < this.execute.length; i++) {
                 if (this.execute[i] !== undefined) {

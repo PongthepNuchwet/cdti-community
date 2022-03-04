@@ -1,15 +1,11 @@
-from urllib.parse import urldefrag
 from flask import Blueprint, render_template, request, flash, redirect, url_for, session
-from flask_socketio import emit
-from flask_login import login_user, login_required, logout_user, current_user
+from flask_login import login_user, login_required, logout_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
 import os
 
 
-
-
-def friend_recommend_interrupt(socketio, email,Users):
+def friend_recommend_interrupt(socketio, email, Users):
     user = [
         {"id": i.id, "profile": i.profile, "fullName": i.fullName, "email": i.email}
         for i in [Users.query.filter_by(email=email).first()]
@@ -18,7 +14,7 @@ def friend_recommend_interrupt(socketio, email,Users):
     socketio.emit("friend_recommend_interrupt", user[0], namespace='/feeds')
 
 
-def Auth(socketio,Users,db):
+def Auth(socketio, Users, db):
     auth = Blueprint("auth", __name__)
 
     @auth.route("/")
@@ -38,7 +34,7 @@ def Auth(socketio,Users,db):
                     session["uId"] = user.id
                     session["uName"] = user.fullName
                     session["email"] = user.email
-                    session["uProfile"] = user.profile if user.profile != None else ""
+                    session["uProfile"] = user.profile if user.profile is not None else ""
                     login_user(user, remember=True)
                     return redirect(url_for("feeds.home"))
                 else:
@@ -89,7 +85,8 @@ def Auth(socketio,Users,db):
                 )
                 db.session.add(new_user)
                 db.session.commit()
-                friend_recommend_interrupt(socketio=socketio, email=email,Users=Users)
+                friend_recommend_interrupt(
+                    socketio=socketio, email=email, Users=Users)
                 flash("Account created!", category="success")
                 return redirect(url_for("auth.login"))
 

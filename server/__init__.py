@@ -25,8 +25,8 @@ def create_app():
     login_manager.init_app(app)
 
     @login_manager.user_loader
-    def load_user(id):
-        return Users.query.get(int(id))
+    def load_user(uid):
+        return Users.query.get(int(uid))
 
     socketio = SocketIO(app, logger=True, engineio_logger=True,
                         async_handlers=True, async_mode='threading')

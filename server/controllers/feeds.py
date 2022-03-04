@@ -1,5 +1,4 @@
-from distutils.command.upload import upload
-from flask import Blueprint, render_template, request, jsonify, session
+from flask import Blueprint, render_template, request, jsonify
 from flask_login import login_required
 from werkzeug.utils import secure_filename
 import os
@@ -12,7 +11,6 @@ def Feeds():
     @login_required
     def home():
         return render_template("feeds.html")
-
 
     @feeds.route("/upload", methods=["GET", "POST"])
     def handle_upload():
