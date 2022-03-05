@@ -99,10 +99,10 @@ class FriendRecommendSchedule {
             for (let i = 0; i < this.execute.length; i++) {
                 if (this.execute[i] !== undefined) {
                     this.createElement(this.execute[i]);
-                } else {
-                    this.displayNone()
                 }
             }
+        } else {
+            this.displayNone()
         }
         this.displayCount()
     }
@@ -213,10 +213,10 @@ class FriendRequiredSchedule {
             for (let i = 0; i < this.execute.length; i++) {
                 if (this.execute[i] !== undefined) {
                     this.createElement(this.execute[i]);
-                } else {
-                    this.displayNone()
                 }
             }
+        } else {
+            this.displayNone()
         }
         this.displayCount()
     }
@@ -470,9 +470,9 @@ socket.on('message', async(msg) => {
 });
 
 socket.on('profile', async(msg) => {
-    profile.fullName = msg[0].fullName
-    profile.email = msg[0].email
-    profile.profile = msg[0].profile
+    profile.fullName = msg.fullName
+    profile.email = msg.email
+    profile.profile = msg.profile
 });
 
 socket.on('follower', async(msg) => {
