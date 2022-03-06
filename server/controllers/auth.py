@@ -2,6 +2,7 @@ from flask import Blueprint, render_template, request, flash, redirect, url_for,
 from flask_login import login_user, login_required, logout_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
+import uuid
 import os
 
 
@@ -13,8 +14,11 @@ def friend_recommend_interrupt(socketio, email, Users):
     print("user user ", user)
     socketio.emit("friend_recommend_interrupt", user[0], namespace='/feeds')
 
+def new_name(name) :
+    return str(uuid.uuid4()) + '.'+ str(name).split('.')[-1]
 
-def Auth(socketio, Users, db):
+
+def Auth(socketio, Users, db,storage):
     auth = Blueprint("auth", __name__)
 
     @auth.route("/")
@@ -53,9 +57,10 @@ def Auth(socketio, Users, db):
     def sign_up():
         if request.method == "POST":
             f = request.files.get("file")
-            newName = secure_filename(f.filename)
-            profilePath = f"/static/profile/{newName}"
-            f.save(os.path.join("server/static/profile/", newName))
+            newName = secure_filename(new_name(f.filename))
+            profilePath = f"profile/{newName}"
+            storage.child(profilePath).put(f)
+            # f.save(os.path.join("server/static/profile/", newName))
 
             email = request.form.get("email")
             fullName = request.form.get("fullName")

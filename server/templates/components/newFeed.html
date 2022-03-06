@@ -2,7 +2,7 @@
     <div class="content">
         <div class="grid-row">
             <div class="img">
-                <img src="{{session['uProfile']}}" width="100px" alt="">
+                <img src="/api/profile?file={{session['uProfile']}}" width="100px" alt="">
             </div>
             <div class="flex-col">
                 <textarea name="newFeed-content" class="" id="newFeed-content" placeholder="What’s new, {{ session['uName'] }}?"></textarea>
