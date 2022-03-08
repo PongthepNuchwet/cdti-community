@@ -11,3 +11,4 @@ server/static/profile/
 /server/static/feedImage/
 /server/static/profile/
 /server/static/firebase/*
+.env
