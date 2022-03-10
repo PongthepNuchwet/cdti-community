@@ -11,6 +11,8 @@ class CommentModel:
         )
         self.db.session.add(new_comment)
         self.db.session.commit()
+        print("new ",new_comment.id)
+        return new_comment.id
 
     def get_comment_by_feedId_all(self, id):
         data = [{"id": i.id, "created_at": i.created_at,
@@ -18,3 +20,7 @@ class CommentModel:
                 for i in list(self.Comment.query.filter_by(feed_id=id).order_by(self.db.desc(self.Comment.created_at)).all())
                 ]
         return data
+
+    def get_comment_by_id(self, id):
+        data = [ {"id": i.id, "created_at": i.created_at,"feed_id": i.feed_id, "user_id": i.user_id, "content": i.content} for i in [self.Comment.query.filter_by(id=id).first() ]]
+        return data[0]

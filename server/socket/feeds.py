@@ -164,10 +164,14 @@ class FeedsNamespace(Namespace):
 
     def on_comment(self,msg):
         print("on_comment",msg)
+        id = None
         try :
-            self.Comment.new(feed_id= msg['feed_id'], user_id=session["uId"],content = msg['content'])
+            id = self.Comment.new(feed_id= msg['feed_id'], user_id=session["uId"],content = msg['content'])
+            print("ID",id)
         except IndexError :
             print(IndexError)
             emit("commentError", {'feed_id':msg['feed_id']}, broadcast=False)
         else :
-            emit("commentSuccess",{'feed_id':msg['feed_id']} , broadcast=False)
+            comment = self.Comment.get_comment_by_id(id)
+            comment['user'] = self.User.get_user_by_uid(comment['user_id'])
+            emit("commentSuccess",self.default_json( {'feed_id':msg['feed_id'],"comment":comment} ), broadcast=False)

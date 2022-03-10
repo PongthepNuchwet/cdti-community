@@ -18,7 +18,7 @@ from server.model.Like import LikeModel
 from server.model.Comment import CommentModel
 
 
-db = SQLAlchemy()
+db = SQLAlchemy(session_options={"autoflush": True})
 DB_NAME = "database.db"
 
 # def randomData(feed_model,like_model,comment_model) : 

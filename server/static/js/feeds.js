@@ -20,6 +20,7 @@ var alertMini = Swal.mixin({
 });
 
 
+
 class Profile {
     constructor() {
         this.fullName = ''
@@ -370,25 +371,74 @@ async function clickMessage() {
     socket.send(document.getElementById('myMessage').value);
 }
 
-function timeAgo(time) {
-    var date = new Date((time || "").toString().replace(/-/g, "/").replace(/[TZ]/g, " ")),
-        diff = (((new Date()).getTime() - date.getTime()) / 1000),
-        day_diff = Math.floor(diff / 86400);
+const MONTH_NAMES = [
+    'January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December'
+];
 
-    if (isNaN(day_diff) || day_diff < 0 || day_diff >= 31) {
-        console.log("🚀 ~ file: feeds.js ~ line 379 ~ timeAgo ~ day_diff", day_diff)
-        return;
+
+function getFormattedDate(date, prefomattedDate = false, hideYear = false) {
+    const day = date.getDate();
+    const month = MONTH_NAMES[date.getMonth()];
+    const year = date.getFullYear();
+    const hours = date.getHours();
+    let minutes = date.getMinutes();
+
+    if (minutes < 10) {
+        // Adding leading zero to minutes
+        minutes = `0${ minutes }`;
     }
 
-    return day_diff == 0 && (
-            diff < 60 && "just now" ||
-            diff < 120 && "1 minute ago" ||
-            diff < 3600 && Math.floor(diff / 60) + " minutes ago" ||
-            diff < 7200 && "1 hour ago" ||
-            diff < 86400 && Math.floor(diff / 3600) + " hours ago") ||
-        day_diff == 1 && "Yesterday" ||
-        day_diff < 7 && day_diff + " days ago" ||
-        day_diff < 31 && Math.ceil(day_diff / 7) + " weeks ago";
+    if (prefomattedDate) {
+        // Today at 10:20
+        // Yesterday at 10:20
+        return `${ prefomattedDate } at ${ hours }:${ minutes }`;
+    }
+
+    if (hideYear) {
+        // 10. January at 10:20
+        return `${ day }. ${ month } at ${ hours }:${ minutes }`;
+    }
+
+    // 10. January 2017. at 10:20
+    return `${ day }. ${ month } ${ year }. at ${ hours }:${ minutes }`;
+}
+
+
+// --- Main function
+function timeAgo(dateParam) {
+    if (!dateParam) {
+        return null;
+    }
+
+    const date = typeof dateParam === 'object' ? dateParam : new Date(dateParam);
+    const DAY_IN_MS = 86400000; // 24 * 60 * 60 * 1000
+    const today = new Date();
+    const yesterday = new Date(today - DAY_IN_MS);
+    const seconds = Math.round((today - date) / 1000);
+    const minutes = Math.round(seconds / 60);
+    const isToday = today.toDateString() === date.toDateString();
+    const isYesterday = yesterday.toDateString() === date.toDateString();
+    const isThisYear = today.getFullYear() === date.getFullYear();
+
+
+    if (seconds < 5) {
+        return 'now';
+    } else if (seconds < 60) {
+        return `${ seconds } seconds ago`;
+    } else if (seconds < 90) {
+        return 'about a minute ago';
+    } else if (minutes < 60) {
+        return `${ minutes } minutes ago`;
+    } else if (isToday) {
+        return getFormattedDate(date, 'Today'); // Today at 10:20
+    } else if (isYesterday) {
+        return getFormattedDate(date, 'Yesterday'); // Yesterday at 10:20
+    } else if (isThisYear) {
+        return getFormattedDate(date, false, true); // 10. January at 10:20
+    }
+
+    return getFormattedDate(date); // 10. January 2017. at 10:20
 }
 
 
@@ -570,8 +620,10 @@ class FeedsOrganize {
 
 
     createImages(data) {
+        let elm = document.createElement('div')
+        elm.setAttribute('class', `feedImg`)
         let count = 0
-        let html = `<div class="feedImg">
+        let html = `
             <div id="feed_${data.id}_image" class="carousel slide" data-bs-interval="false" data-bs-ride="carousel">
                 <div class="carousel-inner">`;
         let image = this.formatImgData(data.img1);
@@ -589,16 +641,48 @@ class FeedsOrganize {
           <span class="carousel-control-next-icon" aria-hidden="true"></span>
           <span class="visually-hidden">Next</span>
         </button>
-    </div>
-</div>`;
-        return html
+    </div>`;
+        elm.innerHTML = html
+        return elm
+    }
+
+    createAction() {
+        let elm = document.createElement('div')
+        elm.setAttribute('class', `feedAction`)
+        let html = `
+            <div>
+                <button><i class="bi bi-heart"></i> I love it</button>
+            </div>
+            <div>
+                <button><i class="bi bi-chat"></i> comment</button>
+            </div>
+        `
+        elm.innerHTML = html
+        return elm
+    }
+
+
+
+    createCount(data) {
+        let elm = document.createElement('div')
+        elm.setAttribute('class', `feedCount`)
+        let html = `
+            <span class="love-count">
+                ${data.like.length} likes
+            </span>
+            <span class="comment-count">
+            ${ data.comment.length} comments
+            </span>`
+        elm.innerHTML = html
+        return elm
     }
 
     createComment(data) {
+        let elm = document.createElement('div')
+        elm.setAttribute('class', `feedComment`)
         let html = ''
         if (data !== undefined) {
             html = `
-        <div class="feedComment">
         <div class="img">
             <img class="img" src="/api/profile?file=${data.user.profile}" alt="">
         </div>
@@ -606,102 +690,103 @@ class FeedsOrganize {
             <div class="profile">
                 <div class="name">
                     ${data.user.fullName}
-                </div>
-                <div class="dateTime">
-                    5 hours ago
+                    <span>
+                    ${data.content}
+                    </span>
                 </div>
             </div>
-            <div class="content">
-            ${data.content}
+            <div class="footer">
+                <span class="timeAgo">${timeAgo(data.created_at.$date)}</span>
+                <span class="likes">0 likes</span>
             </div>
         </div>
-    </div>
+        <div class="action">
+            <i class="bi bi-heart"></i>
+        </div>
         `
-            return html
+            elm.innerHTML = html
+            return elm
         } else {
-            return html
+            return elm
         }
-
-
-
-
-    }
-
-    createFooter(data) {
-        let html = `
-        <div class="feedFooter">
-            <div class="love-count">
-                <i class="bi bi-suit-heart-fill"></i>
-                <div id="count_like">${data.like.length}</div>
-            </div>
-
-            <div class="comment-count">
-                <i class="bi bi-chat-fill"></i>
-                <div id="count_comtent">${data.comment.length}</div>
-            </div>
-        </div>`
-        return html
-
     }
 
     createComments(data) {
+        let elm = document.createElement('div')
+        elm.setAttribute('class', `feedComments`)
+        elm.setAttribute('id', `feed_${data.id}_coments`)
         let html = ''
         if (data.comment.length > 0) {
-            html = `<div class="feedComments">`;
             for (let i = 0; i < data.comment.length; i++) {
-                html += this.createComment(data.comment[i])
+                elm.appendChild(this.createComment(data.comment[i]))
             }
-            html += `</div>`;
-
-            return html
+            return elm
         } else {
-            return html
+            return elm
         }
 
 
     }
 
+    createContent(data) {
+        let elm = document.createElement('div')
+        elm.setAttribute('class', `feedContent`)
+        elm.innerHTML = data.content
+        return elm
+    }
+
+    createHeader(data) {
+        let elm = document.createElement('div')
+        elm.setAttribute('class', `feedHead`)
+        let html = `
+        <div class="img">
+            <img class="img" src="/api/profile?file=${data.user.profile}" alt="">
+        </div>
+        <div class="text">
+            <div class="name">
+                ${data.user.fullName}
+            </div>
+            <div class="dateTime" id="feed_${data.id}_time">
+                ${timeAgo(data.created_at.$date)}
+            </div>
+        </div>
+        <div class="action">
+            <button class="feed-action"><i class="bi bi-three-dots"></i></button>
+        </div>
+    `
+        elm.innerHTML = html
+        return elm
+    }
+
     createCard(data) {
-        console.log("🚀 ~ file: feeds.js ~ line 577 ~ FeedsOrganize ~ createCard ~ data", data)
         let card = document.createElement('div')
         card.setAttribute('id', `feed_id_${data.id}`)
-        let feedHead = `
-                    <div class="feed" id="feed_id_${data.id}">
-                <div class="feedHead">
-                    <div class="img">
-                        <img class="img" src="/api/profile?file=${data.user.profile}" alt="">
-                    </div>
-                    <div class="text">
-                        <div class="name">
-                            ${data.user.fullName}
-                        </div>
-                        <div class="dateTime" id="feed_${data.id}_time">
-                            
-                        </div>
-                    </div>
-                    <div class="action">
-                        <button class="feed-action"><i class="bi bi-three-dots"></i></button>
-                    </div>
-                </div>
-                <div class="feedContent">
-                ${data.content}
-                </div>
-                `
+        card.setAttribute('class', `feed`)
+
+        let header = this.createHeader(data)
+        let content = this.createContent(data)
         let feedImage = this.createImages(data)
-        let footer = this.createFooter(data)
+        let count = this.createCount(data)
         let comment = this.createComments(data)
+        let action = this.createAction(data)
         let mycomment = this.createMyComment(data)
 
-        let end = `</div>`
-        card.innerHTML = feedHead + feedImage + footer + comment + mycomment + end
-
+        card.appendChild(header)
+        card.appendChild(content)
+        card.appendChild(feedImage)
+        card.appendChild(action)
+        card.appendChild(count)
+        card.appendChild(comment)
+        card.appendChild(mycomment)
         return card
 
     }
 
 
     createMyComment(data) {
-        let html = `        <div class="comment">
+        let elm = document.createElement('div')
+        elm.setAttribute('class', `comment`)
+        let html = `
         <div class="img">
             <img class="img" src="/api/profile?file=${profile.profile}" alt="">
         </div>
@@ -710,20 +795,32 @@ class FeedsOrganize {
         </div>
         <div class="action">
             <button class="feed-action" onClick="Comment(${data.id});">Submit</button>
-        </div>
-    </div>`
-        return html
+        </div>`
+        elm.innerHTML = html
+        return elm
     }
 
     createElement(data) {
         this.container.appendChild(this.createCard(data))
-        let dom = document.getElementById(`feed_${data.id}_time`)
-        timeago.render(dom, 'en_US', data.created_at)
     }
 
-    Ensure(data) {
+    EnsureFeeds(data) {
         if (this.feeds.length < 1 || this.feeds.filter(feed => feed.id == data.id).length < 1) {
             return true
+        }
+    }
+    EnsureComments(data) {
+        console.log("🚀 ~ file: feeds.js ~ line 813 ~ FeedsOrganize ~ EnsureComments ~ data", data)
+        let feedIndex = this.feeds.findIndex(feed => feed.id == data.feed_id)
+        if (feedIndex >= 0) {
+            let comment = this.feeds[feedIndex].comment.filter(comment => comment.id == data.id)
+            if (comment.length < 1) {
+                return true
+            } else {
+                return false
+            }
+        } else {
+            return false
         }
     }
 
@@ -737,14 +834,30 @@ class FeedsOrganize {
 
     Organize() {
         for (let i = 0; i < this.queue.length; i++) {
-            console.log("🚀 ~ file: feeds.js ~ line 630 ~ FeedsOrganize ~ Organize ~ i", i)
             let data = this.queue[i]
-            if (this.Ensure(data)) {
+            if (this.EnsureFeeds(data)) {
                 this.createElement(data)
                 this.createFeed(data)
             }
         }
         this.queue = []
+    }
+
+
+
+    interruptComment(data) {
+
+
+        if (this.EnsureComments(data)) {
+            console.log("🚀 ~ file: feeds.js ~ line 860 ~ FeedsOrganize ~ interruptComment ~ data", data)
+            let feedsIndex = this.feeds.findIndex(feed => feed.id == data.feed_id)
+            this.feeds[feedsIndex].comment.push(data)
+            let target = document.getElementById(`feed_${data.feed_id}_coments`)
+            let dom = this.createComment(data)
+            target.appendChild(dom)
+        }
+
+
     }
 
     async Execute() {
@@ -765,6 +878,15 @@ class FeedsOrganize {
     }
 
 }
+let temp = {
+    "id": 13,
+    "created_at": {
+        "$date": "2022-03-10T09:41:56Z"
+    },
+    "feed_id": 3,
+    "user_id": 1,
+    "content": "1212"
+}
 
 var feedsOrganize = new FeedsOrganize();
 
@@ -783,7 +905,10 @@ socket.on('feeds', async(msg) => {
 
 
 socket.on("commentSuccess", async(reason) => {
+    console.log(reason)
+    feedsOrganize.interruptComment(reason.comment)
     document.getElementById(`feed_${reason.feed_id}_inputComment`).value = ''
+
     alertMini.fire({
         icon: 'success',
         title: 'Successfully comment.'
