@@ -18,13 +18,13 @@ def Feeds(storage):
     @feeds.route("/upload", methods=["GET", "POST"])
     def handle_upload():
         if request.method == "POST":
-            imgPath = []
+            imgPath = ""
             for key, f in request.files.items():
                 if key.startswith("file"):
                     # newName = secure_filename(f.filename)
                     newName = secure_filename(new_name(f.filename))
                     profilePath = f"feeds/{newName}"
-                    imgPath.append(profilePath)
+                    imgPath += f"{profilePath},"
                     storage.child(profilePath).put(f)
                     # f.save(os.path.join("server/static/feedImage/", newName))
             return jsonify(imgPath=imgPath)

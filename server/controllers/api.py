@@ -18,4 +18,16 @@ def Api(storage, idToken):
             mimetype='image/jpeg',
             as_attachment=False)
 
+    @api.route("/image", methods=["GET"])
+    @login_required
+    def image():
+        file = request.args.get('file')
+        url = storage.child(file).get_url(idToken)
+        response = requests.get(url)
+        return send_file(
+            BytesIO(response.content),
+            mimetype='image/jpeg',
+            as_attachment=False)
+
     return api
+

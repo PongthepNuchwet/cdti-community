@@ -1,6 +1,10 @@
+from distutils.log import error
+from click import command
 from flask import request, session
 from flask_socketio import Namespace, emit, send
 import time
+from bson import json_util
+import json
 
 
 class FeedsNamespace(Namespace):
@@ -52,26 +56,52 @@ class FeedsNamespace(Namespace):
         concacts = self.User.get_users_by_in_uid(follwing)
         emit("concacts", concacts, broadcast=False)
 
-    def get_like(self):
-        pass
+    def get_like(self,feed_id):
+        res = []
+        likes = self.Like.get_like_by_feedId_all(feed_id)
+        for data in likes :
+            like = data
+            like['user'] = self.User.get_user_by_uid(data['user_id'])
+            res.append(like)
+        return  res
 
-    def get_comment(self):
-        pass
+    def get_comment(self,feed_id):
+        res = []
+        comments = self.Comment.get_comment_by_feedId_all(feed_id)
+        for data in comments :
+            comment = data
+            comment['user'] = self.User.get_user_by_uid(data['user_id'])
+            res.append(comment)
+
+        return  res
+
+    def default_json(self,data):
+        return json.loads(json.dumps(data, default=json_util.default))
 
     def get_feeds(self, follwing):
+        addMe = list(follwing)
+        addMe.append(session['uId'])
         respone = []
-        Feeds = self.Feed.get_feeds_by_in_uid(follwing)
+        Feeds = self.Feed.get_feeds_by_in_uid(addMe)
 
         for data in Feeds:
-            print(data)
-            like = []
-            for i in self.Like.get_like_by_feedId_all(data['id']):
-                pass
+            feed = data
+            feed['like'] = self.get_like(data['id'])
+            feed['comment'] = self.get_comment(data['id'])
+            feed['user'] = self.User.get_user_by_uid(data['user_id'])
+            respone.append(feed)
+        
+        return respone
+    
+    def emiting_feeds(self,follwing):
+        res = self.get_feeds(follwing)
+        emit("feeds", self.default_json(res), broadcast=False)
+            
 
     def on_connect(self):
         start = time.time()
         follwing = self.Follow.get_following_by_uid_and_status_all(uid=session["uId"], state=1)
-        self.get_feeds(follwing=follwing)
+        self.emiting_feeds(follwing=follwing)
         self.emiting_profile()
         self.update_secket_id(request.sid)
         self.emiting_friend_recommend()
@@ -88,6 +118,7 @@ class FeedsNamespace(Namespace):
 
     def on_newFeed(self, msg):
         try:
+            print("msgimagePath",msg["imagePath"])
             self.Feed.new(
                 content=msg["content"], img1=msg["imagePath"], uid=session["uId"])
         except IndexError:
@@ -130,3 +161,13 @@ class FeedsNamespace(Namespace):
             self.emit_to(
                 "Accept", f"{msg['name']} has accepted you to follow.", msg["follow_id"])
             self.emit_to("concacts_interrupt", user, msg["follow_id"])
+
+    def on_comment(self,msg):
+        print("on_comment",msg)
+        try :
+            self.Comment.new(feed_id= msg['feed_id'], user_id=session["uId"],content = msg['content'])
+        except IndexError :
+            print(IndexError)
+            emit("commentError", {'feed_id':msg['feed_id']}, broadcast=False)
+        else :
+            emit("commentSuccess",{'feed_id':msg['feed_id']} , broadcast=False)

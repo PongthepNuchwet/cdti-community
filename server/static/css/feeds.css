@@ -560,11 +560,11 @@ header .header-flex .profile button span {
   color: #3D3D3D;
 }
 
-.feeds .feed .feedsComment {
+.feeds .feed .feedComments {
   border-bottom: 1px #DCE1EA solid;
 }
 
-.feeds .feed .feedsComment .feedComment {
+.feeds .feed .feedComments .feedComment {
   max-width: 500px;
   display: -ms-grid;
   display: grid;
@@ -574,7 +574,7 @@ header .header-flex .profile button span {
   margin-bottom: 4px;
 }
 
-.feeds .feed .feedsComment .feedComment .img {
+.feeds .feed .feedComments .feedComment .img {
   height: 30px;
   width: 30px;
   justify-self: center;
@@ -596,11 +596,11 @@ header .header-flex .profile button span {
   background-color: #B1BBD0;
 }
 
-.feeds .feed .feedsComment .feedComment .img img {
+.feeds .feed .feedComments .feedComment .img img {
   width: 100%;
 }
 
-.feeds .feed .feedsComment .feedComment .text {
+.feeds .feed .feedComments .feedComment .text {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -611,18 +611,18 @@ header .header-flex .profile button span {
   row-gap: 5px;
 }
 
-.feeds .feed .feedsComment .feedComment .text .profile .name {
+.feeds .feed .feedComments .feedComment .text .profile .name {
   font-size: 16px;
   color: #00BFFF;
   line-height: 1;
 }
 
-.feeds .feed .feedsComment .feedComment .text .profile .dateTime {
+.feeds .feed .feedComments .feedComment .text .profile .dateTime {
   line-height: 1;
   color: #3D3D3D;
 }
 
-.feeds .feed .feedsComment .feedComment .text .content {
+.feeds .feed .feedComments .feedComment .text .content {
   font-size: 14px;
   color: #3D3D3D;
 }
