@@ -1,4 +1,4 @@
-<div class="feeds">
+<div class="feeds" id="feeds">
     <div class="feed">
         <div class="feedHead">
             <div class="img">
@@ -42,18 +42,25 @@
                 </button>
             </div>
         </div>
-        <div class="feedFooter">
-            <div class="love-count">
-                <i class="bi bi-suit-heart-fill"></i>
-                <div id="count_like">5</div>
+        <div class="feedAction">
+            <div>
+                <button><i class="bi bi-heart"></i> I love it</button>
+            </div>
+            <div>
+                <button><i class="bi bi-chat"></i> comment</button>
             </div>
 
-            <div class="comment-count">
-                <i class="bi bi-chat-fill"></i>
-                <div id="count_comtent">2</div>
-            </div>
         </div>
-        <div class="feedsComment">
+        <div class="feedCount">
+            <span class="love-count">
+                1 likes
+            </span>
+            <span class="comment-count">
+                1 comments
+            </span>
+        </div>
+
+        <div class="feedComments">
             <div class="feedComment">
                 <div class="img">
                     <img class="img" src="https://www.w3schools.com/howto/img_avatar.png" alt="">
@@ -62,16 +69,44 @@
                     <div class="profile">
                         <div class="name">
                             {{ session['uName'] }}
-                        </div>
-                        <div class="dateTime">
-                            5 hours ago
+                            <span>
+                                1231 1231 1231 1231 1231 1231 1231 1231 1231 1231 1231 1231 1231 1231
+                            </span>
                         </div>
                     </div>
-                    <div class="content">
-                        1231 1231 1231 1231 1231 1231 1231 1231 1231 1231 1231 1231 1231 1231
+                    <div class="footer">
+                        <span class="timeAgo">5 hours ago</span>
+                        <span class="likes">1 likes</span>
                     </div>
                 </div>
+                <div class="action">
+                    <i class="bi bi-heart"></i>
+                </div>
             </div>
+            <div class="feedComment">
+                <div class="img">
+                    <img class="img" src="https://www.w3schools.com/howto/img_avatar.png" alt="">
+                </div>
+                <div class="text">
+                    <div class="profile">
+                        <div class="name">
+                            {{ session['uName'] }}
+                            <span>
+                                1231 1231 1231 1231 1231 1231 1231 1231 1231 1231 1231 1231 1231 1231
+                            </span>
+                        </div>
+                    </div>
+                    <div class="footer">
+                        <span class="timeAgo">5 hours ago</span>
+                        <span class="likes">1 likes</span>
+                    </div>
+                </div>
+                <div class="action">
+                    <i class="bi bi-heart"></i>
+                </div>
+            </div>
+
+
 
         </div>
         <div class="comment">

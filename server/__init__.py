@@ -18,8 +18,15 @@ from server.model.Like import LikeModel
 from server.model.Comment import CommentModel
 
 
-db = SQLAlchemy()
+db = SQLAlchemy(session_options={"autoflush": True})
 DB_NAME = "database.db"
+
+# def randomData(feed_model,like_model,comment_model) : 
+#     feeds = feed_model.get_feeds_by_in_uid(1)
+#     for data in feeds :
+#         # for i in range(0.9):
+#         like_model.new(feed_id=data['feed_id'], user_id=1)
+#         comment_model.new(feed_id=data['feed_id'], user_id=1,content="AAAAAA")
 
 
 
@@ -39,6 +46,8 @@ def create_app():
     like_model = LikeModel(db, model=Likes)
     comment_model = CommentModel(db, model=Comments)
 
+    # randomData(feed_model,like_model,comment_model)
+
     login_manager = LoginManager()
     login_manager.login_view = "auth.login"
     login_manager.init_app(app)
@@ -46,6 +55,7 @@ def create_app():
     @login_manager.user_loader
     def load_user(uid):
         return Users.query.get(int(uid))
+
     config = {
         "apiKey": "AIzaSyCHwDbEEyazcl_kuVnV5DY4Y-ouLi9Ai3o",
         "authDomain": "",
