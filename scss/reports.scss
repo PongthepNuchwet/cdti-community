@@ -2,6 +2,8 @@
 @import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css");
 @import 'globals';
 @import 'header';
+@import 'History_report';
+@import 'report';
 
 .grid-content {
     margin-top: 56px;
@@ -11,4 +13,22 @@
     position: sticky;
     top: 56px;
     z-index: 1020;
+}
+
+.report{
+    width: 1000px;
+    margin-bottom: 30px;
+    background-color: #ffffff;
+    padding: 10px;
+    border-radius: 2.5%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-content: center ;
+    column-gap: 10px;
+    min-height: 1000px;
+    
+    h1 {
+        text-align: center;
+    }
 }
