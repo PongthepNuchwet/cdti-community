@@ -1,4 +1,5 @@
 from distutils.log import error
+from xml.etree.ElementTree import Comment
 from click import command
 from flask import request, session
 from flask_socketio import Namespace, emit, send
@@ -65,9 +66,9 @@ class FeedsNamespace(Namespace):
             res.append(like)
         return  res
 
-    def get_comment(self,feed_id):
+    def get_comment(self,feed_id,count,notIn):
         res = []
-        comments = self.Comment.get_comment_by_feedId_all(feed_id)
+        comments = self.Comment.get_comment_by_feedId_limit_notin(feed_id,count,notIn)
         for data in comments :
             comment = data
             comment['user'] = self.User.get_user_by_uid(data['user_id'])
@@ -87,7 +88,9 @@ class FeedsNamespace(Namespace):
         for data in Feeds:
             feed = data
             feed['like'] = self.get_like(data['id'])
-            feed['comment'] = self.get_comment(data['id'])
+            feed['like_count'] = self.Like.get_count_by_feedId(data['id'])
+            feed['comment'] = self.get_comment(data['id'],3,[])
+            feed['comment_count'] = self.Comment.get_count_by_feedId(data['id'])
             feed['user'] = self.User.get_user_by_uid(data['user_id'])
             respone.append(feed)
         
@@ -175,3 +178,32 @@ class FeedsNamespace(Namespace):
             comment = self.Comment.get_comment_by_id(id)
             comment['user'] = self.User.get_user_by_uid(comment['user_id'])
             emit("commentSuccess",self.default_json( {'feed_id':msg['feed_id'],"comment":comment} ), broadcast=False)
+
+    def on_moreComment(self,msg) :
+        comment = self.get_comment(msg['feed_id'],3,msg['comment_ids'])
+        emit("moreComment", self.default_json({"feed_id":msg['feed_id'],'comment':comment}), broadcast=False)
+
+    def on_love(self,msg):
+        print(msg)
+        if self.Like.ensure(msg['feed_id'],session['uId']) < 1 :
+            like_new = self.Like.new(msg['feed_id'],session['uId'])
+            print("like_new",like_new)
+            like = self.Like.get_like_by_id(like_new)
+            like['user'] = self.User.get_user_by_uid(session['uId'])
+            emit("love", self.default_json({"feed_id":msg['feed_id'],'status':'love',"like": like}), broadcast=False)
+        else :
+            self.Like.delete(msg['feed_id'],session['uId'])
+            user = self.User.get_user_by_uid(session['uId'])
+            emit("love", self.default_json({"feed_id":msg['feed_id'],'status':'unLove',"user":user}), broadcast=False)
+    
+    def on_delete_comment(self,msg):
+        comment = self.Comment.get_comment_by_id_obj(msg['id'])
+        print("comment",comment)
+        if comment.user_id == session['uId'] :
+            self.Comment.delete(comment)
+            res = {"comment":comment}
+            emit("delete_comment_success", self.default_json(res), broadcast=False)
+        else :
+            res = {"comment":comment , "msg":"You have no right to delete this comment."}
+            emit("delete_comment_error", self.default_json(res), broadcast=False)
+        

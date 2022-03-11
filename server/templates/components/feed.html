@@ -42,6 +42,14 @@
                 </button>
             </div>
         </div>
+        <div class="feedCount">
+            <span class="love-count">
+                1 likes
+            </span>
+            <span class="comment-count">
+                1 comments
+            </span>
+        </div>
         <div class="feedAction">
             <div>
                 <button><i class="bi bi-heart"></i> I love it</button>
@@ -51,74 +59,70 @@
             </div>
 
         </div>
-        <div class="feedCount">
-            <span class="love-count">
-                1 likes
-            </span>
-            <span class="comment-count">
-                1 comments
-            </span>
-        </div>
-
-        <div class="feedComments">
-            <div class="feedComment">
-                <div class="img">
-                    <img class="img" src="https://www.w3schools.com/howto/img_avatar.png" alt="">
-                </div>
-                <div class="text">
-                    <div class="profile">
-                        <div class="name">
-                            {{ session['uName'] }}
-                            <span>
+        <div class="footer">
+            <div class="feedComments">
+                <div class="feedComment">
+                    <div class="img">
+                        <img class="img" src="https://www.w3schools.com/howto/img_avatar.png" alt="">
+                    </div>
+                    <div class="text">
+                        <div class="profile">
+                            <div class="name">
+                                {{ session['uName'] }}
+                                <span>
                                 1231 1231 1231 1231 1231 1231 1231 1231 1231 1231 1231 1231 1231 1231
                             </span>
+                            </div>
+                        </div>
+                        <div class="footer">
+                            <span class="timeAgo">5 hours ago</span>
+                            <span class="likes">1 likes</span>
                         </div>
                     </div>
-                    <div class="footer">
-                        <span class="timeAgo">5 hours ago</span>
-                        <span class="likes">1 likes</span>
+                    <div class="action">
+                        <i class="bi bi-heart"></i>
                     </div>
                 </div>
-                <div class="action">
-                    <i class="bi bi-heart"></i>
-                </div>
-            </div>
-            <div class="feedComment">
-                <div class="img">
-                    <img class="img" src="https://www.w3schools.com/howto/img_avatar.png" alt="">
-                </div>
-                <div class="text">
-                    <div class="profile">
-                        <div class="name">
-                            {{ session['uName'] }}
-                            <span>
+                <div class="feedComment">
+                    <div class="img">
+                        <img class="img" src="https://www.w3schools.com/howto/img_avatar.png" alt="">
+                    </div>
+                    <div class="text">
+                        <div class="profile">
+                            <div class="name">
+                                {{ session['uName'] }}
+                                <span>
                                 1231 1231 1231 1231 1231 1231 1231 1231 1231 1231 1231 1231 1231 1231
                             </span>
+                            </div>
+                        </div>
+                        <div class="footer">
+                            <span class="timeAgo">5 hours ago</span>
+                            <span class="likes">1 likes</span>
                         </div>
                     </div>
-                    <div class="footer">
-                        <span class="timeAgo">5 hours ago</span>
-                        <span class="likes">1 likes</span>
+                    <div class="action">
+                        <i class="bi bi-heart"></i>
                     </div>
                 </div>
+            </div>
+            <div class="more-comment">
+                <button onclick="more_comment()">View more comment</button>
+            </div>
+            <div class="comment">
+                <div class="img">
+                    <img class="img" src="/api/profile?file={{session['uProfile']}}" alt="">
+                </div>
+                <div class="user-input-comment">
+                    <textarea name="newFeed-content" class="" id="newFeed-content" placeholder="Write a comment..."></textarea>
+                </div>
                 <div class="action">
-                    <i class="bi bi-heart"></i>
+                    <button class="feed-action">Submit</button>
                 </div>
             </div>
-
-
-
         </div>
-        <div class="comment">
-            <div class="img">
-                <img class="img" src="/api/profile?file={{session['uProfile']}}" alt="">
-            </div>
-            <div class="user-input-comment">
-                <textarea name="newFeed-content" class="" id="newFeed-content" placeholder="Write a comment..."></textarea>
-            </div>
-            <div class="action">
-                <button class="feed-action">Submit</button>
-            </div>
-        </div>
+
+
+
     </div>
 </div>

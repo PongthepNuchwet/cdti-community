@@ -92,6 +92,7 @@ def Auth(socketio, Users, db,storage):
                 db.session.commit()
                 friend_recommend_interrupt(
                     socketio=socketio, email=email, Users=Users)
+                    
                 flash("Account created!", category="success")
                 return redirect(url_for("auth.login"))
 

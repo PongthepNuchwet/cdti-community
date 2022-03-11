@@ -83,6 +83,9 @@
             display: grid;
             grid-template-columns: auto auto;
             border-bottom: 1px $hr-color solid;
+            .action {
+                color: #FF1C17;
+            }
             div {
                 padding: 5px 10px;
                 button {
@@ -101,77 +104,95 @@
                 }
             }
         }
-        .feedComments {
-            border-bottom: 1px $hr-color solid;
-            .feedComment {
-                max-width: 500px;
-                display: grid;
-                grid-template-columns: 5% 85% 10%;
-                column-gap: 10px;
-                padding: 5px 5px 5px 10px;
-                margin-bottom: 4px;
-                .img {
-                    height: 25px;
-                    width: 25px;
-                    justify-self: center;
-                    @include profile-over
-                }
-                .text {
-                    display: flex;
-                    flex-direction: column;
-                    .profile {
-                        .name {
-                            font-size: 14px;
-                            color: $color-primary;
-                            line-height: 1.5;
-                            display: inline-block;
-                            font-weight: 500;
-                            span {
-                                color: $text-color;
+        .footer {
+            .feedComments {
+                .feedComment {
+                    max-width: 500px;
+                    display: grid;
+                    grid-template-columns: 5% 85% 10%;
+                    column-gap: 10px;
+                    padding: 5px 5px 5px 10px;
+                    margin-bottom: 4px;
+                    .img {
+                        height: 25px;
+                        width: 25px;
+                        justify-self: center;
+                        @include profile-over
+                    }
+                    .text {
+                        display: flex;
+                        flex-direction: column;
+                        .profile {
+                            .name {
                                 font-size: 14px;
-                                font-weight: 400;
+                                color: $color-primary;
+                                line-height: 1.5;
+                                display: inline-block;
+                                font-weight: 500;
+                                span {
+                                    color: $text-color;
+                                    font-size: 14px;
+                                    font-weight: 400;
+                                }
+                            }
+                        }
+                        .footer {
+                            font-size: 12px;
+                            color: $text-color;
+                            .likes {
+                                margin-left: 10px;
                             }
                         }
                     }
-                    .footer {
-                        font-size: 12px;
-                        color: $text-color;
-                        .likes {
-                            margin-left: 10px;
+                    .action {
+                        i::before {
+                            margin-bottom: 4px;
                         }
                     }
                 }
-                .action {
-                    i::before {
-                        margin-bottom: 4px;
+            }
+            .more-comment {
+                border-bottom: 1px $hr-color solid;
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                justify-content: center;
+                button {
+                    border: none;
+                    background-color: white;
+                    font-size: 14px;
+                    color: $color-secondary;
+                    &:hover {
+                        text-decoration-line: underline;
+                        color: #555555;
                     }
                 }
             }
-        }
-        .comment {
-            padding: 12px 0px;
-            display: grid;
-            grid-template-columns: 10% 75% 15%;
-            .img {
-                justify-self: center;
-                width: 40px;
-                height: 40px;
-                @include profile-over;
-                img {
-                    width: 100px;
+            .comment {
+                padding: 12px 0px;
+                display: grid;
+                grid-template-columns: 10% 75% 15%;
+                .img {
+                    justify-self: center;
+                    width: 40px;
+                    height: 40px;
+                    @include profile-over;
+                    img {
+                        width: 100px;
+                    }
                 }
-            }
-            .user-input-comment {
-                padding: 0 5px;
-                textarea {
-                    background-color: #EAECF0;
-                    border: none;
-                    padding: 2px 3px;
-                    width: 100%;
+                .user-input-comment {
+                    padding: 0 5px;
+                    textarea {
+                        background-color: #EAECF0;
+                        border: none;
+                        padding: 2px 3px;
+                        width: 100%;
+                    }
                 }
-            }
-            button {
-                @include btn-primary
+                button {
+                    @include btn-primary
+                }
             }
         }
     }

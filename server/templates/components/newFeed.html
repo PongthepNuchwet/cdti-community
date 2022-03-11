@@ -1,8 +1,8 @@
-<div class="newFeed" id="newFeed" class="animate__animated animate__bounce animate__delay-2s">
+<div class="newFeed animate__animated animate__bounce animate__delay-2s" id="newFeed">
     <div class="content">
         <div class="grid-row">
             <div class="img">
-                <img src="/api/profile?file={{session['uProfile']}}" width="100px" alt="">
+                <img src="/api/profile?file={{session['uProfile']}}" alt="">
             </div>
             <div class="flex-col">
                 <textarea name="newFeed-content" class="" id="newFeed-content" placeholder="What’s new, {{ session['uName'] }}?"></textarea>

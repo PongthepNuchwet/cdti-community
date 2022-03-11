@@ -20,6 +20,9 @@ $btn-color-primary: white;
 $btn-bg-primary-hover-outline: #ffffff;
 $btn-bg-primary-outline: white;
 $btn-color-primary-outline: #00ADE9;
+$btn-color-cancel: white;
+$btn-bg-cancel :#FF553E;
+$btn-bg-cancel-hover: #fd3f26;
 $btn-br-primary-outline: #00ADE9;
 $btn-bg-secondary-hover-outline: #9F9F9F;
 $btn-bg-secondary-outline: white;
@@ -54,6 +57,20 @@ $topic-color: #B1BBD0;
     padding: 3px 7px;
     color: $btn-color-primary;
     background-color: $btn-bg-primary;
+    font-size: 16px;
+    transition: .2s;
+    &:hover {
+        background-color: $btn-bg-primary-hover;
+    }
+}
+
+@mixin btn-cancel {
+    border: none;
+    border-radius: 5px;
+    overflow: hidden;
+    padding: 3px 7px;
+    color: $btn-color-cancel;
+    background-color: $btn-bg-cancel;
     font-size: 16px;
     transition: .2s;
     &:hover {

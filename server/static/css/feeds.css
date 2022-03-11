@@ -562,6 +562,10 @@ header .header-flex .profile button span {
   border-bottom: 1px #DCE1EA solid;
 }
 
+.feeds .feed .feedAction .action {
+  color: #FF1C17;
+}
+
 .feeds .feed .feedAction div {
   padding: 5px 10px;
 }
@@ -583,11 +587,7 @@ header .header-flex .profile button span {
   margin-bottom: 4px;
 }
 
-.feeds .feed .feedComments {
-  border-bottom: 1px #DCE1EA solid;
-}
-
-.feeds .feed .feedComments .feedComment {
+.feeds .feed .footer .feedComments .feedComment {
   max-width: 500px;
   display: -ms-grid;
   display: grid;
@@ -599,7 +599,7 @@ header .header-flex .profile button span {
   margin-bottom: 4px;
 }
 
-.feeds .feed .feedComments .feedComment .img {
+.feeds .feed .footer .feedComments .feedComment .img {
   height: 25px;
   width: 25px;
   justify-self: center;
@@ -621,11 +621,11 @@ header .header-flex .profile button span {
   background-color: #B1BBD0;
 }
 
-.feeds .feed .feedComments .feedComment .img img {
+.feeds .feed .footer .feedComments .feedComment .img img {
   width: 100%;
 }
 
-.feeds .feed .feedComments .feedComment .text {
+.feeds .feed .footer .feedComments .feedComment .text {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -635,7 +635,7 @@ header .header-flex .profile button span {
           flex-direction: column;
 }
 
-.feeds .feed .feedComments .feedComment .text .profile .name {
+.feeds .feed .footer .feedComments .feedComment .text .profile .name {
   font-size: 14px;
   color: #00BFFF;
   line-height: 1.5;
@@ -643,26 +643,56 @@ header .header-flex .profile button span {
   font-weight: 500;
 }
 
-.feeds .feed .feedComments .feedComment .text .profile .name span {
+.feeds .feed .footer .feedComments .feedComment .text .profile .name span {
   color: #3D3D3D;
   font-size: 14px;
   font-weight: 400;
 }
 
-.feeds .feed .feedComments .feedComment .text .footer {
+.feeds .feed .footer .feedComments .feedComment .text .footer {
   font-size: 12px;
   color: #3D3D3D;
 }
 
-.feeds .feed .feedComments .feedComment .text .footer .likes {
+.feeds .feed .footer .feedComments .feedComment .text .footer .likes {
   margin-left: 10px;
 }
 
-.feeds .feed .feedComments .feedComment .action i::before {
+.feeds .feed .footer .feedComments .feedComment .action i::before {
   margin-bottom: 4px;
 }
 
-.feeds .feed .comment {
+.feeds .feed .footer .more-comment {
+  border-bottom: 1px #DCE1EA solid;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+}
+
+.feeds .feed .footer .more-comment button {
+  border: none;
+  background-color: white;
+  font-size: 14px;
+  color: #3D3D3D;
+}
+
+.feeds .feed .footer .more-comment button:hover {
+  -webkit-text-decoration-line: underline;
+          text-decoration-line: underline;
+  color: #555555;
+}
+
+.feeds .feed .footer .comment {
   padding: 12px 0px;
   display: -ms-grid;
   display: grid;
@@ -670,7 +700,7 @@ header .header-flex .profile button span {
       grid-template-columns: 10% 75% 15%;
 }
 
-.feeds .feed .comment .img {
+.feeds .feed .footer .comment .img {
   justify-self: center;
   width: 40px;
   height: 40px;
@@ -692,26 +722,26 @@ header .header-flex .profile button span {
   background-color: #B1BBD0;
 }
 
-.feeds .feed .comment .img img {
+.feeds .feed .footer .comment .img img {
   width: 100%;
 }
 
-.feeds .feed .comment .img img {
+.feeds .feed .footer .comment .img img {
   width: 100px;
 }
 
-.feeds .feed .comment .user-input-comment {
+.feeds .feed .footer .comment .user-input-comment {
   padding: 0 5px;
 }
 
-.feeds .feed .comment .user-input-comment textarea {
+.feeds .feed .footer .comment .user-input-comment textarea {
   background-color: #EAECF0;
   border: none;
   padding: 2px 3px;
   width: 100%;
 }
 
-.feeds .feed .comment button {
+.feeds .feed .footer .comment button {
   border: none;
   border-radius: 5px;
   overflow: hidden;
@@ -723,7 +753,7 @@ header .header-flex .profile button span {
   transition: .2s;
 }
 
-.feeds .feed .comment button:hover {
+.feeds .feed .footer .comment button:hover {
   background-color: #0193c4;
 }
 

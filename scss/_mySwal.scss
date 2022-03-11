@@ -1,0 +1,15 @@
+.mySwal_container {}
+
+.mySwal_popup {}
+
+.mySwal_confirm {
+    @include btn-primary
+}
+
+.mySwal_cancel {
+    @include btn-cancel
+}
+
+.mySwal_title {}
+
+.mySwal_content {}

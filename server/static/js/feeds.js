@@ -1,5 +1,11 @@
 Dropzone.autoDiscover = false;
-
+document.addEventListener('scroll', function(e) {
+    if (window.scrollY == 0) {
+        console.log("top");
+    } else if (window.scrollY >= document.documentElement.scrollHeight - document.documentElement.clientHeight) {
+        console.log("end");
+    }
+});
 var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port + '/feeds');
 var imagePath = [];
 var friend_recommend = [];
@@ -533,42 +539,72 @@ socket.on('message', async(msg) => {
     })
 });
 
-json = {
-    "id": 2,
-    "content": "Color",
-    "img1": "\"feeds/9b5111f1-b122-4b7a-b74b-c5750d60d888.png,feeds/3e379931-8957-4da8-b7b6-5ee914c23b5b.png,\"",
-    "created_at": {
-        "$date": "2022-03-09T15:24:10Z"
-    },
-    "user_id": 1,
-    "like": [],
-    "comment": [{
-        "id": 1,
-        "created_at": {
-            "$date": "2022-03-09T17:27:10Z"
-        },
-        "feed_id": 2,
-        "user_id": 1,
-        "content": "test",
-        "user": {
-            "id": 1,
-            "profile": "profile/36e17689-1275-4522-a405-b3f066519381.jpg",
-            "fullName": "test1@gmail.com",
-            "email": "test1@gmail.com",
-            "socket_id": null
-        }
-    }],
-    "user": {
-        "id": 1,
-        "profile": "profile/36e17689-1275-4522-a405-b3f066519381.jpg",
-        "fullName": "test1@gmail.com",
-        "email": "test1@gmail.com",
-        "socket_id": null
-    },
-    "target": {}
+async function love(id) {
+    socket.emit("love", {
+        feed_id: id,
+    });
 }
 
+var mySwal = Swal.mixin({
+    customClass: {
+        container: 'mySwal',
+        popup: 'mySwal_popup',
+        header: '',
+        title: 'mySwal_title',
+        closeButton: '',
+        icon: '',
+        image: '',
+        content: 'mySwal_content',
+        htmlContainer: '',
+        input: '',
+        inputLabel: '',
+        validationMessage: '',
+        actions: '',
+        confirmButton: 'mySwal_confirm',
+        denyButton: '',
+        cancelButton: 'mySwal_cancel ms-2',
+        loader: '',
+        footer: '',
+        timerProgressBar: '',
+    },
+    buttonsStyling: false
+})
 
+async function DeleteComment(feed_id, id) {
+    console.log("🚀 ~ file: feeds.js ~ line 574 ~ DeleteComment ~ feed_id, id", feed_id, id)
+    mySwal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            feedsOrganize.delete_comment(feed_id, id)
+            alertMini.fire({
+                icon: 'success',
+                title: 'Deleted!. Your comment has been deleted.'
+            })
+        }
+    })
+}
+async function more_comment(id) {
+    feedsOrganize.More_comment(id)
+}
+
+async function showFooter(id) {
+    document.getElementById(`feed_${id}_footer`).classList.remove("d-none");
+    document.getElementById(`feed_${id}_footer`).classList.add("d-block");
+    let elm = document.getElementById(`feed_${id}_btn_showFooter`)
+    elm.setAttribute('onClick', `unShowFooter(${id});`)
+}
+async function unShowFooter(id) {
+    document.getElementById(`feed_${id}_footer`).classList.remove("d-block");
+    document.getElementById(`feed_${id}_footer`).classList.add("d-none");
+    let elm = document.getElementById(`feed_${id}_btn_showFooter`)
+    elm.setAttribute('onClick', `showFooter(${id});`)
+}
 
 class FeedsOrganize {
     constructor() {
@@ -578,14 +614,72 @@ class FeedsOrganize {
         this.htmlTemp = ``
     }
 
+    delete_comment(feed_id, id) {
+        console.log("🚀 ~ file: feeds.js ~ line 618 ~ FeedsOrganize ~ delete_comment ~ feed_id, id", feed_id, id)
+        socket.emit("delete_comment", {
+            feed_id: feed_id,
+            id: id
+        });
+    }
+
+    async love(res) {
+        let feed_index = await this.find_feed_index(res.feed_id);
+        let parent = await document.getElementById(`feed_${res.feed_id}_btn_love`)
+        if (res.status == 'love') {
+            this.feeds[feed_index].like.push(res.like)
+            this.feeds[feed_index].like_count += 1
+            parent.classList.add('action')
+            parent.innerHTML = `<i class="bi bi-heart-fill"></i> I love it`
+            console.log("🚀 ~ file: feeds.js ~ line 571 ~ FeedsOrganize ~ love ~ this.feeds", this.feeds)
+        } else {
+            let like_index = await this.find_like_index(feed_index, res.feed_id, res.user_id);
+            let remove = await this.feeds[feed_index].like.splice(like_index)
+            this.feeds[feed_index].like_count -= 1
+            console.log("🚀 ~ file: feeds.js ~ line 577 ~ FeedsOrganize ~ love ~ this.feeds", this.feeds)
+            parent.classList.remove('action')
+            parent.innerHTML = `<i class="bi bi-heart"></i> I love it`
+            console.log("🚀 ~ file: feeds.js ~ line 571 ~ FeedsOrganize ~ love ~ this.feeds", this.feeds)
+        }
+        this.updateFeedCount(res.feed_id)
+
+    }
+
+    find_feed_index(id) {
+        return this.feeds.findIndex(feed => feed.id == id)
+    }
+    find_like_index(feed_index, feed_id, uid) {
+        return this.feeds[feed_index].like.findIndex(like => like.user_id == uid && like.feed_id == feed_id)
+    }
+
+    get_id_comment(feed_id) {
+        let index = this.feeds.findIndex(feed => feed.id == feed_id)
+        let data = this.feeds[index].comment.map(comment => comment.id)
+        return data
+    }
+
+    More_comment(id) {
+        socket.emit("moreComment", {
+            feed_id: id,
+            comment_ids: this.get_id_comment(id)
+        });
+    }
+    More_comment_set(res) {
+        let index = this.find_feed_index(res.feed_id)
+        let parent = document.getElementById(`feed_${res.feed_id}_coments`)
+        for (let i = 0; i < res.comment.length; i++) {
+            this.feeds[index].comment.push(res.comment[i])
+            let comment = this.createComment(res.comment[i])
+            parent.appendChild(comment)
+        }
+
+    }
+
     add(data) {
         for (let i = 0; i < data.length; i++) {
             this.queue.push(data[i])
         }
         console.log("🚀 ~ file: feeds.js ~ line 514 ~ FeedsOrganize ~ add ~ this.queue", this.queue)
     }
-
-
 
     formatImgData(str) {
         let data = [];
@@ -646,64 +740,94 @@ class FeedsOrganize {
         return elm
     }
 
-    createAction() {
+    EnsureLike(data) {
+        let ensure = data.like.filter(like => like.user.email == profile.email)
+        if (ensure.length > 0) {
+            return true
+        } else {
+            return false
+        }
+    }
+
+    createAction(data) {
         let elm = document.createElement('div')
         elm.setAttribute('class', `feedAction`)
-        let html = `
+            // <i class="bi bi-heart-fill"></i>
+        let html = ''
+        if (this.EnsureLike(data)) {
+            html += `<div>
+                <button onClick="love(${data.id});" class="action" id="feed_${data.id}_btn_love"><i class="bi bi-heart-fill"></i> I love it</button>
+            </div>`
+        } else {
+            html += `<div>
+                <button onClick="love(${data.id});" class="" id="feed_${data.id}_btn_love"><i class="bi bi-heart"></i> I love it</button>
+            </div>`
+        }
+
+        html += `
             <div>
-                <button><i class="bi bi-heart"></i> I love it</button>
-            </div>
-            <div>
-                <button><i class="bi bi-chat"></i> comment</button>
+                <button onClick=showFooter(${data.id}); id='feed_${data.id}_btn_showFooter'><i class="bi bi-chat"></i> comment</button>
             </div>
         `
         elm.innerHTML = html
         return elm
     }
 
-
+    updateFeedCount(id) {
+        console.log("🚀 ~ file: feeds.js ~ line 714 ~ FeedsOrganize ~ updateFeedCount ~ id", id)
+        let index = this.feeds.findIndex(feed => feed.id == id);
+        let loveCount = this.feeds[index].like_count
+        console.log("🚀 ~ file: feeds.js ~ line 717 ~ FeedsOrganize ~ updateFeedCount ~ loveCount", loveCount)
+        let commentCount = this.feeds[index].comment_count
+        console.log("🚀 ~ file: feeds.js ~ line 719 ~ FeedsOrganize ~ updateFeedCount ~ commentCount", commentCount)
+        let love = document.getElementById(`feed_${id}_count_love`)
+        love.innerHTML = loveCount + " likes"
+        let comment = document.getElementById(`feed_${id}_count_comment`)
+        comment.innerHTML = commentCount + " comments"
+    }
 
     createCount(data) {
         let elm = document.createElement('div')
         elm.setAttribute('class', `feedCount`)
         let html = `
-            <span class="love-count">
-                ${data.like.length} likes
-            </span>
-            <span class="comment-count">
-            ${ data.comment.length} comments
-            </span>`
+        <span class="love-count" id="feed_${data.id}_count_love">
+        ${data.like_count} likes
+        </span>
+        <span class="comment-count" id="feed_${data.id}_count_comment">
+            ${data.comment_count} comments
+        </span>
+        `
         elm.innerHTML = html
         return elm
     }
 
     createComment(data) {
         let elm = document.createElement('div')
-        elm.setAttribute('class', `feedComment`)
+        elm.setAttribute('class', `feedComment `)
+        elm.setAttribute('id', `feed_${data.feed_id}_comment_${id}`)
         let html = ''
         if (data !== undefined) {
-            html = `
-        <div class="img">
-            <img class="img" src="/api/profile?file=${data.user.profile}" alt="">
-        </div>
-        <div class="text">
-            <div class="profile">
-                <div class="name">
-                    ${data.user.fullName}
-                    <span>
-                    ${data.content}
-                    </span>
-                </div>
-            </div>
-            <div class="footer">
-                <span class="timeAgo">${timeAgo(data.created_at.$date)}</span>
-                <span class="likes">0 likes</span>
+            html = `<div class="img">
+        <img class="img" src="/api/profile?file=${data.user.profile}" alt="">
+    </div>
+    <div class="text">
+        <div class="profile">
+            <div class="name">
+                ${data.user.fullName}
+                <span>
+                ${data.content}
+                </span>
             </div>
         </div>
-        <div class="action">
-            <i class="bi bi-heart"></i>
+        <div class="footer">
+            <span class="timeAgo">${timeAgo(data.created_at.$date)}</span>
+            <span class="likes">1 likes</span>
+            <button onClick="DeleteComment('${data.feed_id}','${data.id}');">Delete</button>
         </div>
-        `
+    </div>
+    <div class="action">
+        <i class="bi bi-heart"></i>
+    </div>`
             elm.innerHTML = html
             return elm
         } else {
@@ -713,7 +837,7 @@ class FeedsOrganize {
 
     createComments(data) {
         let elm = document.createElement('div')
-        elm.setAttribute('class', `feedComments`)
+        elm.setAttribute('class', `feedComments `)
         elm.setAttribute('id', `feed_${data.id}_coments`)
         let html = ''
         if (data.comment.length > 0) {
@@ -724,38 +848,61 @@ class FeedsOrganize {
         } else {
             return elm
         }
-
-
     }
 
     createContent(data) {
         let elm = document.createElement('div')
-        elm.setAttribute('class', `feedContent`)
+        elm.setAttribute('class', `feedContent `)
         elm.innerHTML = data.content
         return elm
     }
 
     createHeader(data) {
         let elm = document.createElement('div')
-        elm.setAttribute('class', `feedHead`)
-        let html = `
-        <div class="img">
-            <img class="img" src="/api/profile?file=${data.user.profile}" alt="">
+        elm.setAttribute('class', `feedHead `)
+        let html = `<div class="img">
+        <img class="img" src="/api/profile?file=${data.user.profile}" alt="">
+    </div>
+    <div class="text">
+        <div class="name">
+            ${data.user.fullName}
         </div>
-        <div class="text">
-            <div class="name">
-                ${data.user.fullName}
-            </div>
-            <div class="dateTime" id="feed_${data.id}_time">
-                ${timeAgo(data.created_at.$date)}
-            </div>
+        <div class="dateTime">
+         ${timeAgo(data.created_at.$date)}
         </div>
-        <div class="action">
-            <button class="feed-action"><i class="bi bi-three-dots"></i></button>
-        </div>
-    `
+    </div>
+    <div class="action">
+        <button class="feed-action"><i class="bi bi-three-dots"></i></button>
+    </div>`
         elm.innerHTML = html
         return elm
+    }
+
+    createFooter(data) {
+        let footer = document.createElement('div')
+        footer.setAttribute('class', `footer d-none`)
+        footer.setAttribute('id', `feed_${data.id}_footer`)
+        let comment = this.createComments(data)
+        let mycomment = this.createMyComment(data)
+        let MoreComment = this.createMoreComment(data)
+
+        footer.appendChild(comment)
+        footer.appendChild(MoreComment)
+        footer.appendChild(mycomment)
+
+        return footer
+
+    }
+
+    createMoreComment(data) {
+        let elm = document.createElement('div')
+        elm.setAttribute('class', `more-comment`)
+
+        elm.innerHTML = `<button onclick="more_comment(${data.id})">View more comment</button>`
+
+
+        return elm
+
     }
 
     createCard(data) {
@@ -767,17 +914,16 @@ class FeedsOrganize {
         let content = this.createContent(data)
         let feedImage = this.createImages(data)
         let count = this.createCount(data)
-        let comment = this.createComments(data)
         let action = this.createAction(data)
-        let mycomment = this.createMyComment(data)
+        let footer = this.createFooter(data)
+
 
         card.appendChild(header)
         card.appendChild(content)
         card.appendChild(feedImage)
-        card.appendChild(action)
         card.appendChild(count)
-        card.appendChild(comment)
-        card.appendChild(mycomment)
+        card.appendChild(action)
+        card.appendChild(footer)
         return card
 
     }
@@ -785,17 +931,16 @@ class FeedsOrganize {
 
     createMyComment(data) {
         let elm = document.createElement('div')
-        elm.setAttribute('class', `comment`)
-        let html = `
-        <div class="img">
-            <img class="img" src="/api/profile?file=${profile.profile}" alt="">
-        </div>
-        <div class="user-input-comment">
-            <textarea name="feed_${data.id}_inputComment" class="" id="feed_${data.id}_inputComment" placeholder="Write a comment..."></textarea>
-        </div>
-        <div class="action">
-            <button class="feed-action" onClick="Comment(${data.id});">Submit</button>
-        </div>`
+        elm.setAttribute('class', `comment `)
+        let html = `<div class="img">
+        <img class="img" src="/api/profile?file=${profile.profile}" alt="">
+    </div>
+    <div class="user-input-comment">
+        <textarea name="feed_${data.id}_inputComment" class="" id="feed_${data.id}_inputComment" placeholder="Write a comment..."></textarea>
+    </div>
+    <div class="action">
+        <button class="feed-action" onClick="Comment(${data.id});">Submit</button>
+    </div>`
         elm.innerHTML = html
         return elm
     }
@@ -810,7 +955,6 @@ class FeedsOrganize {
         }
     }
     EnsureComments(data) {
-        console.log("🚀 ~ file: feeds.js ~ line 813 ~ FeedsOrganize ~ EnsureComments ~ data", data)
         let feedIndex = this.feeds.findIndex(feed => feed.id == data.feed_id)
         if (feedIndex >= 0) {
             let comment = this.feeds[feedIndex].comment.filter(comment => comment.id == data.id)
@@ -828,8 +972,6 @@ class FeedsOrganize {
         let temp = data
         temp['target'] = document.getElementById(`feed_id_${data.id}`)
         this.feeds.push(temp)
-        console.log("🚀 ~ file: feeds.js ~ line 631 ~ FeedsOrganize ~ createFeed ~ this.feeds", this.feeds)
-
     }
 
     Organize() {
@@ -847,17 +989,15 @@ class FeedsOrganize {
 
     interruptComment(data) {
 
-
         if (this.EnsureComments(data)) {
-            console.log("🚀 ~ file: feeds.js ~ line 860 ~ FeedsOrganize ~ interruptComment ~ data", data)
             let feedsIndex = this.feeds.findIndex(feed => feed.id == data.feed_id)
             this.feeds[feedsIndex].comment.push(data)
+            this.feeds[feedsIndex].comment_count += 1
             let target = document.getElementById(`feed_${data.feed_id}_coments`)
             let dom = this.createComment(data)
+            this.updateFeedCount(data.feed_id)
             target.appendChild(dom)
         }
-
-
     }
 
     async Execute() {
@@ -878,15 +1018,6 @@ class FeedsOrganize {
     }
 
 }
-let temp = {
-    "id": 13,
-    "created_at": {
-        "$date": "2022-03-10T09:41:56Z"
-    },
-    "feed_id": 3,
-    "user_id": 1,
-    "content": "1212"
-}
 
 var feedsOrganize = new FeedsOrganize();
 
@@ -903,6 +1034,22 @@ socket.on('feeds', async(msg) => {
     await feedsOrganize.Execute()
 });
 
+socket.on('delete_comment_error', async(msg) => {
+    console.log("🚀 ~ file: feeds.js ~ line 1039 ~ socket.on ~ delete_comment_error msg", msg)
+    alertMini.fire({
+        icon: 'error',
+        title: 'Delete comment failed.'
+    });
+});
+
+socket.on('delete_comment_success', async(msg) => {
+    console.log("🚀 ~ file: feeds.js ~ line 1044 ~ socket.on ~ delete_comment_success msg", msg)
+    alertMini.fire({
+        icon: 'success',
+        title: 'Successfully delete comment.'
+    });
+});
+
 
 socket.on("commentSuccess", async(reason) => {
     console.log(reason)
@@ -915,6 +1062,14 @@ socket.on("commentSuccess", async(reason) => {
     });
 
 
+});
+
+socket.on("moreComment", async(reason) => {
+    feedsOrganize.More_comment_set(reason)
+});
+
+socket.on("love", async(reason) => {
+    feedsOrganize.love(reason)
 });
 socket.on("commentError", async(reason) => {
     alertMini.fire({
