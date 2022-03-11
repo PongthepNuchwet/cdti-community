@@ -28,7 +28,13 @@
     column-gap: 10px;
     min-height: 1000px;
     
-    h1 {
-        text-align: center;
+    .title{
+        font-size: 25px;
+        
+    }
+    .View{
+        .h1{
+            color: #000;
+        }
     }
 }
