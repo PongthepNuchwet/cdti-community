@@ -12,4 +12,14 @@ def Profile():
     def home():
         return render_template("profile.html")
 
+    @profile.route("/follower")
+    #@login_required
+    def follower():
+        return render_template("follower.html")
+
+    @profile.route("/following")
+    #@login_required
+    def following():
+        return render_template("following.html")
+        
     return profile
