@@ -614,6 +614,22 @@ class FeedsOrganize {
         this.htmlTemp = ``
     }
 
+    delete_comment_success(msg) {
+        console.log("🚀 ~ file: feeds.js ~ line 618 ~ FeedsOrganize ~ delete_comment_success ~ msg", msg)
+        let parent = document.getElementById(`feed_${msg.comment.feed_id}_coments`)
+        console.log("🚀 ~ file: feeds.js ~ line 620 ~ FeedsOrganize ~ delete_comment_success ~ parent", parent)
+        let child = document.getElementById(`feed_${msg.comment.feed_id}_comment_${msg.comment.id}`)
+        console.log("🚀 ~ file: feeds.js ~ line 622 ~ FeedsOrganize ~ delete_comment_success ~ child", child)
+        parent.removeChild(child);
+        let index = this.find_feed_index(msg.comment.feed_id)
+        this.feeds[index].comment_count -= 1
+        this.updateFeedCount(msg.comment.feed_id)
+        alertMini.fire({
+            icon: 'success',
+            title: 'Successfully delete comment.'
+        });
+    }
+
     delete_comment(feed_id, id) {
         console.log("🚀 ~ file: feeds.js ~ line 618 ~ FeedsOrganize ~ delete_comment ~ feed_id, id", feed_id, id)
         socket.emit("delete_comment", {
@@ -804,7 +820,7 @@ class FeedsOrganize {
     createComment(data) {
         let elm = document.createElement('div')
         elm.setAttribute('class', `feedComment `)
-        elm.setAttribute('id', `feed_${data.feed_id}_comment_${id}`)
+        elm.setAttribute('id', `feed_${data.feed_id}_comment_${data.id}`)
         let html = ''
         if (data !== undefined) {
             html = `<div class="img">
@@ -821,13 +837,12 @@ class FeedsOrganize {
         </div>
         <div class="footer">
             <span class="timeAgo">${timeAgo(data.created_at.$date)}</span>
-            <span class="likes">1 likes</span>
-            <button onClick="DeleteComment('${data.feed_id}','${data.id}');">Delete</button>
-        </div>
-    </div>
-    <div class="action">
-        <i class="bi bi-heart"></i>
-    </div>`
+            `
+            if (profile.email === data.user.email) {
+                html += `<button onClick="DeleteComment('${data.feed_id}','${data.id}');">Delete</button>`
+            }
+            html += `</div>
+            </div>`
             elm.innerHTML = html
             return elm
         } else {
@@ -1038,16 +1053,14 @@ socket.on('delete_comment_error', async(msg) => {
     console.log("🚀 ~ file: feeds.js ~ line 1039 ~ socket.on ~ delete_comment_error msg", msg)
     alertMini.fire({
         icon: 'error',
-        title: 'Delete comment failed.'
+        title: msg['msg']
     });
 });
 
 socket.on('delete_comment_success', async(msg) => {
-    console.log("🚀 ~ file: feeds.js ~ line 1044 ~ socket.on ~ delete_comment_success msg", msg)
-    alertMini.fire({
-        icon: 'success',
-        title: 'Successfully delete comment.'
-    });
+    console.log("🚀 ~ file: feeds.js ~ line 1046 ~ socket.on ~ msg", msg)
+    feedsOrganize.delete_comment_success(msg)
+
 });
 
 

@@ -109,7 +109,7 @@
                 .feedComment {
                     max-width: 500px;
                     display: grid;
-                    grid-template-columns: 5% 85% 10%;
+                    grid-template-columns: 5% 95%;
                     column-gap: 10px;
                     padding: 5px 5px 5px 10px;
                     margin-bottom: 4px;
@@ -141,6 +141,13 @@
                             color: $text-color;
                             .likes {
                                 margin-left: 10px;
+                            }
+                            button {
+                                border: none;
+                                color: #555555;
+                                &:hover {
+                                    text-decoration-line: underline;
+                                }
                             }
                         }
                     }

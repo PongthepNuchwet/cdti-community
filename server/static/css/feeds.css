@@ -591,8 +591,8 @@ header .header-flex .profile button span {
   max-width: 500px;
   display: -ms-grid;
   display: grid;
-  -ms-grid-columns: 5% 85% 10%;
-      grid-template-columns: 5% 85% 10%;
+  -ms-grid-columns: 5% 95%;
+      grid-template-columns: 5% 95%;
   -webkit-column-gap: 10px;
           column-gap: 10px;
   padding: 5px 5px 5px 10px;
@@ -656,6 +656,16 @@ header .header-flex .profile button span {
 
 .feeds .feed .footer .feedComments .feedComment .text .footer .likes {
   margin-left: 10px;
+}
+
+.feeds .feed .footer .feedComments .feedComment .text .footer button {
+  border: none;
+  color: #555555;
+}
+
+.feeds .feed .footer .feedComments .feedComment .text .footer button:hover {
+  -webkit-text-decoration-line: underline;
+          text-decoration-line: underline;
 }
 
 .feeds .feed .footer .feedComments .feedComment .action i::before {

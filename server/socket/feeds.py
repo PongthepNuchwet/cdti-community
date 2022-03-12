@@ -198,12 +198,13 @@ class FeedsNamespace(Namespace):
     
     def on_delete_comment(self,msg):
         comment = self.Comment.get_comment_by_id_obj(msg['id'])
+        res = {}
         print("comment",comment)
         if comment.user_id == session['uId'] :
             self.Comment.delete(comment)
-            res = {"comment":comment}
+            res['comment'] = [{"id": i.id, "created_at": i.created_at,"feed_id": i.feed_id, "user_id": i.user_id, "content": i.content} for i in  [comment] ][0]
             emit("delete_comment_success", self.default_json(res), broadcast=False)
         else :
-            res = {"comment":comment , "msg":"You have no right to delete this comment."}
+            res['comment'] = [{"id": i.id, "created_at": i.created_at,"feed_id": i.feed_id, "user_id": i.user_id, "content": i.content} for i in  [comment] ][0]
+            res['msg'] = { "msg":"You have no right to delete this comment."}
             emit("delete_comment_error", self.default_json(res), broadcast=False)
-        
