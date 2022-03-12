@@ -1,7 +1,7 @@
-.report{
-    width: 1000px;
+.banlist{
+     width: 100%;
     margin-bottom: 30px;
-    background-color: #ffffff;
+    background-color: #ffff;
     padding: 10px;
     border-radius: 2.5%;
     display: flex;
@@ -10,12 +10,8 @@
     align-content: center ;
     column-gap: 10px;
     min-height: 1000px;
+        h1{
+            text-align: center;
+        }
     
 }
-    .title{
-        font-size: 25px;     
-    }       
-    .title1{
-        font-size: 25px;
-        color: red;
-    }
