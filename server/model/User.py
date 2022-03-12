@@ -3,6 +3,12 @@ class UserModel:
         self.db = db
         self.User = model
 
+    def get_user_by_status(self,status):
+        data = [
+            {"id": i.id, "profile": i.profile, "fullName": i.fullName, "email": i.email, "socket_id": i.socket_id ,"status":i.status,"type":i.type} for i in
+            [self.User.query.filter_by(status=status).all()]
+        ]
+        return data
     def set_status_user(self, id,status):
         user = self.User.query.filter_by(id=id).first()
         user.status = status
