@@ -284,23 +284,6 @@ header .header-flex .profile button span {
   color: #00BDEF;
 }
 
-.block {
-  display: block;
-  width: 100%;
-  border: none;
-  background-color: #1e90ff;
-  color: white;
-  padding: 14px 28px;
-  font-size: 16px;
-  cursor: pointer;
-  text-align: center;
-}
-
-.block:hover {
-  background-color: #5bc7ed;
-  color: black;
-}
-
 .grid-content {
   margin-top: 56px;
 }
