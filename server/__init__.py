@@ -10,6 +10,7 @@ import pyrebase
 from server.controllers.api import Api
 from server.controllers.auth import Auth
 from server.controllers.feeds import Feeds as News
+from server.controllers.report import Report 
 from server.socket.feeds import FeedsNamespace
 from server.model.User import UserModel
 from server.model.Feed import FeedModel
@@ -49,7 +50,7 @@ def create_app():
     # randomData(feed_model,like_model,comment_model)
 
     login_manager = LoginManager()
-    login_manager.login_view = "auth.login"
+    login_manager.login_view = "auth.sign_up"
     login_manager.init_app(app)
 
     @login_manager.user_loader
@@ -79,10 +80,12 @@ def create_app():
     api = Api(storage=storage,idToken=user['idToken'])
     auth = Auth(socketio=socketio, Users=Users, db=db,storage=storage)
     news = News(storage=storage)
+    report = Report()
 
     app.register_blueprint(auth, url_prefix="/")
     app.register_blueprint(news, url_prefix="/feeds")
     app.register_blueprint(api, url_prefix="/api")
+    app.register_blueprint(report, url_prefix="/report")
 
     return app
 
