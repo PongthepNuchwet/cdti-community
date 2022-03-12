@@ -92,7 +92,7 @@ def Auth(socketio, Users, db,storage):
         session["uName"] = id_info.get("name")
         session["email"] = id_info.get("email")
         session["uProfile"] = id_info.get("picture")
-        return redirect("/feeds")
+        return redirect(url_for("feeds.home"))
 
 
     @auth.route("/login", methods=["GET", "POST"])
