@@ -10,6 +10,7 @@ import pyrebase
 from server.controllers.api import Api
 from server.controllers.auth import Auth
 from server.controllers.feeds import Feeds as News
+from server.controllers.profile import Profile
 from server.socket.feeds import FeedsNamespace
 from server.model.User import UserModel
 from server.model.Feed import FeedModel
@@ -79,10 +80,12 @@ def create_app():
     api = Api(storage=storage,idToken=user['idToken'])
     auth = Auth(socketio=socketio, Users=Users, db=db,storage=storage)
     news = News(storage=storage)
+    profile = Profile()
 
     app.register_blueprint(auth, url_prefix="/")
     app.register_blueprint(news, url_prefix="/feeds")
     app.register_blueprint(api, url_prefix="/api")
+    app.register_blueprint(profile, url_prefix="/profile")
 
     return app
 
