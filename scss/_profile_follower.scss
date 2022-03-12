@@ -2,7 +2,7 @@
     display: button_follow;
     width: 100%;
     border: none;
-    background-color: red;
+    background-color: #5bc7ed;
     color: white;
     padding: 10px 28px;
     font-size: 16px;
@@ -12,6 +12,25 @@
       }
   
   .button_follow:hover {
-    background-color: #5bc7ed;
+    background-color: #1e90ff;
+    color: #867d7e;
+    }
+
+
+.button_block {
+    display: button_follow;
+    width: 100%;
+    border: none;
+    background-color: #ff0000;
+    color: white;
+    padding: 10px 28px;
+    font-size: 16px;
+    cursor: pointer;
+    text-align: center;
+    border-radius: 5px;
+      }
+  
+  .button_block:hover {
+    background-color: #610000;
     color: #867d7e;
     }
