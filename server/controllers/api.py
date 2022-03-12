@@ -11,8 +11,12 @@ def Api(storage, idToken):
     @login_required
     def profile():
         file = request.args.get('file')
-        url = storage.child(file).get_url(idToken)
+        if 'profile/' in file :
+            url = storage.child(file).get_url(idToken)
+        else :
+            url = file
         response = requests.get(url)
+
         return send_file(
             BytesIO(response.content),
             mimetype='image/jpeg',

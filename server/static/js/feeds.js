@@ -25,6 +25,30 @@ var alertMini = Swal.mixin({
     }
 });
 
+var mySwal = Swal.mixin({
+    customClass: {
+        container: 'mySwal',
+        popup: 'mySwal_popup',
+        header: '',
+        title: 'mySwal_title',
+        closeButton: '',
+        icon: '',
+        image: '',
+        content: 'mySwal_content',
+        htmlContainer: '',
+        input: '',
+        inputLabel: '',
+        validationMessage: '',
+        actions: '',
+        confirmButton: 'mySwal_confirm',
+        denyButton: '',
+        cancelButton: 'mySwal_cancel ms-2',
+        loader: '',
+        footer: '',
+        timerProgressBar: '',
+    },
+    buttonsStyling: false
+})
 
 
 class Profile {
@@ -469,6 +493,7 @@ let myDropzone = new Dropzone("#myDropzone", {
             socket.on("newFeedSuccess", async(reason) => {
                 document.getElementById("newFeed-content").value = "";
                 this.removeAllFiles(true);
+                feedsOrganize.feedsInterrup(reason, 'top')
                 alertMini.fire({
                     icon: 'success',
                     title: 'Successfully created the feed.'
@@ -545,33 +570,9 @@ async function love(id) {
     });
 }
 
-var mySwal = Swal.mixin({
-    customClass: {
-        container: 'mySwal',
-        popup: 'mySwal_popup',
-        header: '',
-        title: 'mySwal_title',
-        closeButton: '',
-        icon: '',
-        image: '',
-        content: 'mySwal_content',
-        htmlContainer: '',
-        input: '',
-        inputLabel: '',
-        validationMessage: '',
-        actions: '',
-        confirmButton: 'mySwal_confirm',
-        denyButton: '',
-        cancelButton: 'mySwal_cancel ms-2',
-        loader: '',
-        footer: '',
-        timerProgressBar: '',
-    },
-    buttonsStyling: false
-})
+
 
 async function DeleteComment(feed_id, id) {
-    console.log("🚀 ~ file: feeds.js ~ line 574 ~ DeleteComment ~ feed_id, id", feed_id, id)
     mySwal.fire({
         title: 'Are you sure?',
         text: "You won't be able to revert this!",
@@ -582,13 +583,11 @@ async function DeleteComment(feed_id, id) {
     }).then((result) => {
         if (result.isConfirmed) {
             feedsOrganize.delete_comment(feed_id, id)
-            alertMini.fire({
-                icon: 'success',
-                title: 'Deleted!. Your comment has been deleted.'
-            })
+
         }
     })
 }
+
 async function more_comment(id) {
     feedsOrganize.More_comment(id)
 }
@@ -606,6 +605,58 @@ async function unShowFooter(id) {
     elm.setAttribute('onClick', `showFooter(${id});`)
 }
 
+async function report(id) {
+    const { value: text } = await mySwal.fire({
+        input: 'textarea',
+        inputLabel: 'Report',
+        inputPlaceholder: 'Type your message here...',
+        inputAttributes: {
+            'aria-label': 'Type your message here'
+        },
+        showCancelButton: true,
+        confirmButtonText: "report"
+    })
+
+    if (text) {
+        feedsOrganize.report(text, id);
+    }
+
+}
+async function feed_delete(id) {
+    mySwal.fire({
+        title: 'Are you sure you want to delete this post?',
+        text: "You won't be able to revert this!",
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            feedsOrganize.delete_feed(id)
+            console.log("🚀 ~ file: feeds.js ~ line 636 ~ feed_delete ~ id", id)
+        }
+    })
+}
+
+async function feed_option(id) {
+    mySwal.fire({
+        title: '<strong>Option</strong>',
+        html: `<div class="feed-option">
+        <button onclick="report('${id}');">Report</button>
+        <button onclick="feed_delete('${id}');">Delete</button>
+    </div>`,
+        showCloseButton: false,
+        showCancelButton: false,
+        focusConfirm: false,
+        showConfirmButton: false,
+        confirmButtonText: '<i class="fa fa-thumbs-up"></i> Great!',
+        confirmButtonAriaLabel: 'Thumbs up, great!',
+        cancelButtonText: '<i class="fa fa-thumbs-down"></i>',
+        cancelButtonAriaLabel: 'Thumbs down'
+    })
+
+}
+
 class FeedsOrganize {
     constructor() {
         this.feeds = []
@@ -614,11 +665,47 @@ class FeedsOrganize {
         this.htmlTemp = ``
     }
 
+    report(text, feed_id) {
+        if (text !== '') {
+            socket.emit("report", {
+                feed_id: feed_id,
+                text: text
+            });
+        }
+    }
+
+    delete_comment_success(msg) {
+        let parent = document.getElementById(`feed_${msg.comment.feed_id}_coments`)
+        let child = document.getElementById(`feed_${msg.comment.feed_id}_comment_${msg.comment.id}`)
+        parent.removeChild(child);
+        let index = this.find_feed_index(msg.comment.feed_id)
+        this.feeds[index].comment_count -= 1
+        this.updateFeedCount(msg.comment.feed_id)
+        alertMini.fire({
+            icon: 'success',
+            title: 'Successfully delete comment.'
+        });
+    }
+
+    async delete_feed_success(msg) {
+        let index = await this.find_feed_index(msg['feed_id'])
+        console.log("🚀 ~ file: feeds.js ~ line 691 ~ FeedsOrganize ~ delete_feed_success ~ index", index)
+        let child = document.getElementById(`feed_id_${msg.feed_id}`)
+        console.log("🚀 ~ file: feeds.js ~ line 693 ~ FeedsOrganize ~ delete_feed_success ~ child", child)
+        this.feeds.splice(index)
+        this.container.removeChild(child)
+    }
+
     delete_comment(feed_id, id) {
-        console.log("🚀 ~ file: feeds.js ~ line 618 ~ FeedsOrganize ~ delete_comment ~ feed_id, id", feed_id, id)
         socket.emit("delete_comment", {
             feed_id: feed_id,
             id: id
+        });
+    }
+    delete_feed(feed_id) {
+        console.log("🚀 ~ file: feeds.js ~ line 706 ~ FeedsOrganize ~ delete_feed ~ feed_id", feed_id)
+        socket.emit("delete_feed", {
+            feed_id: feed_id,
         });
     }
 
@@ -630,15 +717,12 @@ class FeedsOrganize {
             this.feeds[feed_index].like_count += 1
             parent.classList.add('action')
             parent.innerHTML = `<i class="bi bi-heart-fill"></i> I love it`
-            console.log("🚀 ~ file: feeds.js ~ line 571 ~ FeedsOrganize ~ love ~ this.feeds", this.feeds)
         } else {
             let like_index = await this.find_like_index(feed_index, res.feed_id, res.user_id);
             let remove = await this.feeds[feed_index].like.splice(like_index)
             this.feeds[feed_index].like_count -= 1
-            console.log("🚀 ~ file: feeds.js ~ line 577 ~ FeedsOrganize ~ love ~ this.feeds", this.feeds)
             parent.classList.remove('action')
             parent.innerHTML = `<i class="bi bi-heart"></i> I love it`
-            console.log("🚀 ~ file: feeds.js ~ line 571 ~ FeedsOrganize ~ love ~ this.feeds", this.feeds)
         }
         this.updateFeedCount(res.feed_id)
 
@@ -678,7 +762,6 @@ class FeedsOrganize {
         for (let i = 0; i < data.length; i++) {
             this.queue.push(data[i])
         }
-        console.log("🚀 ~ file: feeds.js ~ line 514 ~ FeedsOrganize ~ add ~ this.queue", this.queue)
     }
 
     formatImgData(str) {
@@ -709,7 +792,6 @@ class FeedsOrganize {
         </div>`
             return html
         }
-
     }
 
 
@@ -752,7 +834,6 @@ class FeedsOrganize {
     createAction(data) {
         let elm = document.createElement('div')
         elm.setAttribute('class', `feedAction`)
-            // <i class="bi bi-heart-fill"></i>
         let html = ''
         if (this.EnsureLike(data)) {
             html += `<div>
@@ -774,12 +855,9 @@ class FeedsOrganize {
     }
 
     updateFeedCount(id) {
-        console.log("🚀 ~ file: feeds.js ~ line 714 ~ FeedsOrganize ~ updateFeedCount ~ id", id)
         let index = this.feeds.findIndex(feed => feed.id == id);
         let loveCount = this.feeds[index].like_count
-        console.log("🚀 ~ file: feeds.js ~ line 717 ~ FeedsOrganize ~ updateFeedCount ~ loveCount", loveCount)
         let commentCount = this.feeds[index].comment_count
-        console.log("🚀 ~ file: feeds.js ~ line 719 ~ FeedsOrganize ~ updateFeedCount ~ commentCount", commentCount)
         let love = document.getElementById(`feed_${id}_count_love`)
         love.innerHTML = loveCount + " likes"
         let comment = document.getElementById(`feed_${id}_count_comment`)
@@ -804,7 +882,7 @@ class FeedsOrganize {
     createComment(data) {
         let elm = document.createElement('div')
         elm.setAttribute('class', `feedComment `)
-        elm.setAttribute('id', `feed_${data.feed_id}_comment_${id}`)
+        elm.setAttribute('id', `feed_${data.feed_id}_comment_${data.id}`)
         let html = ''
         if (data !== undefined) {
             html = `<div class="img">
@@ -821,13 +899,12 @@ class FeedsOrganize {
         </div>
         <div class="footer">
             <span class="timeAgo">${timeAgo(data.created_at.$date)}</span>
-            <span class="likes">1 likes</span>
-            <button onClick="DeleteComment('${data.feed_id}','${data.id}');">Delete</button>
-        </div>
-    </div>
-    <div class="action">
-        <i class="bi bi-heart"></i>
-    </div>`
+            `
+            if (profile.email === data.user.email) {
+                html += `<button onClick="DeleteComment('${data.feed_id}','${data.id}');">Delete</button>`
+            }
+            html += `</div>
+            </div>`
             elm.innerHTML = html
             return elm
         } else {
@@ -871,7 +948,7 @@ class FeedsOrganize {
          ${timeAgo(data.created_at.$date)}
         </div>
     </div>
-    <div class="action">
+    <div class="action" onClick="feed_option(${data.id})">
         <button class="feed-action"><i class="bi bi-three-dots"></i></button>
     </div>`
         elm.innerHTML = html
@@ -916,7 +993,6 @@ class FeedsOrganize {
         let count = this.createCount(data)
         let action = this.createAction(data)
         let footer = this.createFooter(data)
-
 
         card.appendChild(header)
         card.appendChild(content)
@@ -985,8 +1061,20 @@ class FeedsOrganize {
         this.queue = []
     }
 
-
-
+    async feedsInterrup(data, tp) {
+        for (let i = 0; i <= data.length - 1; i++) {
+            let feed = await this.createCard(data[i])
+            if (tp === 'top') {
+                await this.feeds.splice(0, 0, data[i])
+                if (this.feeds.length > 0) {
+                    let target = await document.getElementById(`feed_id_${this.feeds[1].id}`)
+                    this.container.insertBefore(feed, target)
+                } else {
+                    this.container.appendChild(feed)
+                }
+            }
+        }
+    }
     interruptComment(data) {
 
         if (this.EnsureComments(data)) {
@@ -1033,21 +1121,48 @@ socket.on('feeds', async(msg) => {
     await feedsOrganize.add(msg)
     await feedsOrganize.Execute()
 });
-
-socket.on('delete_comment_error', async(msg) => {
-    console.log("🚀 ~ file: feeds.js ~ line 1039 ~ socket.on ~ delete_comment_error msg", msg)
+socket.on('report_error', async(msg) => {
     alertMini.fire({
         icon: 'error',
-        title: 'Delete comment failed.'
+        title: 'Failed to report'
+    });
+});
+socket.on('report_success', async(msg) => {
+    alertMini.fire({
+        icon: 'success',
+        title: 'Successfully report.'
+    });
+});
+socket.on('delete_feed_success', async(msg) => {
+    console.log("🚀 ~ file: feeds.js ~ line 1133 ~ socket.on ~ msg", msg)
+    feedsOrganize.delete_feed_success(msg)
+    alertMini.fire({
+        icon: 'success',
+        title: 'Successfully delete.'
+    });
+});
+socket.on('delete_feed_error', async(msg) => {
+    console.log("🚀 ~ file: feeds.js ~ line 1140 ~ socket.on ~ msg", msg)
+    alertMini.fire({
+        icon: 'error',
+        title: 'Failed to delete.'
+    });
+});
+
+socket.on('delete_comment_error', async(msg) => {
+    console.log("🚀 ~ file: feeds.js ~ line 1147 ~ socket.on ~ msg", msg)
+    alertMini.fire({
+        icon: 'error',
+        title: msg['msg']
     });
 });
 
 socket.on('delete_comment_success', async(msg) => {
-    console.log("🚀 ~ file: feeds.js ~ line 1044 ~ socket.on ~ delete_comment_success msg", msg)
+    feedsOrganize.delete_comment_success(msg)
     alertMini.fire({
         icon: 'success',
-        title: 'Successfully delete comment.'
-    });
+        title: 'Deleted!. Your comment has been deleted.'
+    })
 });
 
 

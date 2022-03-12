@@ -1,4 +1,5 @@
 from distutils.log import error
+from urllib import response
 from xml.etree.ElementTree import Comment
 from click import command
 from flask import request, session
@@ -9,7 +10,7 @@ import json
 
 
 class FeedsNamespace(Namespace):
-    def __init__(self, namespace, db, Feed, Follow, Like, Comment, User):
+    def __init__(self, namespace, db, Feed, Follow, Like, Comment, User, Report, storage,token):
         super().__init__(namespace)
         self.db = db
         self.Feed = Feed
@@ -17,6 +18,9 @@ class FeedsNamespace(Namespace):
         self.Like = Like
         self.User = User
         self.Comment = Comment
+        self.Report = Report
+        self.storage = storage
+        self.token = token
 
     def emiting_profile(self):
         user = self.User.get_user_by_uid(session['uId'])
@@ -49,61 +53,68 @@ class FeedsNamespace(Namespace):
     def update_secket_id(self, sid):
         print("update_secket_id")
         try:
-            self.User.update_secket_id_by_uid(sid=sid,uid=session["uId"])
+            self.User.update_secket_id_by_uid(sid=sid, uid=session["uId"])
         except IndexError:
             print(IndexError)
-        
+
     def concacts(self, follwing):
         concacts = self.User.get_users_by_in_uid(follwing)
         emit("concacts", concacts, broadcast=False)
 
-    def get_like(self,feed_id):
+    def get_like(self, feed_id):
         res = []
         likes = self.Like.get_like_by_feedId_all(feed_id)
-        for data in likes :
+        for data in likes:
             like = data
             like['user'] = self.User.get_user_by_uid(data['user_id'])
             res.append(like)
-        return  res
+        return res
 
-    def get_comment(self,feed_id,count,notIn):
+    def get_comment(self, feed_id, count, notIn):
         res = []
-        comments = self.Comment.get_comment_by_feedId_limit_notin(feed_id,count,notIn)
-        for data in comments :
+        comments = self.Comment.get_comment_by_feedId_limit_notin(
+            feed_id, count, notIn)
+        for data in comments:
             comment = data
             comment['user'] = self.User.get_user_by_uid(data['user_id'])
             res.append(comment)
 
-        return  res
+        return res
 
-    def default_json(self,data):
+    def default_json(self, data):
         return json.loads(json.dumps(data, default=json_util.default))
 
-    def get_feeds(self, follwing):
-        addMe = list(follwing)
-        addMe.append(session['uId'])
-        respone = []
-        Feeds = self.Feed.get_feeds_by_in_uid(addMe)
-
+    def get_detail_feed(self, Feeds):
+        response = []
         for data in Feeds:
             feed = data
             feed['like'] = self.get_like(data['id'])
             feed['like_count'] = self.Like.get_count_by_feedId(data['id'])
-            feed['comment'] = self.get_comment(data['id'],3,[])
-            feed['comment_count'] = self.Comment.get_count_by_feedId(data['id'])
+            feed['comment'] = self.get_comment(data['id'], 3, [])
+            feed['comment_count'] = self.Comment.get_count_by_feedId(
+                data['id'])
             feed['user'] = self.User.get_user_by_uid(data['user_id'])
-            respone.append(feed)
-        
-        return respone
-    
-    def emiting_feeds(self,follwing):
+            response.append(feed)
+        return response
+
+    def get_feeds(self, follwing):
+        addMe = list(follwing)
+        addMe.append(session['uId'])
+
+        Feeds = self.Feed.get_feeds_by_in_uid(addMe)
+
+        response = self.get_detail_feed(Feeds=Feeds)
+
+        return response
+
+    def emiting_feeds(self, follwing):
         res = self.get_feeds(follwing)
         emit("feeds", self.default_json(res), broadcast=False)
-            
 
     def on_connect(self):
         start = time.time()
-        follwing = self.Follow.get_following_by_uid_and_status_all(uid=session["uId"], state=1)
+        follwing = self.Follow.get_following_by_uid_and_status_all(
+            uid=session["uId"], state=1)
         self.emiting_feeds(follwing=follwing)
         self.emiting_profile()
         self.update_secket_id(request.sid)
@@ -120,15 +131,19 @@ class FeedsNamespace(Namespace):
         send(msg, broadcast=True)
 
     def on_newFeed(self, msg):
+        new_feed = ''
         try:
-            print("msgimagePath",msg["imagePath"])
-            self.Feed.new(
+            print("msgimagePath", msg["imagePath"])
+            new_feed = self.Feed.new(
                 content=msg["content"], img1=msg["imagePath"], uid=session["uId"])
         except IndexError:
             print(IndexError)
             emit("newFeedError", broadcast=False)
         else:
-            emit("newFeedSuccess", broadcast=False)
+            feed = self.Feed.get_feeds_by_id(new_feed)
+            feed_detail = self.get_detail_feed(feed)
+            res = self.default_json(data=feed_detail)
+            emit("newFeedSuccess", res, broadcast=False)
 
     def emit_to(self, event, data, uid):
         to = self.get_secket_id_by_uid(uid)
@@ -165,45 +180,84 @@ class FeedsNamespace(Namespace):
                 "Accept", f"{msg['name']} has accepted you to follow.", msg["follow_id"])
             self.emit_to("concacts_interrupt", user, msg["follow_id"])
 
-    def on_comment(self,msg):
-        print("on_comment",msg)
+    def on_comment(self, msg):
+        print("on_comment", msg)
         id = None
-        try :
-            id = self.Comment.new(feed_id= msg['feed_id'], user_id=session["uId"],content = msg['content'])
-            print("ID",id)
-        except IndexError :
+        try:
+            id = self.Comment.new(
+                feed_id=msg['feed_id'], user_id=session["uId"], content=msg['content'])
+            print("ID", id)
+        except IndexError:
             print(IndexError)
-            emit("commentError", {'feed_id':msg['feed_id']}, broadcast=False)
-        else :
+            emit("commentError", {'feed_id': msg['feed_id']}, broadcast=False)
+        else:
             comment = self.Comment.get_comment_by_id(id)
             comment['user'] = self.User.get_user_by_uid(comment['user_id'])
-            emit("commentSuccess",self.default_json( {'feed_id':msg['feed_id'],"comment":comment} ), broadcast=False)
+            emit("commentSuccess", self.default_json(
+                {'feed_id': msg['feed_id'], "comment": comment}), broadcast=False)
 
-    def on_moreComment(self,msg) :
-        comment = self.get_comment(msg['feed_id'],3,msg['comment_ids'])
-        emit("moreComment", self.default_json({"feed_id":msg['feed_id'],'comment':comment}), broadcast=False)
+    def on_moreComment(self, msg):
+        comment = self.get_comment(msg['feed_id'], 3, msg['comment_ids'])
+        emit("moreComment", self.default_json(
+            {"feed_id": msg['feed_id'], 'comment': comment}), broadcast=False)
 
-    def on_love(self,msg):
-        print(msg)
-        if self.Like.ensure(msg['feed_id'],session['uId']) < 1 :
-            like_new = self.Like.new(msg['feed_id'],session['uId'])
-            print("like_new",like_new)
+    def on_love(self, msg):
+        if self.Like.ensure(msg['feed_id'], session['uId']) < 1:
+            like_new = self.Like.new(msg['feed_id'], session['uId'])
             like = self.Like.get_like_by_id(like_new)
             like['user'] = self.User.get_user_by_uid(session['uId'])
-            emit("love", self.default_json({"feed_id":msg['feed_id'],'status':'love',"like": like}), broadcast=False)
-        else :
-            self.Like.delete(msg['feed_id'],session['uId'])
+            emit("love", self.default_json(
+                {"feed_id": msg['feed_id'], 'status': 'love', "like": like}), broadcast=False)
+        else:
+            self.Like.delete(msg['feed_id'], session['uId'])
             user = self.User.get_user_by_uid(session['uId'])
-            emit("love", self.default_json({"feed_id":msg['feed_id'],'status':'unLove',"user":user}), broadcast=False)
-    
-    def on_delete_comment(self,msg):
+            emit("love", self.default_json(
+                {"feed_id": msg['feed_id'], 'status': 'unLove', "user": user}), broadcast=False)
+
+    def on_delete_comment(self, msg):
         comment = self.Comment.get_comment_by_id_obj(msg['id'])
-        print("comment",comment)
-        if comment.user_id == session['uId'] :
+        res = {}
+        if comment.user_id == session['uId']:
             self.Comment.delete(comment)
-            res = {"comment":comment}
-            emit("delete_comment_success", self.default_json(res), broadcast=False)
-        else :
-            res = {"comment":comment , "msg":"You have no right to delete this comment."}
+            res['comment'] = [{"id": i.id, "created_at": i.created_at, "feed_id": i.feed_id,
+                               "user_id": i.user_id, "content": i.content} for i in [comment]][0]
+            emit("delete_comment_success",
+                 self.default_json(res), broadcast=False)
+        else:
+            res['comment'] = [{"id": i.id, "created_at": i.created_at, "feed_id": i.feed_id,
+                               "user_id": i.user_id, "content": i.content} for i in [comment]][0]
+            res['msg'] = {"msg": "You have no right to delete this comment."}
             emit("delete_comment_error", self.default_json(res), broadcast=False)
-        
+
+    def on_report(self, msg):
+        try:
+            self.Report.new(msg['feed_id'], session['uId'],
+                            msg['text'], content_admin='')
+        except IndexError:
+            print(ImportError)
+            emit("report_error", broadcast=False)
+        else:
+            emit("report_success", broadcast=False)
+
+    def delete_image_firestorage(self,txt):
+        arr1 = txt.split('"')
+        for i in arr1 :
+            arr2 = i.split(",")
+            for j in arr2 :
+                print('"feeds/" in  path',"feeds/" in  j)
+                if "feeds/" in  j :
+                    print("path",j)
+                    self.storage.delete(j,token=self.token)
+
+    def on_delete_feed(self, msg):
+        feed = self.Feed.get_feeds_by_id(msg['feed_id'])
+        if feed[0]['user_id'] == session['uId']:
+            self.Feed.delete(msg['feed_id'])
+            self.delete_image_firestorage(feed[0]['img1'])
+            self.Like.delete_by_feed_id(msg['feed_id'])
+            self.Comment.delete_by_feed_id(msg['feed_id'])
+            self.Report.delete_by_feed_id(msg['feed_id'])
+            emit("delete_feed_success", {
+                 'feed_id': msg['feed_id']}, broadcast=False)
+        else:
+            emit("delete_feed_error", broadcast=False)

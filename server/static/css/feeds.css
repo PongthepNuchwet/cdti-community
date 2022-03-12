@@ -591,8 +591,8 @@ header .header-flex .profile button span {
   max-width: 500px;
   display: -ms-grid;
   display: grid;
-  -ms-grid-columns: 5% 85% 10%;
-      grid-template-columns: 5% 85% 10%;
+  -ms-grid-columns: 5% 95%;
+      grid-template-columns: 5% 95%;
   -webkit-column-gap: 10px;
           column-gap: 10px;
   padding: 5px 5px 5px 10px;
@@ -656,6 +656,16 @@ header .header-flex .profile button span {
 
 .feeds .feed .footer .feedComments .feedComment .text .footer .likes {
   margin-left: 10px;
+}
+
+.feeds .feed .footer .feedComments .feedComment .text .footer button {
+  border: none;
+  color: #555555;
+}
+
+.feeds .feed .footer .feedComments .feedComment .text .footer button:hover {
+  -webkit-text-decoration-line: underline;
+          text-decoration-line: underline;
 }
 
 .feeds .feed .footer .feedComments .feedComment .action i::before {
@@ -755,6 +765,21 @@ header .header-flex .profile button span {
 
 .feeds .feed .footer .comment button:hover {
   background-color: #0193c4;
+}
+
+.feed-option {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  row-gap: 10px;
+}
+
+.feed-option button {
+  width: 100%;
 }
 
 .friendsRecommend {
