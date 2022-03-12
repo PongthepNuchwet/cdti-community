@@ -14,6 +14,7 @@ class FeedModel:
         )
         self.db.session.add(new_feed)
         self.db.session.commit()
+        return new_feed.id
 
     def get_feeds_all(self):
         data = [
@@ -28,5 +29,13 @@ class FeedModel:
             {"id": i.id, "content": i.content,
                 "img1": i.img1, "created_at": i.created_at , "user_id": i.user_id}
             for i in list(self.Feed.query.filter(self.Feed.user_id.in_(uids)).order_by(self.db.desc(self.Feed.created_at)).all())
+        ]
+        return data
+
+    def get_feeds_by_id(self, id):
+        data = [
+            {"id": i.id, "content": i.content,
+                "img1": i.img1, "created_at": i.created_at , "user_id": i.user_id}
+            for i in [self.Feed.query.filter_by(id=id).first()]
         ]
         return data

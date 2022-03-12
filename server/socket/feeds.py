@@ -1,4 +1,5 @@
 from distutils.log import error
+from urllib import response
 from xml.etree.ElementTree import Comment
 from click import command
 from flask import request, session
@@ -79,12 +80,8 @@ class FeedsNamespace(Namespace):
     def default_json(self,data):
         return json.loads(json.dumps(data, default=json_util.default))
 
-    def get_feeds(self, follwing):
-        addMe = list(follwing)
-        addMe.append(session['uId'])
-        respone = []
-        Feeds = self.Feed.get_feeds_by_in_uid(addMe)
-
+    def get_detail_feed(self,Feeds):
+        response = []
         for data in Feeds:
             feed = data
             feed['like'] = self.get_like(data['id'])
@@ -92,9 +89,18 @@ class FeedsNamespace(Namespace):
             feed['comment'] = self.get_comment(data['id'],3,[])
             feed['comment_count'] = self.Comment.get_count_by_feedId(data['id'])
             feed['user'] = self.User.get_user_by_uid(data['user_id'])
-            respone.append(feed)
+            response.append(feed)
+        return response
+
+    def get_feeds(self, follwing):
+        addMe = list(follwing)
+        addMe.append(session['uId'])
         
-        return respone
+        Feeds = self.Feed.get_feeds_by_in_uid(addMe)
+
+        response = self.get_detail_feed(Feeds=Feeds)
+        
+        return response
     
     def emiting_feeds(self,follwing):
         res = self.get_feeds(follwing)
@@ -120,15 +126,19 @@ class FeedsNamespace(Namespace):
         send(msg, broadcast=True)
 
     def on_newFeed(self, msg):
+        new_feed = ''
         try:
             print("msgimagePath",msg["imagePath"])
-            self.Feed.new(
+            new_feed = self.Feed.new(
                 content=msg["content"], img1=msg["imagePath"], uid=session["uId"])
         except IndexError:
             print(IndexError)
             emit("newFeedError", broadcast=False)
         else:
-            emit("newFeedSuccess", broadcast=False)
+            feed = self.Feed.get_feeds_by_id(new_feed)
+            feed_detail =  self.get_detail_feed(feed)
+            res = self.default_json(data=feed_detail)
+            emit("newFeedSuccess", res, broadcast=False)
 
     def emit_to(self, event, data, uid):
         to = self.get_secket_id_by_uid(uid)
@@ -184,10 +194,8 @@ class FeedsNamespace(Namespace):
         emit("moreComment", self.default_json({"feed_id":msg['feed_id'],'comment':comment}), broadcast=False)
 
     def on_love(self,msg):
-        print(msg)
         if self.Like.ensure(msg['feed_id'],session['uId']) < 1 :
             like_new = self.Like.new(msg['feed_id'],session['uId'])
-            print("like_new",like_new)
             like = self.Like.get_like_by_id(like_new)
             like['user'] = self.User.get_user_by_uid(session['uId'])
             emit("love", self.default_json({"feed_id":msg['feed_id'],'status':'love',"like": like}), broadcast=False)
@@ -199,7 +207,6 @@ class FeedsNamespace(Namespace):
     def on_delete_comment(self,msg):
         comment = self.Comment.get_comment_by_id_obj(msg['id'])
         res = {}
-        print("comment",comment)
         if comment.user_id == session['uId'] :
             self.Comment.delete(comment)
             res['comment'] = [{"id": i.id, "created_at": i.created_at,"feed_id": i.feed_id, "user_id": i.user_id, "content": i.content} for i in  [comment] ][0]

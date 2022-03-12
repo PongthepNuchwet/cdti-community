@@ -469,6 +469,7 @@ let myDropzone = new Dropzone("#myDropzone", {
             socket.on("newFeedSuccess", async(reason) => {
                 document.getElementById("newFeed-content").value = "";
                 this.removeAllFiles(true);
+                feedsOrganize.feedsInterrup(reason, 'top')
                 alertMini.fire({
                     icon: 'success',
                     title: 'Successfully created the feed.'
@@ -615,11 +616,8 @@ class FeedsOrganize {
     }
 
     delete_comment_success(msg) {
-        console.log("🚀 ~ file: feeds.js ~ line 618 ~ FeedsOrganize ~ delete_comment_success ~ msg", msg)
         let parent = document.getElementById(`feed_${msg.comment.feed_id}_coments`)
-        console.log("🚀 ~ file: feeds.js ~ line 620 ~ FeedsOrganize ~ delete_comment_success ~ parent", parent)
         let child = document.getElementById(`feed_${msg.comment.feed_id}_comment_${msg.comment.id}`)
-        console.log("🚀 ~ file: feeds.js ~ line 622 ~ FeedsOrganize ~ delete_comment_success ~ child", child)
         parent.removeChild(child);
         let index = this.find_feed_index(msg.comment.feed_id)
         this.feeds[index].comment_count -= 1
@@ -725,7 +723,6 @@ class FeedsOrganize {
         </div>`
             return html
         }
-
     }
 
 
@@ -768,7 +765,6 @@ class FeedsOrganize {
     createAction(data) {
         let elm = document.createElement('div')
         elm.setAttribute('class', `feedAction`)
-            // <i class="bi bi-heart-fill"></i>
         let html = ''
         if (this.EnsureLike(data)) {
             html += `<div>
@@ -790,12 +786,9 @@ class FeedsOrganize {
     }
 
     updateFeedCount(id) {
-        console.log("🚀 ~ file: feeds.js ~ line 714 ~ FeedsOrganize ~ updateFeedCount ~ id", id)
         let index = this.feeds.findIndex(feed => feed.id == id);
         let loveCount = this.feeds[index].like_count
-        console.log("🚀 ~ file: feeds.js ~ line 717 ~ FeedsOrganize ~ updateFeedCount ~ loveCount", loveCount)
         let commentCount = this.feeds[index].comment_count
-        console.log("🚀 ~ file: feeds.js ~ line 719 ~ FeedsOrganize ~ updateFeedCount ~ commentCount", commentCount)
         let love = document.getElementById(`feed_${id}_count_love`)
         love.innerHTML = loveCount + " likes"
         let comment = document.getElementById(`feed_${id}_count_comment`)
@@ -921,6 +914,7 @@ class FeedsOrganize {
     }
 
     createCard(data) {
+        console.log("🚀 ~ file: feeds.js ~ line 917 ~ FeedsOrganize ~ createCard ~ data", data)
         let card = document.createElement('div')
         card.setAttribute('id', `feed_id_${data.id}`)
         card.setAttribute('class', `feed`)
@@ -931,7 +925,6 @@ class FeedsOrganize {
         let count = this.createCount(data)
         let action = this.createAction(data)
         let footer = this.createFooter(data)
-
 
         card.appendChild(header)
         card.appendChild(content)
@@ -961,6 +954,7 @@ class FeedsOrganize {
     }
 
     createElement(data) {
+        console.log("🚀 ~ file: feeds.js ~ line 956 ~ FeedsOrganize ~ createElement ~ data", data)
         this.container.appendChild(this.createCard(data))
     }
 
@@ -1000,8 +994,23 @@ class FeedsOrganize {
         this.queue = []
     }
 
+    feedsInterrup(data, tp) {
+        console.log("🚀 ~ file: feeds.js ~ line 995 ~ FeedsOrganize ~ feedsInterrup ~ tp", tp)
+        console.log("🚀 ~ file: feeds.js ~ line 995 ~ FeedsOrganize ~ feedsInterrup ~ data", data)
 
-
+        for (let i = 0; i <= data.length - 1; i++) {
+            console.log("🚀 ~ file: feeds.js ~ line 1000 ~ FeedsOrganize ~ feedsInterrup ~ data[i]", data[i])
+            let feed = this.createCard(data[i])
+            console.log("🚀 ~ file: feeds.js ~ line 999 ~ FeedsOrganize ~ feedsInterrup ~ feed", feed)
+            let target = document.getElementById(`feed_id_${this.feeds[0].id}`)
+            console.log("🚀 ~ file: feeds.js ~ line 1001 ~ FeedsOrganize ~ feedsInterrup ~ target", target)
+            if (tp === 'top') {
+                this.feeds.splice(0, 0, data)
+                console.log("🚀 ~ file: feeds.js ~ line 1004 ~ FeedsOrganize ~ feedsInterrup ~ this.feeds", this.feeds)
+                this.container.insertBefore(feed, target)
+            }
+        }
+    }
     interruptComment(data) {
 
         if (this.EnsureComments(data)) {
@@ -1058,7 +1067,6 @@ socket.on('delete_comment_error', async(msg) => {
 });
 
 socket.on('delete_comment_success', async(msg) => {
-    console.log("🚀 ~ file: feeds.js ~ line 1046 ~ socket.on ~ msg", msg)
     feedsOrganize.delete_comment_success(msg)
 
 });
