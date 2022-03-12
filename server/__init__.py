@@ -12,6 +12,7 @@ from server.controllers.auth import Auth
 from server.controllers.feeds import Feeds as News
 from server.controllers.report import Report
 from server.controllers.banlist import Banlist
+from server.controllers.profile import Profile
 from server.socket.feeds import FeedsNamespace
 from server.model.User import UserModel
 from server.model.Feed import FeedModel
@@ -83,12 +84,14 @@ def create_app():
     news = News(storage=storage)
     report = Report()
     banlist = Banlist()
+    profile = Profile()
 
     app.register_blueprint(auth, url_prefix="/")
     app.register_blueprint(news, url_prefix="/feeds")
     app.register_blueprint(api, url_prefix="/api")
     app.register_blueprint(report, url_prefix="/report")
     app.register_blueprint(banlist, url_prefix="/banlist")
+    app.register_blueprint(profile, url_prefix="/profile")
 
     return app
 
