@@ -3,7 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_socketio import SocketIO
 from os import path
 from flask_login import LoginManager
-from dotenv import dotenv_values,load_dotenv
+from dotenv import dotenv_values, load_dotenv
 
 import pyrebase
 
@@ -19,18 +19,18 @@ from server.model.Feed import FeedModel
 from server.model.Follow import FollowModel
 from server.model.Like import LikeModel
 from server.model.Comment import CommentModel
+from server.model.Report import ReportModel
 
 
 db = SQLAlchemy(session_options={"autoflush": True})
 DB_NAME = "database.db"
 
-# def randomData(feed_model,like_model,comment_model) : 
+# def randomData(feed_model,like_model,comment_model) :
 #     feeds = feed_model.get_feeds_by_in_uid(1)
 #     for data in feeds :
 #         # for i in range(0.9):
 #         like_model.new(feed_id=data['feed_id'], user_id=1)
 #         comment_model.new(feed_id=data['feed_id'], user_id=1,content="AAAAAA")
-
 
 
 def create_app():
@@ -40,14 +40,15 @@ def create_app():
     app.config["SQLALCHEMY_DATABASE_URI"] = f"sqlite:///{DB_NAME}"
 
     db.init_app(app)
-    from server.DB import Users, Feeds, Likes, Comments, Follow
+    from server.DB import Users, Feeds, Likes, Comments, Follow, Report as ReportDB
     create_database(app)
-    
+
     user_model = UserModel(db, model=Users)
     feed_model = FeedModel(db, model=Feeds)
     follow_model = FollowModel(db, model=Follow)
     like_model = LikeModel(db, model=Likes)
     comment_model = CommentModel(db, model=Comments)
+    report_model = ReportModel(db, model=ReportDB)
 
     # randomData(feed_model,like_model,comment_model)
 
@@ -77,10 +78,10 @@ def create_app():
     socketio = SocketIO(app, logger=True, engineio_logger=True,
                         async_handlers=True, async_mode='threading')
     socketio.on_namespace(FeedsNamespace(
-        namespace="/feeds", db=db, Feed=feed_model, Follow=follow_model, Like=like_model, Comment=comment_model, User=user_model))
+        namespace="/feeds", db=db, Feed=feed_model, Follow=follow_model, Like=like_model, Comment=comment_model, User=user_model, Report=report_model, storage=storage,token=user['idToken']))
 
-    api = Api(storage=storage,idToken=user['idToken'])
-    auth = Auth(socketio=socketio, Users=Users, db=db,storage=storage)
+    api = Api(storage=storage, idToken=user['idToken'])
+    auth = Auth(socketio=socketio, Users=Users, db=db, storage=storage)
     news = News(storage=storage)
     report = Report()
     banlist = Banlist()

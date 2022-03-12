@@ -16,6 +16,11 @@ class FeedModel:
         self.db.session.commit()
         return new_feed.id
 
+    def delete(self,id):
+        feed = self.Feed.query.filter_by(id=id).first()
+        self.db.session.delete(feed)
+        self.db.session.commit()
+
     def get_feeds_all(self):
         data = [
             {"id": i.id, "content": i.content,

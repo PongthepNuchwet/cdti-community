@@ -17,6 +17,12 @@ class CommentModel:
     def delete(self,comment_obj):
         self.db.session.delete(comment_obj)
         self.db.session.commit()
+
+    def delete_by_feed_id(self,feed_id):
+        comments = self.Comment.query.filter_by(feed_id=feed_id).all()
+        for comment in comments :
+            self.db.session.delete(comment)
+            self.db.session.commit()
         
 
     def get_comment_by_feedId_all(self, id):
