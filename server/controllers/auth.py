@@ -95,6 +95,7 @@ def Auth(socketio, Users, db,storage):
             )
             db.session.add(new_user)
             db.session.commit()
+            user = Users.query.filter_by(email=id_info.get("email")).first()
             friend_recommend_interrupt(
                 socketio=socketio, email=id_info.get("email"), Users=Users)
 
