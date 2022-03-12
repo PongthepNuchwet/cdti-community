@@ -4,14 +4,13 @@ from werkzeug.utils import secure_filename
 import os
 import uuid
 
-def Report():
-    report = Blueprint("reports", __name__)
+def Banlist():
+    banlists = Blueprint("banlists", __name__)
 
-    @report.route("/")
+    @banlists.route("/")
     ##@login_required
-    def reports():
-        return render_template("reports.html")
-    
+    def banlist():
+        return render_template("banlists.html")
 
 
-    return report
+    return banlists

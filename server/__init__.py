@@ -10,7 +10,8 @@ import pyrebase
 from server.controllers.api import Api
 from server.controllers.auth import Auth
 from server.controllers.feeds import Feeds as News
-from server.controllers.report import Report 
+from server.controllers.report import Report
+from server.controllers.banlist import Banlist
 from server.socket.feeds import FeedsNamespace
 from server.model.User import UserModel
 from server.model.Feed import FeedModel
@@ -81,11 +82,13 @@ def create_app():
     auth = Auth(socketio=socketio, Users=Users, db=db,storage=storage)
     news = News(storage=storage)
     report = Report()
+    banlist = Banlist()
 
     app.register_blueprint(auth, url_prefix="/")
     app.register_blueprint(news, url_prefix="/feeds")
     app.register_blueprint(api, url_prefix="/api")
     app.register_blueprint(report, url_prefix="/report")
+    app.register_blueprint(banlist, url_prefix="/banlist")
 
     return app
 
