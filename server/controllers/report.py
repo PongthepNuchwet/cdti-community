@@ -11,7 +11,5 @@ def Report():
     ##@login_required
     def reports():
         return render_template("reports.html")
-    
-
-
     return report
+    

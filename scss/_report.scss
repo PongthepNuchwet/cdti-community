@@ -1,5 +1,5 @@
 .report {
-    width: 1000px;
+    width: 100%;
     margin-bottom: 30px;
     background-color: #ffffff;
     padding: 10px;
@@ -29,4 +29,12 @@
 .title1 {
     font-size: 25px;
     color: red;
+}
+
+.box {
+    width: 950px;
+    height: 100px;
+    border: 0px solid rebeccapurple;
+    padding: 10px;
+    overflow-y: scroll;
 }
