@@ -80,6 +80,8 @@ class Report(db.Model):
 
     content_user = db.Column(db.String(300))
     content_admin = db.Column(db.String(300))
+    status_admin = db.Column(db.String(300),default = '0')
+    status_user = db.Column(db.String(300),default = '0')
 
     update_at = db.Column(db.DateTime(timezone=True), default=func.now())
     created_at = db.Column(db.DateTime(timezone=True), default=func.now())

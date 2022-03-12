@@ -14,6 +14,7 @@ from server.controllers.report import Report
 from server.controllers.banlist import Banlist
 from server.controllers.profile import Profile
 from server.socket.feeds import FeedsNamespace
+from server.socket.report import ReportNamespace
 from server.model.User import UserModel
 from server.model.Feed import FeedModel
 from server.model.Follow import FollowModel
@@ -79,6 +80,8 @@ def create_app():
                         async_handlers=True, async_mode='threading')
     socketio.on_namespace(FeedsNamespace(
         namespace="/feeds", db=db, Feed=feed_model, Follow=follow_model, Like=like_model, Comment=comment_model, User=user_model, Report=report_model, storage=storage,token=user['idToken']))
+    socketio.on_namespace(ReportNamespace(
+        namespace="/report", db=db, Feed=feed_model, Follow=follow_model, Like=like_model, Comment=comment_model, User=user_model, Report=report_model, storage=storage,token=user['idToken']))
 
     api = Api(storage=storage, idToken=user['idToken'])
     auth = Auth(socketio=socketio, Users=Users, db=db, storage=storage)

@@ -1,4 +1,4 @@
-.report{
+.report {
     width: 1000px;
     margin-bottom: 30px;
     background-color: #ffffff;
@@ -7,15 +7,26 @@
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
-    align-content: center ;
+    align-content: center;
     column-gap: 10px;
     min-height: 1000px;
-    
-}
-    .title{
-        font-size: 25px;     
-    }       
-    .title1{
-        font-size: 25px;
-        color: red;
+    .View {
+        .view-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            background-color: antiquewhite;
+        }
     }
+}
+
+.title {
+    font-size: 25px;
+}
+
+.title1 {
+    font-size: 25px;
+    color: red;
+}
