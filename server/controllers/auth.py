@@ -95,6 +95,7 @@ def Auth(socketio, Users, db,storage):
             )
             db.session.add(new_user)
             db.session.commit()
+            user = Users.query.filter_by(email=id_info.get("email")).first()
             friend_recommend_interrupt(
                 socketio=socketio, email=id_info.get("email"), Users=Users)
 
@@ -125,12 +126,12 @@ def Auth(socketio, Users, db,storage):
             else:
                 flash("Email does not exist", category="error")
 
-        return render_template("login.html")
+        return render_template("feeds.html")
 
     @auth.route("/logout")
     def logout():
         logout_user()
-        return redirect(url_for("auth.login"))
+        return redirect(url_for("auth.sign_up"))
 
     @auth.route("/signup", methods=["GET", "POST"])
     def sign_up():
@@ -173,7 +174,7 @@ def Auth(socketio, Users, db,storage):
                     socketio=socketio, email=email, Users=Users)
                     
                 flash("Account created!", category="success")
-                return redirect(url_for("auth.login"))
+                return redirect(url_for("auth.sign_up"))
 
         return render_template("signup.html")
 
