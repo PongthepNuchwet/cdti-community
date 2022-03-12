@@ -14,6 +14,8 @@ from google_auth_oauthlib.flow import Flow
 from pip._vendor import cachecontrol
 import google.auth.transport.requests    
 
+os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"
+
 GOOGLE_CLIENT_ID = "684748119335-ij41pqcpn9tb5u0dj2jaqchscoklt7u4.apps.googleusercontent.com"
 client_secrets_file = os.path.join(pathlib.Path(__file__).parent, "client_secret.json")
 
@@ -44,6 +46,8 @@ def friend_recommend_interrupt(socketio, email, Users):
 def new_name(name) :
     return str(uuid.uuid4()) + '.'+ str(name).split('.')[-1]
 
+def new_namegg() :
+    return str(uuid.uuid4()) + '.jpg'
 
 def Auth(socketio, Users, db,storage):
     auth = Blueprint("auth", __name__)
@@ -77,6 +81,11 @@ def Auth(socketio, Users, db,storage):
             audience=GOOGLE_CLIENT_ID
         )
 
+        #response = requests.get(id_info.get("picture"))
+        #newName = secure_filename(new_namegg())
+       # profilePath = f"profile/{newName}"
+        #storage.child(profilePath).put(response.content)
+
         user = Users.query.filter_by(email=id_info.get("email")).first()
         if not user:
             new_user = Users(
@@ -91,7 +100,8 @@ def Auth(socketio, Users, db,storage):
 
         session["uName"] = id_info.get("name")
         session["email"] = id_info.get("email")
-        session["uProfile"] = id_info.get("picture")
+        session["uProfile"] = user.profile if user.profile is not None else ""
+        login_user(user, remember=True)
         return redirect(url_for("feeds.home"))
 
 
