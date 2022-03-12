@@ -10,6 +10,9 @@ class Users(db.Model, UserMixin):
     email = db.Column(db.String(150), unique=True)
     password = db.Column(db.String(150))
     fullName = db.Column(db.String(150))
+    status = db.Column(db.String(150),default='1')
+    type = db.Column(db.String(150),default='system')
+    fullName = db.Column(db.String(150))
     socket_id = db.Column(db.String(150))
     created_at = db.Column(db.DateTime(timezone=True), default=func.now())
     update_at = db.Column(db.DateTime(timezone=True), default=func.now())
@@ -71,3 +74,18 @@ class Follow(db.Model):
 
     def __repr__(self):
         return "<Follow %r>" % self.id
+
+class Report(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+
+    content_user = db.Column(db.String(300))
+    content_admin = db.Column(db.String(300))
+
+    update_at = db.Column(db.DateTime(timezone=True), default=func.now())
+    created_at = db.Column(db.DateTime(timezone=True), default=func.now())
+    
+    feed_id = db.Column(db.Integer, db.ForeignKey("feeds.id"))
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"))
+
+    def __repr__(self):
+        return "<Report %r>" % self.id

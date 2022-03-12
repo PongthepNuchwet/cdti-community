@@ -17,6 +17,12 @@ class LikeModel:
         self.db.session.delete(like)
         self.db.session.commit()
 
+    def delete_by_feed_id(self, feed_id):
+        likes = self.Like.query.filter_by(feed_id=feed_id).all()
+        for like in likes :
+            self.db.session.delete(like)
+            self.db.session.commit()
+
     def ensure(self,feed_id,uid):
         data = self.Like.query.filter_by(feed_id=feed_id,user_id=uid).count()
         return data
