@@ -212,4 +212,30 @@
     button {
         width: 100%;
     }
+    .report {
+        border: none;
+        border-radius: 5px;
+        overflow: hidden;
+        padding: 3px 7px;
+        color: white;
+        background-color: #FF9E46;
+        font-size: 16px;
+        transition: .2s;
+        &:hover {
+            background-color: #FF8325;
+        }
+    }
+    .delete {
+        border: none;
+        border-radius: 5px;
+        overflow: hidden;
+        padding: 3px 7px;
+        color: white;
+        background-color: #FF553E;
+        font-size: 16px;
+        transition: .2s;
+        &:hover {
+            background-color: #FF2A1D;
+        }
+    }
 }

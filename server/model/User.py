@@ -1,22 +1,41 @@
+
+from sqlalchemy.sql import func
+
 class UserModel:
     def __init__(self, db, model) -> None:
         self.db = db
         self.User = model
 
-    def update_secket_id_by_uid(self, sid, uid):
-        print("update_secket_id_by_uid",sid, uid )
+    def get_count_by_status(self, status):
+        return self.User.query.filter_by(status=status).count()
+
+    def get_user_by_status(self, status):
+        data = [
+            {"id": i.id, "profile": i.profile, "fullName": i.fullName, "email": i.email, "socket_id": i.socket_id, "status": i.status, "type": i.type} for i in self.User.query.filter_by(status=status).order_by(self.db.desc(self.User.status_at)).all()
+        ]
+
+        return data
+
+    def set_status_user(self, id, status):
+        user = self.User.query.filter_by(id=id).first()
+        user.status = status
+        user.status_at = func.now()
+        self.db.session.commit()
+
+    def update_socket_id_by_uid(self, sid, uid):
+        print("update_socket_id_by_uid", sid, uid)
         user = self.User.query.filter_by(id=uid).first()
         user.socket_id = sid
         self.db.session.commit()
 
-    def remove_secket_id_by_uid(self, uid):
+    def remove_socket_id_by_uid(self, uid):
         user = self.User.query.filter_by(id=uid).first()
         user.socket_id = None
         self.db.session.commit()
 
     def get_user_by_uid(self, uid):
         data = [
-            {"id": i.id,"profile": i.profile, "fullName": i.fullName, "email": i.email,"socket_id":i.socket_id} for i in
+            {"id": i.id, "profile": i.profile, "fullName": i.fullName, "email": i.email, "socket_id": i.socket_id, "status": i.status, "type": i.type} for i in
             [self.User.query.filter_by(id=uid).first()]
         ]
         return data[0]

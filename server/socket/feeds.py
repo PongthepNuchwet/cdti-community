@@ -39,21 +39,21 @@ class FeedsNamespace(Namespace):
             follwing, 5)
         emit("friend_recommend", friend_recommend, broadcast=False)
 
-    def get_secket_id_by_uid(self, uid):
+    def get_socket_id_by_uid(self, uid):
         user = self.User.get_user_by_uid(uid)
         print(user)
         return user['socket_id']
 
-    def remove_secket_id(self):
+    def remove_socket_id(self):
         try:
-            self.User.remove_secket_id_by_uid(uid=session["uId"])
+            self.User.remove_socket_id_by_uid(uid=session["uId"])
         except IndexError:
             print(IndexError)
 
-    def update_secket_id(self, sid):
-        print("update_secket_id")
+    def update_socket_id(self, sid):
+        print("update_socket_id")
         try:
-            self.User.update_secket_id_by_uid(sid=sid, uid=session["uId"])
+            self.User.update_socket_id_by_uid(sid=sid, uid=session["uId"])
         except IndexError:
             print(IndexError)
 
@@ -117,7 +117,7 @@ class FeedsNamespace(Namespace):
             uid=session["uId"], state=1)
         self.emiting_feeds(follwing=follwing)
         self.emiting_profile()
-        self.update_secket_id(request.sid)
+        self.update_socket_id(request.sid)
         self.emiting_friend_recommend()
         self.emiting_friend_required()
         self.concacts(follwing)
@@ -125,7 +125,7 @@ class FeedsNamespace(Namespace):
         print("end - start", end - start)
 
     def on_disconnect(self):
-        self.remove_secket_id()
+        self.remove_socket_id()
 
     def on_message(self, msg):
         send(msg, broadcast=True)
@@ -146,7 +146,7 @@ class FeedsNamespace(Namespace):
             emit("newFeedSuccess", res, broadcast=False)
 
     def emit_to(self, event, data, uid):
-        to = self.get_secket_id_by_uid(uid)
+        to = self.get_socket_id_by_uid(uid)
         if to is not None:
             emit(event, data, to=to)
 

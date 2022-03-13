@@ -3,19 +3,21 @@
         <h1>CDTI account report</h1>
     </div>
     <div class="title">
-        บัญชีรายงาน : 6310301004@cdti.ac.th
-        <br>รายงานปัญหา : มีการโพสข้อความที่เป็นเท็จก่อให้เกิดความขัดแย้งกัน
-        <br> 04/10/56 20:36
+        <p>บัญชีรายงาน : <span id="user_email">-</span></p>
+        <p>รายงานปัญหา : <span id="content">-</span></p>
+        <p>datetime : <span id="time">-</span></p>
     </div>
     <div class="View">
-            <button type="submit" class="btn btn-primary mb-3"><h1>View post</h1></button> 
-        </a>
+        <div class="feeds" id="feeds">
+
+        </div>
+
+        <textarea disabled class="form-control" id="input" rows="3"></textarea>
+
         <div class="title1">
             โปรดกดปุ่มนี้เพื่อการระงับบัญชี
         </div>
     </div>
     <div class="Ban">
-            <button type="submit" class="btn btn-primary mb-3"><h1>Ban</h1></button> 
-        </a>
+        <button type="submit" disabled id="ban" class="btn btn-primary mb-3"><h1>Ban</h1></button>
     </div>
-</div>
