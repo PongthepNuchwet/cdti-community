@@ -115,6 +115,7 @@ def Auth(socketio, Users, db,storage):
             email = request.form.get("email")
             password = request.form.get("password")
             user = Users.query.filter_by(email=email).first()
+            idAdmin = ['Dream123@gmail.com']
 
             if user:
                 if user.status == "2":
@@ -129,7 +130,11 @@ def Auth(socketio, Users, db,storage):
                     session["email"] = user.email
                     session["uProfile"] = user.profile if user.profile is not None else ""
                     login_user(user, remember=True)
-                    return redirect(url_for("feeds.home"))
+                    if email in idAdmin:
+                        return render_template("reports.html")
+                    else:
+                        return redirect(url_for("feeds.home"))
+            
 
                 else:
                     flash("Incorrect password ,try again", category="error")
