@@ -635,6 +635,38 @@ header .header-flex .profile button span {
   width: 100%;
 }
 
+.feed-option .report {
+  border: none;
+  border-radius: 5px;
+  overflow: hidden;
+  padding: 3px 7px;
+  color: white;
+  background-color: #FF9E46;
+  font-size: 16px;
+  -webkit-transition: .2s;
+  transition: .2s;
+}
+
+.feed-option .report:hover {
+  background-color: #FF8325;
+}
+
+.feed-option .delete {
+  border: none;
+  border-radius: 5px;
+  overflow: hidden;
+  padding: 3px 7px;
+  color: white;
+  background-color: #FF553E;
+  font-size: 16px;
+  -webkit-transition: .2s;
+  transition: .2s;
+}
+
+.feed-option .delete:hover {
+  background-color: #FF2A1D;
+}
+
 .grid-content {
   margin-top: 56px;
 }

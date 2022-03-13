@@ -9,7 +9,7 @@ from bson import json_util
 import json
 
 
-class ReportNamespace(Namespace):
+class BanlistNamespace(Namespace):
     def __init__(self, namespace, db, Feed, Follow, Like, Comment, User, Report, storage, token):
         super().__init__(namespace)
         self.db = db
@@ -25,12 +25,20 @@ class ReportNamespace(Namespace):
     def default_json(self, data):
         return json.loads(json.dumps(data, default=json_util.default))
 
+    def emit_NotFound(self):
+        emit("NotFound", "", broadcast=False)
+
     def emit_user_ban(self):
         users = self.User.get_user_by_status(2)
         emit("banlist", self.default_json(users), broadcast=False)
 
     def on_connect(self):
         print(request.sid)
+        print(self.User.get_count_by_status(2))
+        if self.User.get_count_by_status(2) > 0:
+            self.emit_user_ban()
+        else :
+            self.emit_NotFound()
 
     def on_disconnect(self):
         self.remove_secket_id()
@@ -41,8 +49,7 @@ class ReportNamespace(Namespace):
     def on_unBan(self, msg):
         print("on_unBan",msg)
         try:
-            self.Report.set_status_content(msg['id'], msg['content'])
-            self.User.set_status_user(msg['user_id'],'0')
+            self.User.set_status_user(msg['id'],'0')
         except:
             emit("unBan_error", broadcast=False)
         else:

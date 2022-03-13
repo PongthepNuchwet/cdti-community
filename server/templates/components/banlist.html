@@ -5,50 +5,20 @@
             <tr>
                 <th scope="col">id</th>
                 <th scope="col">Name</th>
-                <th scope="col">report</th>
-                <th scope="col">Date</th>
-                <th scope="col"></th>
-                    
+                <th scope="col">Email</th>
+                <th scope="col">Unban</th>
             </tr>
         </thead>
-        <tbody>
-            <tr>
+        <tbody id="banlists">
+            <tr id="banlist_1">
                 <th scope="row">6310301003@cdti.ac.th</th>
                 <td>Dream</td>
-                <td>บูลลี่ครับ</td>
-                <td>04/10/56</td>
-                <td><button type="submit" class="btn btn-primary mb-3">
-                    UnBanned
-                </button></td>
+                <td>
+                    <button type="submit" class="btn btn-primary mb-3">UnBanned</button>
+                </td>
             </tr>
-            <tr>
-                <th scope="row">6310301004@cdti.ac.th</th>
-                <td>JJ</td>
-                <td>คุกคาม</td>
-                <td>09/10/56</td>
-                <td><button type="submit" class="btn btn-primary mb-3">
-                    UnBanned
-                </button></td>
-            </tr>
-            <tr>
-                <th scope="row">6310301036@cdti.ac.th</th>
-                <td>Mik</td>
-                <td>โพสความเท็จ หลอกลวงผู้หญิง</td>
-                <td>10/10/56</td>
-                <td><button type="submit" class="btn btn-primary mb-3">
-                    UnBanned
-                </button></td>
-            </tr>
-            <tr>
-                <th scope="row">6310301027@cdti.ac.th</th>
-                <td>Kanthi</td>
-                <td>โพสลามกอนจาร</td>
-                <td>11/10/56</td>
-                <td><button type="submit" class="btn btn-primary mb-3">
-                    UnBanned
-                </button></td>
-            </tr>
-            <button type="submit" class="btn btn-primary mb-3" onclick="location.href='http://127.0.0.1:5000/report/'">History report</button>   
+
+            <button type="submit" class="btn btn-primary mb-3" onclick="location.href='http://127.0.0.1:5000/report/'">History report</button>
         </tbody>
     </table>
 </div>

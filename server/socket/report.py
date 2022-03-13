@@ -62,10 +62,20 @@ class ReportNamespace(Namespace):
     def on_open(self, msg):
         self.Report.set_status_admin(msg['id'], 1)
 
+    def get_socket_id_by_uid(self, uid):
+        user = self.User.get_user_by_uid(uid)
+        print(user)
+        return user['socket_id']
+
     def on_ban(self, msg):
         try:
             self.Report.set_status_content(msg['id'], msg['content'])
+            sid = self.get_socket_id_by_uid(msg['user_id'])
+            emit('ban', to=sid ,namespace='/feeds')
+            emit('ban', to=sid ,namespace='/profile')
+            emit('ban', to=sid ,namespace='/friens')
             self.User.set_status_user(msg['user_id'],'2')
+
         except:
             emit("ban_error", broadcast=False)
         else:
@@ -76,7 +86,8 @@ class ReportNamespace(Namespace):
         try:
             self.Report.set_status_content(msg['id'], msg['content'])
             self.User.set_status_user(msg['user_id'],'0')
-        except:
+        except IndexError as e:
+            print(e)
             emit("unBan_error", broadcast=False)
         else:
             emit("unBan_success", {"id":msg['id']} ,broadcast=False)

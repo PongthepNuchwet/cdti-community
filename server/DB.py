@@ -10,7 +10,8 @@ class Users(db.Model, UserMixin):
     email = db.Column(db.String(150), unique=True)
     password = db.Column(db.String(150))
     fullName = db.Column(db.String(150))
-    status = db.Column(db.String(150),default='1')
+    status = db.Column(db.String(150),default='0')
+    status_at = db.Column(db.DateTime(timezone=True),default=func.now())
     type = db.Column(db.String(150),default='system')
     fullName = db.Column(db.String(150))
     socket_id = db.Column(db.String(150))
@@ -80,6 +81,7 @@ class Report(db.Model):
 
     content_user = db.Column(db.String(300))
     content_admin = db.Column(db.String(300))
+    content_appeal = db.Column(db.String(300))
     status_admin = db.Column(db.String(300),default = '0')
     status_user = db.Column(db.String(300),default = '0')
 

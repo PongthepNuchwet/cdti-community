@@ -7,6 +7,8 @@ document.addEventListener('scroll', function(e) {
     }
 });
 var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port + '/feeds');
+
+
 var imagePath = [];
 var friend_recommend = [];
 
@@ -471,34 +473,50 @@ function timeAgo(dateParam) {
     return getFormattedDate(date); // 10. January 2017. at 10:20
 }
 
+socket.on("newFeedError", (reason) => {
+    alertMini.fire({
+        icon: 'error',
+        title: 'Failed to create feed.'
+    })
+});
+socket.on("newFeedSuccess", async(reason) => {
+    let target = document.getElementById('newFeed-upload-btn')
+    console.log("🚀 ~ file: feeds.js ~ line 508 ~ socket.on ~ reason newFeedSuccess", reason)
+    target.innerHTML = `<i class="bi bi-link-45deg"></i> Post It.`
+    document.getElementById("newFeed-content").value = "";
+    myDropzone.removeAllFiles(true);
+    feedsOrganize.feedsInterrup(reason, 'top')
+    alertMini.fire({
+        icon: 'success',
+        title: 'Successfully created the feed.'
+    })
+});
 
 let myDropzone = new Dropzone("#myDropzone", {
     init: function() {
         dz = this;
+        let target = document.getElementById('newFeed-upload-btn')
         document.getElementById("newFeed-upload-btn").addEventListener("click", function handler(e) {
             e.preventDefault();
-            dz.processQueue();
+            target.innerHTML = `<div class="spinner-border text-light" role="status">
+            <span class="visually-hidden">Loading...</span>
+          </div>`
+            console.log("newFeed-upload-btn", myDropzone.files.length)
+            if (myDropzone.files.length > 0) {
+                dz.processQueue();
+            } else {
+                socket.emit("newFeed", { imagePath: '', content: document.getElementById("newFeed-content").value });
+            }
+
+
         });
         this.on("success", async function(file, responseText) {
             imagePath = responseText.imgPath
+            console.log("🚀 ~ file: feeds.js ~ line 497 ~ this.on ~ responseText.imgPath", responseText.imgPath)
         });
         this.on("queuecomplete", async function(file) {
             socket.emit("newFeed", { imagePath: imagePath, content: document.getElementById("newFeed-content").value });
-            socket.on("newFeedError", (reason) => {
-                alertMini.fire({
-                    icon: 'error',
-                    title: 'Failed to create feed.'
-                })
-            });
-            socket.on("newFeedSuccess", async(reason) => {
-                document.getElementById("newFeed-content").value = "";
-                this.removeAllFiles(true);
-                feedsOrganize.feedsInterrup(reason, 'top')
-                alertMini.fire({
-                    icon: 'success',
-                    title: 'Successfully created the feed.'
-                })
-            });
+
 
         });
 
@@ -642,8 +660,8 @@ async function feed_option(id) {
     mySwal.fire({
         title: '<strong>Option</strong>',
         html: `<div class="feed-option">
-        <button onclick="report('${id}');">Report</button>
-        <button onclick="feed_delete('${id}');">Delete</button>
+        <button onclick="report('${id}');" class='report'>Report</button>
+        <button onclick="feed_delete('${id}');" class='delete'>Delete</button>
     </div>`,
         showCloseButton: false,
         showCancelButton: false,
@@ -798,27 +816,31 @@ class FeedsOrganize {
     createImages(data) {
         let elm = document.createElement('div')
         elm.setAttribute('class', `feedImg`)
-        let count = 0
-        let html = `
-            <div id="feed_${data.id}_image" class="carousel slide" data-bs-interval="false" data-bs-ride="carousel">
-                <div class="carousel-inner">`;
         let image = this.formatImgData(data.img1);
-        for (let i = 0; i < image.length; i++) {
-            html += this.createImage(image[i], count)
-            count += 1
-        }
+        console.log("🚀 ~ file: feeds.js ~ line 818 ~ FeedsOrganize ~ createImages ~ image.length", image.length, data.img1)
 
-        html += `</div>
-        <button class="carousel-control-prev" type="button" data-bs-target="#feed_${data.id}_image" data-bs-slide="prev">
-          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-          <span class="visually-hidden">Previous</span>
-        </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#feed_${data.id}_image" data-bs-slide="next">
-          <span class="carousel-control-next-icon" aria-hidden="true"></span>
-          <span class="visually-hidden">Next</span>
-        </button>
-    </div>`;
-        elm.innerHTML = html
+        if (image.length > 0) {
+            let count = 0
+            let html = `
+                <div id="feed_${data.id}_image" class="carousel slide" data-bs-interval="false" data-bs-ride="carousel">
+                    <div class="carousel-inner">`;
+            for (let i = 0; i < image.length; i++) {
+                html += this.createImage(image[i], count)
+                count += 1
+            }
+
+            html += `</div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#feed_${data.id}_image" data-bs-slide="prev">
+              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#feed_${data.id}_image" data-bs-slide="next">
+              <span class="carousel-control-next-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Next</span>
+            </button>
+        </div>`;
+            elm.innerHTML = html
+        }
         return elm
     }
 
@@ -1066,7 +1088,10 @@ class FeedsOrganize {
             let feed = await this.createCard(data[i])
             if (tp === 'top') {
                 await this.feeds.splice(0, 0, data[i])
-                if (this.feeds.length > 0) {
+                console.log("🚀 ~ file: feeds.js ~ line 1070 ~ FeedsOrganize ~ feedsInterrup ~ this.feeds.length", this.feeds)
+                console.log("🚀 ~ file: feeds.js ~ line 1070 ~ FeedsOrganize ~ feedsInterrup ~ this.feeds.length", this.feeds.length)
+                console.log("🚀 ~ file: feeds.js ~ line 1072 ~ FeedsOrganize ~ feedsInterrup ~ this.container.children.length", this.container.children.length)
+                if (this.container.children.length > 0) {
                     let target = await document.getElementById(`feed_id_${this.feeds[1].id}`)
                     this.container.insertBefore(feed, target)
                 } else {
@@ -1111,11 +1136,20 @@ var feedsOrganize = new FeedsOrganize();
 
 async function Comment(id) {
     let content = await document.getElementById(`feed_${id}_inputComment`).value
-    console.log(content)
-    await socket.emit("comment", {
-        feed_id: id,
-        content: content
-    });
+    console.log(content, content.length)
+
+    if (content.length > 0) {
+        await socket.emit("comment", {
+            feed_id: id,
+            content: content
+        });
+    } else {
+        alertMini.fire({
+            icon: 'warning',
+            title: 'Comments are not empty.'
+        });
+    }
+
 }
 socket.on('feeds', async(msg) => {
     await feedsOrganize.add(msg)
@@ -1264,4 +1298,8 @@ socket.on('concacts', async(msg) => {
 
 socket.on('concacts_interrupt', async(msg) => {
     await FriendConOrganize.Interrupt(msg);
+});
+socket.on('ban', async(msg) => {
+    console.log("ban")
+
 });

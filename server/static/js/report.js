@@ -71,6 +71,22 @@ class Report {
         this.elm_ban = document.getElementById('ban')
         this.elm_input = document.getElementById('input')
     }
+
+    createNone() {
+        let elm = document.createElement('div')
+        elm.setAttribute('class', `h-none`)
+        elm.innerHTML = 'None'
+        this.h_report_container.appendChild(elm)
+    }
+
+    NotFound() {
+        this.removeChild()
+        this.elm_ban.disabled = true
+        this.elm_input.disabled = true
+        this.user_email = document.getElementById("user_email").innerHTML = '-'
+        this.content = document.getElementById("content").innerHTML = '-'
+        this.createNone()
+    }
     find_report_index(id) {
         return this.reports.findIndex(report => report.id == id)
     }
@@ -158,7 +174,9 @@ class Report {
             });
 
         }
-        if (data.status == '0') {
+        console.log("🚀 ~ file: report.js ~ line 162 ~ Report ~ open ~ data.status", data.status)
+        if (data.status_admin == '0') {
+
             list.classList.remove('active')
         }
 
@@ -179,7 +197,6 @@ class Report {
         });
     }
     unBan_success(id) {
-        console.log("🚀 ~ file: report.js ~ line 168 ~ Report ~ unBan_success ~ id", id)
         this.elm_input.value = ''
         this.elm_ban.innerHTML = 'Ban'
         this.elm_ban.classList.remove('Unban')
@@ -189,22 +206,34 @@ class Report {
         });
     }
 
+
     ban(id) {
-        console.log("🚀 ~ file: report.js ~ line 179 ~ Report ~ ban ~ id", id)
-        let index = this.find_report_index(id)
-        let val = this.elm_input.value
-        let user = this.reports[index].feed[0].user.id
-        report.emit("ban", {
-            id: id,
-            content: val,
-            user_id: user
-        });
-    }
-    unBan(id) {
-        console.log("🚀 ~ file: report.js ~ line 192 ~ Report ~ unBan ~ id", id)
         let index = this.find_report_index(id)
         let val = this.elm_input.value
         let user_id = this.reports[index].feed[0].user.id
+
+        for (let i = 0; i <= this.reports.length - 1; i++) {
+            if (this.reports[i].feed[0].user.id == user_id) {
+                this.reports[i].user.status = "2"
+            }
+        }
+
+        report.emit("ban", {
+            id: id,
+            content: val,
+            user_id: user_id
+        });
+    }
+    unBan(id) {
+        let index = this.find_report_index(id)
+        let val = this.elm_input.value
+        let user_id = this.reports[index].feed[0].user.id
+
+        for (let i = 0; i <= this.reports.length - 1; i++) {
+            if (this.reports[i].feed[0].user.id == user_id) {
+                this.reports[i].user.status = "0"
+            }
+        }
         report.emit("unBan", {
             id: id,
             content: val,
@@ -654,6 +683,7 @@ report.on('report', async(msg) => {
     reportOrganize.Organize()
 });
 report.on('reportNotFound', async(msg) => {
+    reportOrganize.NotFound()
     console.log("reportNotFound", msg)
 });
 
