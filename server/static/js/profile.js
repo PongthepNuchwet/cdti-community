@@ -5,6 +5,17 @@ console.log("uid", id)
 
 var feeds = io.connect(location.protocol + '//' + document.domain + ':' + location.port + '/feeds', { query: `page=profile&uid=${id}` });
 
+document.getElementById('btn_profile').addEventListener("click", function() {
+    document.location = `/profile/${id}`
+});
+document.getElementById('btn_follower').addEventListener("click", function() {
+    document.location = `/profile/${id}/follower`
+});
+document.getElementById('btn_following').addEventListener("click", function() {
+    document.location = `/profile/${id}/following`
+});
+
+
 async function love(id) {
     feeds.emit("love", {
         feed_id: id,
