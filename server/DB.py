@@ -18,6 +18,8 @@ class Users(db.Model, UserMixin):
     created_at = db.Column(db.DateTime(timezone=True), default=func.now())
     update_at = db.Column(db.DateTime(timezone=True), default=func.now())
 
+    banlist = ["6310301094@cdti.ac.th", "6310301095@cdti.ac.th"]
+
     feeds = db.relationship("Feeds")
     likes = db.relationship("Likes")
     comments = db.relationship("Comments")
