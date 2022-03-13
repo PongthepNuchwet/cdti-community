@@ -1,0 +1,64 @@
+@import url('https://fonts.googleapis.com/css2?family=Mitr:wght@200;300;400;500;600;700&display=swap');
+@import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css");
+@import 'globals';
+@import 'header';
+@import 'nav';
+@import 'feeds';
+@import 'profile';
+@import 'profile_header';
+.grid-content {
+    margin-top: 56px;
+}
+
+.sticky-56 {
+    position: sticky;
+    top: 56px;
+    z-index: 1020;
+}
+
+.followings-contaner {
+    background-color: white;
+    padding: 10px;
+    width: 80%;
+    margin: 10px auto;
+    border-radius: 10px;
+    .followings {
+        display: grid;
+        grid-template-columns: 50% 50%;
+        column-gap: 10px;
+        row-gap: 10px;
+        .following {
+            border: 1px solid #dedede;
+            width: 100%;
+            background-color: white;
+            border-radius: 10px;
+            padding: 10px 20px;
+            display: flex;
+            flex-direction: column;
+            row-gap: 10px;
+            .profile {
+                display: grid;
+                grid-template-columns: 20% 80%;
+                column-gap: 10px;
+                .img {
+                    align-self: center;
+                    height: 70px;
+                    width: 70px;
+                    justify-self: center;
+                    @include profile-over
+                }
+                .detail {
+                    color: $color-primary;
+                    line-height: 1;
+                    margin-bottom: 5px;
+                    font-size: 20px;
+                    display: flex;
+                    flex-direction: column;
+                    .name {}
+                    .email {}
+                    .action {}
+                }
+            }
+        }
+    }
+}

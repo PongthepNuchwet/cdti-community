@@ -19,22 +19,6 @@ header {
   padding: 3px 10px;
 }
 
-header .header-flex {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-orient: horizontal;
-  -webkit-box-direction: normal;
-      -ms-flex-direction: row;
-          flex-direction: row;
-  -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
-  -webkit-box-pack: justify;
-      -ms-flex-pack: justify;
-          justify-content: space-between;
-}
-
 header .header-flex .logo {
   display: -webkit-box;
   display: -ms-flexbox;

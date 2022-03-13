@@ -17,6 +17,7 @@ from server.socket.feeds import FeedsNamespace
 from server.socket.report import ReportNamespace
 from server.socket.banlist import BanlistNamespace
 from server.socket.follower import FollowerNamespace
+from server.socket.following import FollowingNamespace
 from server.model.User import UserModel
 from server.model.Feed import FeedModel
 from server.model.Follow import FollowModel
@@ -27,13 +28,6 @@ from server.model.Report import ReportModel
 
 db = SQLAlchemy(session_options={"autoflush": True})
 DB_NAME = "database.db"
-
-# def randomData(feed_model,like_model,comment_model) :
-#     feeds = feed_model.get_feeds_by_in_uid(1)
-#     for data in feeds :
-#         # for i in range(0.9):
-#         like_model.new(feed_id=data['feed_id'], user_id=1)
-#         comment_model.new(feed_id=data['feed_id'], user_id=1,content="AAAAAA")
 
 
 def create_app():
@@ -52,8 +46,6 @@ def create_app():
     like_model = LikeModel(db, model=Likes)
     comment_model = CommentModel(db, model=Comments)
     report_model = ReportModel(db, model=ReportDB)
-
-    # randomData(feed_model,like_model,comment_model)
 
     login_manager = LoginManager()
     login_manager.login_view = "auth.sign_up"
@@ -88,6 +80,8 @@ def create_app():
         namespace="/banlist", db=db, Feed=feed_model, Follow=follow_model, Like=like_model, Comment=comment_model, User=user_model, Report=report_model, storage=storage,token=user['idToken']))
     socketio.on_namespace(FollowerNamespace(
         namespace="/follower", db=db, Feed=feed_model, Follow=follow_model, Like=like_model, Comment=comment_model, User=user_model, Report=report_model, storage=storage,token=user['idToken']))
+    socketio.on_namespace(FollowingNamespace(
+        namespace="/following", db=db, Feed=feed_model, Follow=follow_model, Like=like_model, Comment=comment_model, User=user_model, Report=report_model, storage=storage,token=user['idToken']))
 
     api = Api(storage=storage, idToken=user['idToken'])
     auth = Auth(socketio=socketio, Users=Users, db=db, storage=storage)

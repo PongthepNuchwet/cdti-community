@@ -21,13 +21,13 @@
     {% include "components/header.html" ignore missing %}
     <div class="container-xxl animate__animated animate__fadeIn" style="min-height: 100vh;">
         <div class="row grid-content">
-            <div class="col-3 px-3">
+            <div class="col-xl-3 col-12 px-3   d-none  d-xl-block">
                 <div class="sticky-56">{% include "components/nav.html" ignore missing %}</div>
             </div>
-            <div class="col-6">
+            <div class="col-xl-6  col-12">
                 {% include "components/newFeed.html" ignore missing %} {% include "components/feed.html" ignore missing %}
             </div>
-            <div class="col-3">
+            <div class="col-xl-3 col-12   d-none d-xl-block">
                 <div class="sticky-56"> {% include "components/recommend.html" %}{% include "components/requests.html" ignore missing %} {% include "components/contacts.html" ignore missing %}
                 </div>
             </div>
