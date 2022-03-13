@@ -105,6 +105,13 @@ def Auth(socketio, Users, db,storage):
         login_user(user, remember=True)
         return redirect(url_for("feeds.home"))
 
+    @auth.route("/banpage", methods=["GET", "POST"])
+    def banpage():
+        return render_template("banpage.html")
+    
+    @auth.route("/reports", methods=["GET", "POST"])
+    def reports():
+        return render_template("reports.html")
 
     @auth.route("/login", methods=["GET", "POST"])
     def login():
@@ -112,21 +119,32 @@ def Auth(socketio, Users, db,storage):
             email = request.form.get("email")
             password = request.form.get("password")
             user = Users.query.filter_by(email=email).first()
+            idAdmin = ['Dream123@gmail.com']
+
             if user:
-                if check_password_hash(user.password, password):
-                    flash("Logged in successfully!", category="success")
+                if user.status == "2":
+                    session["email"] = user.email
+                    session["uProfile"] = user.profile if user.profile is not None else ""
+                    return redirect(url_for("auth.banpage"))
+
+                elif check_password_hash(user.password, password):
+                    flash("Logout in successfully!", category="success")
                     session["uId"] = user.id
                     session["uName"] = user.fullName
                     session["email"] = user.email
                     session["uProfile"] = user.profile if user.profile is not None else ""
                     login_user(user, remember=True)
-                    return redirect(url_for("feeds.home"))
-                else:
-                    flash("Incorrect password ,try align", category="error")
-            else:
-                flash("Email does not exist", category="error")
+                    if email in idAdmin:
+                        return redirect(url_for("auth.reports"))
+                    else:   
+                        return redirect(url_for("feeds.home"))
 
-        return render_template("feeds.html")
+                else:
+                    flash("Incorrect password ,try again", category="error")
+            else:
+                flash("Can't find your email", category="error")
+
+        return redirect(url_for("auth.sign_up"))
 
     @auth.route("/logout")
     def logout():
