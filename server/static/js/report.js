@@ -90,7 +90,7 @@ class Report {
     createNone() {
         let elm = document.createElement('div')
         elm.setAttribute('class', `h-none`)
-        elm.innerHTML = 'None'
+        elm.innerHTML = '<button type="submit" disabled id="ban" class="btn btn-primary mb-3" style="background-color:blue; border-color:blue; color:white">No sent report.</button>'
         this.h_report_container.appendChild(elm)
     }
 
