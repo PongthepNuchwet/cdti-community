@@ -105,6 +105,9 @@ def Auth(socketio, Users, db,storage):
         login_user(user, remember=True)
         return redirect(url_for("feeds.home"))
 
+    @auth.route("/banpage", methods=["GET", "POST"])
+    def banpage():
+        return render_template("banpage.html")
 
     @auth.route("/login", methods=["GET", "POST"])
     def login():
@@ -112,11 +115,12 @@ def Auth(socketio, Users, db,storage):
             email = request.form.get("email")
             password = request.form.get("password")
             user = Users.query.filter_by(email=email).first()
-            if email in Users.banlist:
-                return render_template("reports.html")
 
-            elif user:
-                if check_password_hash(user.password, password):
+            if user:
+                if user.status == "2":
+                    return redirect(url_for("auth.banpage"))
+
+                elif check_password_hash(user.password, password):
                     flash("Logout in successfully!", category="success")
                     session["uId"] = user.id
                     session["uName"] = user.fullName
