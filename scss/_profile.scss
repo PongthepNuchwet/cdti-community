@@ -9,6 +9,17 @@
     border-radius: 20px;
     }
 
+.post_box{
+    width: auto;
+    height: auto;
+    background-color: white;
+    word-wrap: break-word; /* words won't go from the boundry */  
+	  /* top, left, bottom*/ 
+	  padding: 30px 30px 30px;
+    color: black; 
+    border-radius: 20px;
+    }
+
 .block {
   display: block;
   width: 100%;
@@ -27,3 +38,9 @@
     color: #867d7e;
     }
 
+.center {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 50%;
+}
