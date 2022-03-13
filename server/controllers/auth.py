@@ -118,6 +118,8 @@ def Auth(socketio, Users, db,storage):
 
             if user:
                 if user.status == "2":
+                    session["email"] = user.email
+                    session["uProfile"] = user.profile if user.profile is not None else ""
                     return redirect(url_for("auth.banpage"))
 
                 elif check_password_hash(user.password, password):
