@@ -108,6 +108,10 @@ def Auth(socketio, Users, db,storage):
     @auth.route("/banpage", methods=["GET", "POST"])
     def banpage():
         return render_template("banpage.html")
+    
+    @auth.route("/reports", methods=["GET", "POST"])
+    def reports():
+        return render_template("reports.html")
 
     @auth.route("/login", methods=["GET", "POST"])
     def login():
@@ -131,10 +135,9 @@ def Auth(socketio, Users, db,storage):
                     session["uProfile"] = user.profile if user.profile is not None else ""
                     login_user(user, remember=True)
                     if email in idAdmin:
-                        return render_template("reports.html")
-                    else:
+                        return redirect(url_for("auth.reports"))
+                    else:   
                         return redirect(url_for("feeds.home"))
-            
 
                 else:
                     flash("Incorrect password ,try again", category="error")
