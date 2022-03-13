@@ -4,12 +4,12 @@ from werkzeug.utils import secure_filename
 import os
 import uuid
 
-def Friend():
-    friend = Blueprint("friends", __name__)
+def Friends():
+    friends = Blueprint("friends", __name__)
 
-    @friend.route("/")
+    @friends.route("/")
     @login_required
-    def home():
+    def friends():
         return render_template("friends.html")
 
-    return friend
+    return friends
