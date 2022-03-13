@@ -7,9 +7,9 @@ import uuid
 def Profile():
     profile = Blueprint("profile", __name__)
 
-    @profile.route("/")
+    @profile.route("/<uid>")
     #@login_required
-    def home():
+    def home(uid):
         return render_template("profile.html")
 
     @profile.route("/follower")

@@ -70,7 +70,22 @@ class Report {
         this.time = document.getElementById("time")
         this.elm_ban = document.getElementById('ban')
         this.elm_input = document.getElementById('input')
+        this.temp_highlight
     }
+
+    highlight(elm) {
+        console.log(this.temp_highlight)
+        if (this.temp_highlight !== undefined) {
+            this.temp_highlight.classList.remove('open')
+            this.temp_highlight = elm
+            this.temp_highlight.classList.add('open')
+        } else {
+            this.temp_highlight = elm
+            this.temp_highlight.classList.add('open')
+        }
+
+    }
+
 
     createNone() {
         let elm = document.createElement('div')
@@ -150,9 +165,11 @@ class Report {
         report.emit("open", {
             id: id,
         });
+
         this.elm_ban.disabled = false
         this.elm_input.disabled = false
         let list = document.getElementById(`h_report_${id}`)
+        this.highlight(list)
         let index = this.find_report_index(id)
         let data = this.reports[index]
         console.log("🚀 ~ file: report.js ~ line 143 ~ Report ~ open ~ data.status", data.status)
@@ -176,7 +193,6 @@ class Report {
         }
         console.log("🚀 ~ file: report.js ~ line 162 ~ Report ~ open ~ data.status", data.status)
         if (data.status_admin == '0') {
-
             list.classList.remove('active')
         }
 
