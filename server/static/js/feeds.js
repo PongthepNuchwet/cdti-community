@@ -6,7 +6,7 @@ document.addEventListener('scroll', function(e) {
         console.log("end");
     }
 });
-var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port + '/feeds');
+var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port + '/feeds', { query: 'page=feeds' });
 
 
 var imagePath = [];
@@ -777,6 +777,7 @@ class FeedsOrganize {
     }
 
     add(data) {
+        console.log("🚀 ~ file: feeds.js ~ line 780 ~ FeedsOrganize ~ add ~ data", data)
         for (let i = 0; i < data.length; i++) {
             this.queue.push(data[i])
         }
@@ -1301,5 +1302,4 @@ socket.on('concacts_interrupt', async(msg) => {
 });
 socket.on('ban', async(msg) => {
     console.log("ban")
-
 });

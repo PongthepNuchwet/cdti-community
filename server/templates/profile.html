@@ -22,13 +22,18 @@
 
 <body>
     {% include "components/header.html" ignore missing %}
-    <div class="container-xxl Fanimate__animated animate__fadeIn" style="min-height: 100vh;">
+    <div class="container-xxl " style="min-height: 100vh;">
         <div class="row grid-content">
             <div class="col-3 px-3">
                 <div class="sticky-56">{% include "components/nav.html" ignore missing %}</div>
             </div>
             <div class="col-9">
-                <div class="sticky-56"> {% include "components/profile_header.html" %}</div>
+                <div class="row">
+                    {% include "components/profile_header.html" %}
+                </div>
+                <div class="row">
+                    {% include "components/feed.html" ignore missing %}
+                </div>
             </div>
         </div>
 
@@ -52,6 +57,7 @@
 
         <!-- sweetalert -->
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.4/dist/sweetalert2.all.min.js" integrity="sha256-COxwIctJg+4YcOK90L6sFf84Z18G3tTmqfK98vtnz2Q=" crossorigin="anonymous"></script>
+        <script type="text/javascript" src="{{ url_for('static', filename='js/profile.js')}}"></script>
 
 
 </body>
