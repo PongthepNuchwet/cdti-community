@@ -817,3 +817,84 @@ header .header-flex .profile button span {
   top: 56px;
   z-index: 1020;
 }
+
+.followers-contaner {
+  background-color: red;
+  width: 80%;
+  margin: 0 auto;
+}
+
+.followers-contaner .followers {
+  display: -ms-grid;
+  display: grid;
+  -ms-grid-columns: 50% 50%;
+      grid-template-columns: 50% 50%;
+  -webkit-column-gap: 10px;
+          column-gap: 10px;
+  row-gap: 10px;
+}
+
+.followers-contaner .followers .follower {
+  border: 1px solid #949494;
+  width: 100%;
+  background-color: white;
+  border-radius: 10px;
+  padding: 10px 20px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  row-gap: 10px;
+}
+
+.followers-contaner .followers .follower .profile {
+  display: -ms-grid;
+  display: grid;
+  -ms-grid-columns: 10% 90%;
+      grid-template-columns: 10% 90%;
+  -webkit-column-gap: 10px;
+          column-gap: 10px;
+}
+
+.followers-contaner .followers .follower .profile .img {
+  height: 35px;
+  width: 35px;
+  justify-self: center;
+  border-radius: 20%;
+  overflow: hidden;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  background-color: #B1BBD0;
+}
+
+.followers-contaner .followers .follower .profile .img img {
+  width: 100%;
+}
+
+.followers-contaner .followers .follower .profile .detail {
+  color: #00BFFF;
+  line-height: 1;
+  margin-bottom: 5px;
+  font-size: 20px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+}
