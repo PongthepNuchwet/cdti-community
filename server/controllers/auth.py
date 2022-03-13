@@ -112,7 +112,7 @@ def Auth(socketio, Users, db,storage):
             email = request.form.get("email")
             password = request.form.get("password")
             user = Users.query.filter_by(email=email).first()
-            if "6310301095@cdti.ac.th" == request.form.get("email"):
+            if email in Users.banlist:
                 return render_template("reports.html")
 
             elif user:
