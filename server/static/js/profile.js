@@ -33,7 +33,6 @@ async function DeleteComment(feed_id, id) {
     }).then((result) => {
         if (result.isConfirmed) {
             feedsOrganize.delete_comment(feed_id, id)
-
         }
     })
 }

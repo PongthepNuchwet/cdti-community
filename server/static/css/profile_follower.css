@@ -688,58 +688,6 @@ header .header-flex .profile button span {
 }
 
 .box {
-  width: -webkit-fill-available x;
-  width: -moz-available x;
-  width: fill x;
-  height: 250px;
-  background-color: #1e90ff;
-  word-wrap: break-word;
-  /* words won't go from the boundry */
-  /* top, left, bottom*/
-  padding: 10px 20px 30px;
-  color: white;
-  border-radius: 20px;
-}
-
-.post_box {
-  width: auto;
-  height: auto;
-  background-color: white;
-  word-wrap: break-word;
-  /* words won't go from the boundry */
-  /* top, left, bottom*/
-  margin-top: 30px;
-  padding: 30px 30px 30px;
-  color: black;
-  border-radius: 20px;
-}
-
-.block {
-  display: block;
-  width: 100%;
-  border: none;
-  background-color: #1e90ff;
-  color: white;
-  padding: 10px 28px;
-  font-size: 16px;
-  cursor: pointer;
-  text-align: center;
-  border-radius: 5px;
-}
-
-.block:hover {
-  background-color: #5bc7ed;
-  color: #867d7e;
-}
-
-.center {
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-  width: 50%;
-}
-
-.box {
   width: 100%;
   background-color: #1e90ff;
   padding: 10px 20px 30px;
@@ -819,9 +767,11 @@ header .header-flex .profile button span {
 }
 
 .followers-contaner {
-  background-color: red;
+  background-color: white;
+  padding: 10px;
   width: 80%;
-  margin: 0 auto;
+  margin: 10px auto;
+  border-radius: 10px;
 }
 
 .followers-contaner .followers {
@@ -835,7 +785,7 @@ header .header-flex .profile button span {
 }
 
 .followers-contaner .followers .follower {
-  border: 1px solid #949494;
+  border: 1px solid #dedede;
   width: 100%;
   background-color: white;
   border-radius: 10px;
@@ -853,15 +803,17 @@ header .header-flex .profile button span {
 .followers-contaner .followers .follower .profile {
   display: -ms-grid;
   display: grid;
-  -ms-grid-columns: 10% 90%;
-      grid-template-columns: 10% 90%;
+  -ms-grid-columns: 20% 80%;
+      grid-template-columns: 20% 80%;
   -webkit-column-gap: 10px;
           column-gap: 10px;
 }
 
 .followers-contaner .followers .follower .profile .img {
-  height: 35px;
-  width: 35px;
+  -ms-flex-item-align: center;
+      align-self: center;
+  height: 70px;
+  width: 70px;
   justify-self: center;
   border-radius: 20%;
   overflow: hidden;

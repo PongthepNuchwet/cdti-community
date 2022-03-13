@@ -16,6 +16,76 @@ document.getElementById('btn_following').addEventListener("click", function() {
 });
 
 
+class FollowerOrganize {
+    constructor() {
+        this.followers = []
+        this.container = document.getElementById('followers')
+    }
+
+    find_follower_index(id) {
+        return this.followers.findIndex(follower => follower.id == id)
+    }
+
+    add(data) {
+        console.log("🚀 ~ file: follower.js ~ line 29 ~ follower ~ add ~ data", data)
+        if (data.lenght > 0) {
+            for (let i = 0; i <= data.lenght - 1; i++) {
+                if (this.find_follower_index(data[i].id) > 0) {
+                    this.followers.push(data[i])
+                }
+            }
+        }
+        console.log("🚀 ~ file: follower.js ~ line 33 ~ follower ~ add ~ this.followers", this.followers)
+    }
+
+    createElement(data) {
+        let elm = document.createElement('div')
+        elm.setAttribute('id', `followers_${data.id}`)
+        let html = `
+        <div class="profile">
+            <div class="img">
+                <img src="/api/profile?file=${data.profile}" alt="">
+            </div>
+            <div class="detail">
+                <div class="name" id="followers_1_name">${data.profile}</div>
+                <div class="email" id="followers_1_email">${data.profile}</div>
+                <div class="action">
+                    <button onclick="follower(${data.id});">
+                        Follower
+                    </button>
+                </div>
+            </div>
+        </div>
+        `
+        elm += html
+        return elm
+    }
+
+    execute() {
+        this.removeChild()
+        for (let i = 0; i <= this.followers.length - 1; i++) {
+            if (document.getElementById(`followers_${this.followers[i].id}`) !== undefined) {
+                let follower = this.createElement(this.followers[i])
+                this.container.appendChild(follower)
+            }
+        }
+    }
+
+    removeChild() {
+        if (this.followers.length < 1) {
+            if (this.container.children.length > 0) {
+                let len = this.container.children.length
+                for (let i = 0; i < len; i++) {
+                    this.container.removeChild(this.container.children[0]);
+                }
+            }
+        }
+
+    }
+}
+
+var followerOrganize = new FollowerOrganize()
+
 var alertMini = Swal.mixin({
     toast: true,
     position: 'top-end',
@@ -103,4 +173,9 @@ follower.on('profile_notFound', async(msg) => {
 
 follower.on('ban', async(msg) => {
     console.log("ban")
+});
+follower.on('follower', async(msg) => {
+    console.log("follower", msg)
+    await followerOrganize.add(msg)
+    await followerOrganize.execute()
 });

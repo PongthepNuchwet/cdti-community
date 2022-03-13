@@ -17,16 +17,18 @@
 }
 
 .followers-contaner {
-    background-color: red;
+    background-color: white;
+    padding: 10px;
     width: 80%;
-    margin: 0 auto;
+    margin: 10px auto;
+    border-radius: 10px;
     .followers {
         display: grid;
         grid-template-columns: 50% 50%;
         column-gap: 10px;
         row-gap: 10px;
         .follower {
-            border: 1px solid #949494;
+            border: 1px solid #dedede;
             width: 100%;
             background-color: white;
             border-radius: 10px;
@@ -36,11 +38,12 @@
             row-gap: 10px;
             .profile {
                 display: grid;
-                grid-template-columns: 10% 90%;
+                grid-template-columns: 20% 80%;
                 column-gap: 10px;
                 .img {
-                    height: 35px;
-                    width: 35px;
+                    align-self: center;
+                    height: 70px;
+                    width: 70px;
                     justify-self: center;
                     @include profile-over
                 }

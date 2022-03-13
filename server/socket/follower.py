@@ -51,23 +51,28 @@ class FollowerNamespace(Namespace):
         except IndexError:
             print(IndexError)
 
-    def concacts(self, follwing):
-        concacts = self.User.get_users_by_in_uid(follwing)
-        emit("concacts", concacts, broadcast=False)
 
     def default_json(self, data):
         return json.loads(json.dumps(data, default=json_util.default))
 
+    def emiting_follower(self,uid):
+        followers = self.Follow.get_follower_by_uid_all(uid)
+        users = []
+        for follower in followers :
+            users.append(self.User.get_user_by_uid(follower))
+        emit("follower", self.default_json(users), broadcast=False)
+
     def on_connect(self):
         print("page", request.args.get('page'))
+        uid = request.args.get('uid')
+        print("follower uid",uid)
         if request.args.get('page') == 'follower':
             self.update_socket_id(
                 namespace=request.args.get('page'), sid=request.sid)
             uid = request.args.get('uid')
             print("profile", request.args.get('uid'))
             self.emiting_profile(uid=uid)
-            # self.emiting_feeds(page='profile', uid=uid)
-            # print("end - start", end - start)
+            self.emiting_follower(uid)
 
     def on_disconnect(self):
         self.remove_socket_id()
