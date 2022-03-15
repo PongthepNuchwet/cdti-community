@@ -3,7 +3,6 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_socketio import SocketIO
 from os import path
 from flask_login import LoginManager
-from dotenv import dotenv_values, load_dotenv
 
 import pyrebase
 
@@ -24,9 +23,10 @@ from server.model.Follow import FollowModel
 from server.model.Like import LikeModel
 from server.model.Comment import CommentModel
 from server.model.Report import ReportModel
+from server.DB import db, Users, Feeds, Likes, Comments, Follow, Report as ReportDB
 
 
-db = SQLAlchemy(session_options={"autoflush": True})
+# db = SQLAlchemy(session_options={"autoflush": True})
 DB_NAME = "database.db"
 
 
@@ -37,7 +37,7 @@ def create_app():
     app.config["SQLALCHEMY_DATABASE_URI"] = f"sqlite:///{DB_NAME}"
 
     db.init_app(app)
-    from server.DB import Users, Feeds, Likes, Comments, Follow, Report as ReportDB
+    
     create_database(app)
 
     user_model = UserModel(db, model=Users)

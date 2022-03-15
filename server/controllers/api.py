@@ -13,6 +13,7 @@ def Api(storage, idToken):
         file = request.args.get('file')
         if 'profile/' in file :
             url = storage.child(file).get_url(idToken)
+            print(url)
         else :
             url = file
         response = requests.get(url)
@@ -32,6 +33,5 @@ def Api(storage, idToken):
             BytesIO(response.content),
             mimetype='image/jpeg',
             as_attachment=False)
-
     return api
 
