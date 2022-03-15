@@ -59,7 +59,7 @@ class FollowerOrganize {
         let html = `
         <div class="profile">
             <div class="img">
-                <img src="/api/profile?file=${data.profile}" alt="">
+                <img src="${data.profile}" alt="">
             </div>
             <div class="detail">
                 <div class="name" id="followers_1_name">${data.fullName}</div>
@@ -183,7 +183,7 @@ follower.on('profile', async(msg) => {
     followerOrganize.uid = msg.uid
     document.getElementById("name").innerHTML = profile.fullName
     document.getElementById("email").innerHTML = profile.email
-    document.getElementById("image").setAttribute('src', '/api/profile?file=' + profile.profile)
+    document.getElementById("image").setAttribute('src', '' + profile.profile)
 });
 follower.on('profile_notFound', async(msg) => {
     console.log("profile_notFound")

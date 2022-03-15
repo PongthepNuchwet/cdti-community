@@ -378,7 +378,7 @@ class FeedsOrganize {
         let html = ''
         if (data !== undefined) {
             html = `<div class="img">
-            <img class="img" src="/api/profile?file=${data.user.profile}" alt="">
+            <img class="img" src="${data.user.profile}" alt="">
         </div>
         <div class="text">
             <div class="profile">
@@ -430,7 +430,7 @@ class FeedsOrganize {
         let elm = document.createElement('div')
         elm.setAttribute('class', `feedHead `)
         let html = `<div class="img">
-            <img class="img" src="/api/profile?file=${data.user.profile}" alt="">
+            <img class="img" src="${data.user.profile}" alt="">
         </div>
         <div class="text">
             <div class="name">
@@ -501,7 +501,7 @@ class FeedsOrganize {
         let elm = document.createElement('div')
         elm.setAttribute('class', `comment `)
         let html = `<div class="img">
-            <img class="img" src="/api/profile?file=${profile.profile}" alt="">
+            <img class="img" src="${profile.profile}" alt="">
         </div>
         <div class="user-input-comment">
             <textarea name="feed_${data.id}_inputComment" class="" id="feed_${data.id}_inputComment" placeholder="Write a comment..."></textarea>
@@ -709,7 +709,7 @@ feeds.on('profile', async(msg) => {
     profile.profile = msg.profile
     document.getElementById("name").innerHTML = profile.fullName
     document.getElementById("email").innerHTML = profile.email
-    document.getElementById("image").setAttribute('src', '/api/profile?file=' + profile.profile)
+    document.getElementById("image").setAttribute('src', '' + profile.profile)
 });
 feeds.on('profile_notFound', async(msg) => {
     console.log("profile_notFound")

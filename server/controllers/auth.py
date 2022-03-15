@@ -49,7 +49,7 @@ def new_name(name) :
 def new_namegg() :
     return str(uuid.uuid4()) + '.jpg'
 
-def Auth(socketio, Users, db,storage):
+def Auth(socketio, Users, db,storage,idToken):
     auth = Blueprint("auth", __name__)
 
     @auth.route("/")
@@ -80,11 +80,6 @@ def Auth(socketio, Users, db,storage):
             request=token_request,
             audience=GOOGLE_CLIENT_ID
         )
-
-        #response = requests.get(id_info.get("picture"))
-        #newName = secure_filename(new_namegg())
-       # profilePath = f"profile/{newName}"
-        #storage.child(profilePath).put(response.content)
 
         user = Users.query.filter_by(email=id_info.get("email")).first()
         if not user:
@@ -156,10 +151,9 @@ def Auth(socketio, Users, db,storage):
         if request.method == "POST":
             f = request.files.get("file")
             newName = secure_filename(new_name(f.filename))
-            profilePath = f"profile/{newName}"
-            storage.child(profilePath).put(f)
-            # f.save(os.path.join("server/static/profile/", newName))
-
+            path = f"profile/{newName}"
+            storage.child(path).put(f)
+            imagepath = f"https://firebasestorage.googleapis.com/v0/b/cdti-community.appspot.com/o/profile%2F{newName}?alt=media"
             email = request.form.get("email")
             fullName = request.form.get("fullName")
             password1 = request.form.get("password1")
@@ -180,7 +174,7 @@ def Auth(socketio, Users, db,storage):
                 flash("Password must be at least 7 characters.", category="error")
             else:
                 new_user = Users(
-                    profile=profilePath,
+                    profile=imagepath,
                     email=email,
                     fullName=fullName,
                     password=generate_password_hash(

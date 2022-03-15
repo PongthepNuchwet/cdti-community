@@ -1,7 +1,7 @@
 <div class="nav ">
     <div class="profile">
         <div class="img">
-            <img class="img" src="/api/profile?file={{session['uProfile']}}" alt="">
+            <img class="img" src="{{session['uProfile']}}" alt="">
         </div>
         <div class="text">
             <div class="name">
@@ -13,18 +13,29 @@
         </div>
     </div>
     <nav>
+        {% if request.endpoint == 'feeds.home'%}
         <div class="nav-list action">
-            <a href="/feeds"><i class="bi bi-card-heading"></i> News feed</a>
-        </div>
-
-        <div class="nav-list">
-            <a href="#"><i class="bi bi-people-fill"></i> People</a>
-        </div>
-        <div class="nav-list">
-            <a href="/profile/{{ session['uId'] }}"><i class="bi bi-person-lines-fill"></i> profile</a>
-        </div>
-        <div class="nav-list logout">
-            <a href="{{ url_for('auth.logout')}}"><i class="bi bi-door-open"></i> logout</a>
-        </div>
+            {% else %}
+            <div class="nav-list">
+                {% endif %}
+                <a href="/feeds"><i class="bi bi-card-heading"></i> News feed</a>
+            </div>
+            {% if request.endpoint == 'friends.home'%}
+            <div class="nav-list action">
+                {% else %}
+                <div class="nav-list ">
+                    {% endif %}
+                    <a href="/friends/"><i class="bi bi-people-fill"></i> Friends</a>
+                </div>
+                {% if request.endpoint == 'profile.home'%}
+                <div class="nav-list action">
+                    {% else %}
+                    <div class="nav-list ">
+                        {% endif %}
+                        <a href="/profile/{{ session['uId'] }}"><i class="bi bi-person-lines-fill"></i> profile</a>
+                    </div>
+                    <div class="nav-list logout">
+                        <a href="{{ url_for('auth.logout')}}"><i class="bi bi-door-open"></i> logout</a>
+                    </div>
     </nav>
-</div>
+    </div>
