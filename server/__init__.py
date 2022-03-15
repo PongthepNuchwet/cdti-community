@@ -12,6 +12,7 @@ from server.controllers.feeds import Feeds as News
 from server.controllers.report import Report
 from server.controllers.banlist import Banlist
 from server.controllers.profile import Profile
+from server.controllers.friends import Friends
 from server.socket.feeds import FeedsNamespace
 from server.socket.report import ReportNamespace
 from server.socket.banlist import BanlistNamespace
@@ -89,6 +90,7 @@ def create_app():
     report = Report()
     banlist = Banlist()
     profile = Profile()
+    friends = Friends()
 
     app.register_blueprint(auth, url_prefix="/")
     app.register_blueprint(news, url_prefix="/feeds")
@@ -96,6 +98,8 @@ def create_app():
     app.register_blueprint(report, url_prefix="/report")
     app.register_blueprint(banlist, url_prefix="/banlist")
     app.register_blueprint(profile, url_prefix="/profile")
+    app.register_blueprint(friends, url_prefix="/friends")
+
 
     return app
 
