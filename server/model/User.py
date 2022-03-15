@@ -22,10 +22,11 @@ class UserModel:
         user.status_at = func.now()
         self.db.session.commit()
 
-    def update_socket_id_by_uid(self, sid, uid):
+    def update_socket_id_by_uid(self, sid, uid , namespace):
         print("update_socket_id_by_uid", sid, uid)
         user = self.User.query.filter_by(id=uid).first()
         user.socket_id = sid
+        user.namespace = namespace
         self.db.session.commit()
 
     def remove_socket_id_by_uid(self, uid):
@@ -34,11 +35,14 @@ class UserModel:
         self.db.session.commit()
 
     def get_user_by_uid(self, uid):
-        data = [
-            {"id": i.id, "profile": i.profile, "fullName": i.fullName, "email": i.email, "socket_id": i.socket_id, "status": i.status, "type": i.type} for i in
-            [self.User.query.filter_by(id=uid).first()]
-        ]
-        return data[0]
+        try :
+            data = [
+                {"id": i.id, "profile": i.profile, "fullName": i.fullName, "email": i.email, "socket_id": i.socket_id, "status": i.status, "type": i.type ,"namespace": i.namespace}  for i in
+                [self.User.query.filter_by(id=uid).first()]
+            ]
+            return data[0]
+        except:
+            return False
 
     def get_users_by_in_uid(self, uids):
         data = [

@@ -10,7 +10,7 @@ import json
 
 
 class FeedsNamespace(Namespace):
-    def __init__(self, namespace, db, Feed, Follow, Like, Comment, User, Report, storage,token):
+    def __init__(self, namespace, db, Feed, Follow, Like, Comment, User, Report, storage, token):
         super().__init__(namespace)
         self.db = db
         self.Feed = Feed
@@ -22,9 +22,15 @@ class FeedsNamespace(Namespace):
         self.storage = storage
         self.token = token
 
-    def emiting_profile(self):
-        user = self.User.get_user_by_uid(session['uId'])
-        emit("profile", user, broadcast=False)
+    def emiting_profile(self, uid=None):
+        if uid is None:
+            user = self.User.get_user_by_uid(session['uId'])
+        else:
+            user = self.User.get_user_by_uid(uid)
+        if user:
+            emit("profile", user, broadcast=False)
+        else:
+            emit("profile_notFound", broadcast=False)
 
     def emiting_friend_required(self):
         requried = self.Follow.get_uids_by_following_and_status(
@@ -42,7 +48,7 @@ class FeedsNamespace(Namespace):
     def get_socket_id_by_uid(self, uid):
         user = self.User.get_user_by_uid(uid)
         print(user)
-        return user['socket_id']
+        return user['socket_id'] ,user['namespace']
 
     def remove_socket_id(self):
         try:
@@ -50,10 +56,10 @@ class FeedsNamespace(Namespace):
         except IndexError:
             print(IndexError)
 
-    def update_socket_id(self, sid):
+    def update_socket_id(self,namespace, sid):
         print("update_socket_id")
         try:
-            self.User.update_socket_id_by_uid(sid=sid, uid=session["uId"])
+            self.User.update_socket_id_by_uid(sid=sid, uid=session["uId"],namespace='/'+namespace)
         except IndexError:
             print(IndexError)
 
@@ -97,32 +103,48 @@ class FeedsNamespace(Namespace):
             response.append(feed)
         return response
 
-    def get_feeds(self, follwing):
-        addMe = list(follwing)
-        addMe.append(session['uId'])
+    def get_feeds(self, page='feeds', follwing=None, uid=None):
+        print("get_feeds", page, follwing)
+        if page == 'feeds':
+            addMe = list(follwing)
+            addMe.append(session['uId'])
+            Feeds = self.Feed.get_feeds_by_in_uid(addMe)
+            response = self.get_detail_feed(Feeds=Feeds)
+            return response
+        elif page == 'profile':
+            print("get_feeds uid",uid)
+            Feeds = self.Feed.get_feeds_by_in_uid([uid])
+            response = self.get_detail_feed(Feeds=Feeds)
+            return response
 
-        Feeds = self.Feed.get_feeds_by_in_uid(addMe)
-
-        response = self.get_detail_feed(Feeds=Feeds)
-
-        return response
-
-    def emiting_feeds(self, follwing):
-        res = self.get_feeds(follwing)
-        emit("feeds", self.default_json(res), broadcast=False)
+    def emiting_feeds(self, page='feeds', follwing=None, uid=None):
+        if page == 'feeds':
+            res = self.get_feeds(page='feeds', follwing=follwing)
+            emit("feeds", self.default_json(res), broadcast=False)
+        elif page == 'profile':
+            res = self.get_feeds(page='profile', uid=uid)
+            emit("feeds", self.default_json(res), broadcast=False)
 
     def on_connect(self):
-        start = time.time()
-        follwing = self.Follow.get_following_by_uid_and_status_all(
-            uid=session["uId"], state=1)
-        self.emiting_feeds(follwing=follwing)
-        self.emiting_profile()
-        self.update_socket_id(request.sid)
-        self.emiting_friend_recommend()
-        self.emiting_friend_required()
-        self.concacts(follwing)
-        end = time.time()
-        print("end - start", end - start)
+        print("page", request.args.get('page'))
+        if request.args.get('page') == 'feeds':
+            # start = time.time()
+            follwing = self.Follow.get_following_by_uid_and_status_all(
+                uid=session["uId"], state=1)
+            self.emiting_feeds(page='feeds', follwing=follwing)
+            self.emiting_profile()
+            self.update_socket_id(namespace=request.args.get('page'),sid = request.sid)
+            self.emiting_friend_recommend()
+            self.emiting_friend_required()
+            self.concacts(follwing)
+            end = time.time()
+        elif request.args.get('page') == 'profile':
+            self.update_socket_id(namespace=request.args.get('page'),sid = request.sid)
+            uid = request.args.get('uid')
+            print("profile", request.args.get('uid'))
+            self.emiting_profile(uid=uid)
+            self.emiting_feeds(page='profile', uid=uid)
+            # print("end - start", end - start)
 
     def on_disconnect(self):
         self.remove_socket_id()
@@ -146,9 +168,9 @@ class FeedsNamespace(Namespace):
             emit("newFeedSuccess", res, broadcast=False)
 
     def emit_to(self, event, data, uid):
-        to = self.get_socket_id_by_uid(uid)
-        if to is not None:
-            emit(event, data, to=to)
+        sid ,namespace = self.get_socket_id_by_uid(uid)
+        if sid is not None:
+            emit(event, data, to=sid , namespace=namespace)
 
     def on_follow(self, msg):
         print("on_follow", msg)
@@ -239,15 +261,15 @@ class FeedsNamespace(Namespace):
         else:
             emit("report_success", broadcast=False)
 
-    def delete_image_firestorage(self,txt):
+    def delete_image_firestorage(self, txt):
         arr1 = txt.split('"')
-        for i in arr1 :
+        for i in arr1:
             arr2 = i.split(",")
-            for j in arr2 :
-                print('"feeds/" in  path',"feeds/" in  j)
-                if "feeds/" in  j :
-                    print("path",j)
-                    self.storage.delete(j,token=self.token)
+            for j in arr2:
+                print('"feeds/" in  path', "feeds/" in j)
+                if "feeds/" in j:
+                    print("path", j)
+                    self.storage.delete(j, token=self.token)
 
     def on_delete_feed(self, msg):
         feed = self.Feed.get_feeds_by_id(msg['feed_id'])
@@ -260,4 +282,5 @@ class FeedsNamespace(Namespace):
             emit("delete_feed_success", {
                  'feed_id': msg['feed_id']}, broadcast=False)
         else:
+            
             emit("delete_feed_error", broadcast=False)

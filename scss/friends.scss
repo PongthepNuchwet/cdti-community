@@ -3,11 +3,8 @@
 @import 'globals';
 @import 'header';
 @import 'nav';
-@import 'feeds';
-@import 'profile';
-@import 'profile_header';
-// @import 'profile_follower';
-// @import 'profile_following';
+@import 'friend';
+
 .grid-content {
     margin-top: 56px;
 }
@@ -17,3 +14,10 @@
     top: 56px;
     z-index: 1020;
 }
+
+.center {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 50%;
+  }

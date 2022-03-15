@@ -22,6 +22,11 @@ class ReportNamespace(Namespace):
         self.storage = storage
         self.token = token
 
+    def emit_to(self, event, data, uid):
+        sid, namespace = self.get_socket_id_by_uid(uid)
+        if sid is not None:
+            emit(event, data, to=sid, namespace=namespace)
+
     def default_json(self, data):
         return json.loads(json.dumps(data, default=json_util.default))
 
@@ -65,29 +70,29 @@ class ReportNamespace(Namespace):
     def get_socket_id_by_uid(self, uid):
         user = self.User.get_user_by_uid(uid)
         print(user)
-        return user['socket_id']
+        return user['socket_id'], user['namespace']
 
     def on_ban(self, msg):
         try:
             self.Report.set_status_content(msg['id'], msg['content'])
             sid = self.get_socket_id_by_uid(msg['user_id'])
-            emit('ban', to=sid ,namespace='/feeds')
-            emit('ban', to=sid ,namespace='/profile')
-            emit('ban', to=sid ,namespace='/friens')
-            self.User.set_status_user(msg['user_id'],'2')
+            if sid is not None:
+                self.emit_to("ban", "", msg['user_id'])
+            self.User.set_status_user(msg['user_id'], '2')
 
-        except:
+        except IndexError as e:
+            print(e)
             emit("ban_error", broadcast=False)
         else:
-            emit("ban_success",{"id":msg['id']}, broadcast=False)
-    
+            emit("ban_success", {"id": msg['id']}, broadcast=False)
+
     def on_unBan(self, msg):
-        print("on_unBan",msg)
+        print("on_unBan", msg)
         try:
             self.Report.set_status_content(msg['id'], msg['content'])
-            self.User.set_status_user(msg['user_id'],'0')
+            self.User.set_status_user(msg['user_id'], '0')
         except IndexError as e:
             print(e)
             emit("unBan_error", broadcast=False)
         else:
-            emit("unBan_success", {"id":msg['id']} ,broadcast=False)
+            emit("unBan_success", {"id": msg['id']}, broadcast=False)

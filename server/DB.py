@@ -15,6 +15,7 @@ class Users(db.Model, UserMixin):
     type = db.Column(db.String(150),default='system')
     fullName = db.Column(db.String(150))
     socket_id = db.Column(db.String(150))
+    namespace = db.Column(db.String(150))
     created_at = db.Column(db.DateTime(timezone=True), default=func.now())
     update_at = db.Column(db.DateTime(timezone=True), default=func.now())
 

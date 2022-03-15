@@ -13,9 +13,11 @@ from server.controllers.feeds import Feeds as News
 from server.controllers.report import Report
 from server.controllers.banlist import Banlist
 from server.controllers.profile import Profile
+from server.controllers.friends import Friends
 from server.socket.feeds import FeedsNamespace
 from server.socket.report import ReportNamespace
 from server.socket.banlist import BanlistNamespace
+from server.socket.follower import FollowerNamespace
 from server.model.User import UserModel
 from server.model.Feed import FeedModel
 from server.model.Follow import FollowModel
@@ -85,6 +87,8 @@ def create_app():
         namespace="/report", db=db, Feed=feed_model, Follow=follow_model, Like=like_model, Comment=comment_model, User=user_model, Report=report_model, storage=storage,token=user['idToken']))
     socketio.on_namespace(BanlistNamespace(
         namespace="/banlist", db=db, Feed=feed_model, Follow=follow_model, Like=like_model, Comment=comment_model, User=user_model, Report=report_model, storage=storage,token=user['idToken']))
+    socketio.on_namespace(FollowerNamespace(
+        namespace="/follower", db=db, Feed=feed_model, Follow=follow_model, Like=like_model, Comment=comment_model, User=user_model, Report=report_model, storage=storage,token=user['idToken']))
 
     api = Api(storage=storage, idToken=user['idToken'])
     auth = Auth(socketio=socketio, Users=Users, db=db, storage=storage)
@@ -92,6 +96,7 @@ def create_app():
     report = Report()
     banlist = Banlist()
     profile = Profile()
+    friends = Friends()
 
     app.register_blueprint(auth, url_prefix="/")
     app.register_blueprint(news, url_prefix="/feeds")
@@ -99,6 +104,8 @@ def create_app():
     app.register_blueprint(report, url_prefix="/report")
     app.register_blueprint(banlist, url_prefix="/banlist")
     app.register_blueprint(profile, url_prefix="/profile")
+    app.register_blueprint(friends, url_prefix="/friends")
+
 
     return app
 
