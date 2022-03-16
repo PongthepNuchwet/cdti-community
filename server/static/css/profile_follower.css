@@ -845,3 +845,40 @@ header .header-flex .profile button span {
       -ms-flex-direction: column;
           flex-direction: column;
 }
+
+.followers-contaner .followers .follower .profile .detail .action button {
+  margin-top: 10px;
+  border: none;
+  border-radius: 5px;
+  overflow: hidden;
+  padding: 3px 7px;
+  color: white;
+  background-color: #00ADE9;
+  font-size: 16px;
+  -webkit-transition: .2s;
+  transition: .2s;
+  padding: 5px 10px;
+}
+
+.followers-contaner .followers .follower .profile .detail .action button:hover {
+  background-color: #0193c4;
+}
+
+.followers-contaner .followers .follower .profile .detail .action .accept {
+  margin-top: 10px;
+  border: none;
+  border-radius: 5px;
+  overflow: hidden;
+  padding: 3px 7px;
+  color: white;
+  background-color: #00ADE9;
+  font-size: 16px;
+  -webkit-transition: .2s;
+  transition: .2s;
+  padding: 5px 10px;
+  background-color: #6c7590 !important;
+}
+
+.followers-contaner .followers .follower .profile .detail .action .accept:hover {
+  background-color: #0193c4;
+}

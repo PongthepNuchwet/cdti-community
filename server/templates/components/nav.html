@@ -20,14 +20,14 @@
                 {% endif %}
                 <a href="/feeds"><i class="bi bi-card-heading"></i> News feed</a>
             </div>
-            {% if request.endpoint == 'friends.home'%}
+            {% if request.endpoint == 'friends.search'%}
             <div class="nav-list action">
                 {% else %}
                 <div class="nav-list ">
                     {% endif %}
                     <a href="/friends/"><i class="bi bi-people-fill"></i> Friends</a>
                 </div>
-                {% if request.endpoint == 'profile.home'%}
+                {% if request.endpoint in ['profile.home','profile.follower','profile.following']%}
                 <div class="nav-list action">
                     {% else %}
                     <div class="nav-list ">

@@ -283,6 +283,30 @@ header .header-flex .profile button span {
   row-gap: 10px;
 }
 
+.friends-container .friend-control {
+  display: -ms-grid;
+  display: grid;
+  -ms-grid-columns: auto auto auto;
+      grid-template-columns: auto auto auto;
+  -webkit-column-gap: 10px;
+          column-gap: 10px;
+}
+
+.friends-container .friend-control button {
+  width: 100%;
+  background-color: #6c7590;
+  padding: 8px 10px;
+  border: none;
+  border-radius: 6px;
+  color: white;
+  -webkit-transition: 0.5s;
+  transition: 0.5s;
+}
+
+.friends-container .friend-control button:hover {
+  background-color: #545c74;
+}
+
 .friend-search .search {
   display: -webkit-box;
   display: -ms-flexbox;

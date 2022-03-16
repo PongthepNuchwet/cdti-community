@@ -1298,6 +1298,13 @@ header .header-flex .profile button span {
   row-gap: 5px;
 }
 
+.showLike .none {
+  width: 100%;
+  text-align: center;
+  color: #B1BBD0;
+  font-size: 14px;
+}
+
 .showLike .Like {
   display: -ms-grid;
   display: grid;

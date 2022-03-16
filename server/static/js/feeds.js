@@ -61,13 +61,19 @@ async function showLike(id) {
     let data = feedsOrganize.feeds[feed_index]
     console.log("🚀 ~ file: feeds.js ~ line 61 ~ showLike ~ data", data)
     let html = `<div class="showLike">`
-    for (let i = 0; i < data.like.length; i++) {
-        console.log(data.like[i])
-        html += `
-        <div class="Like"><div class="img"><img src="${data.like[i].user.profile}"></img></div> <a href="/profile/${data.like[i].user.id}">${data.like[i].user.fullName}</a></div>
-        `
+    if (data.like.length > 0) {
+        for (let i = 0; i < data.like.length; i++) {
+            console.log(data.like[i])
+            html += `
+            <div class="Like"><div class="img"><img src="${data.like[i].user.profile}"></img></div> <a href="/profile/${data.like[i].user.id}">${data.like[i].user.fullName}</a></div>
+            `
+        }
+
+    } else {
+        html = `<div class="none">None</div>`
     }
     html += `</div>`
+
 
 
     mySwal.fire({

@@ -56,7 +56,19 @@
                     flex-direction: column;
                     .name {}
                     .email {}
-                    .action {}
+                    .action {
+                        button {
+                            margin-top: 10px;
+                            @include btn-primary;
+                            padding: 5px 10px;
+                        }
+                        .follow {
+                            margin-top: 10px;
+                            @include btn-primary;
+                            padding: 5px 10px;
+                            background-color: #6c7590 !important;
+                        }
+                    }
                 }
             }
         }
