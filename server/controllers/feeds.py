@@ -4,6 +4,7 @@ from werkzeug.utils import secure_filename
 import os
 import uuid
 
+
 def new_name(name) :
     return str(uuid.uuid4()) + '.'+ str(name).split('.')[-1]
 

@@ -196,6 +196,12 @@ header .header-flex .profile button span {
   font-size: 20px;
 }
 
+.nav .profile .text .name a {
+  text-decoration: none;
+  color: #00BFFF;
+  line-height: 1;
+}
+
 .nav .profile .text .email {
   color: #3D3D3D;
   font-size: 14px;

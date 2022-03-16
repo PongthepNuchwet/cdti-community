@@ -196,6 +196,12 @@ header .header-flex .profile button span {
   font-size: 20px;
 }
 
+.nav .profile .text .name a {
+  text-decoration: none;
+  color: #00BFFF;
+  line-height: 1;
+}
+
 .nav .profile .text .email {
   color: #3D3D3D;
   font-size: 14px;
@@ -467,7 +473,8 @@ header .header-flex .profile button span {
           flex-direction: column;
 }
 
-.feeds .feed .feedHead .text .name {
+.feeds .feed .feedHead .text .name a {
+  text-decoration: none;
   color: #00BFFF;
   font-size: 18px;
   line-height: 1;
@@ -636,6 +643,11 @@ header .header-flex .profile button span {
   line-height: 1.5;
   display: inline-block;
   font-weight: 500;
+}
+
+.feeds .feed .footer .feedComments .feedComment .text .profile .name a {
+  text-decoration: none;
+  color: #00BFFF;
 }
 
 .feeds .feed .footer .feedComments .feedComment .text .profile .name span {
@@ -933,6 +945,12 @@ header .header-flex .profile button span {
   font-size: 20px;
 }
 
+.friendsRecommend .friends .friend .profile .fullname a {
+  text-decoration: none;
+  color: #00BFFF;
+  line-height: 1;
+}
+
 .friendsRecommend .friends .friend .profile .fullname span {
   color: #B1BBD0;
   display: block;
@@ -1112,6 +1130,12 @@ header .header-flex .profile button span {
   font-size: 20px;
 }
 
+.friendsRequired .friends .friend .profile .fullname a {
+  text-decoration: none;
+  color: #00BFFF;
+  line-height: 1;
+}
+
 .friendsRequired .friends .friend .profile .fullname span {
   color: #B1BBD0;
   display: block;
@@ -1220,6 +1244,25 @@ header .header-flex .profile button span {
   row-gap: 10px;
 }
 
+.friendsContects .friends .none {
+  color: #B1BBD0;
+  text-transform: uppercase;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  font-size: 12px;
+}
+
 .friendsContects .friends .friend {
   display: -webkit-box;
   display: -ms-flexbox;
@@ -1274,6 +1317,7 @@ header .header-flex .profile button span {
   line-height: 1;
   margin-bottom: 5px;
   font-size: 16px;
+  text-decoration: none;
 }
 
 .grid-content {

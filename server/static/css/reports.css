@@ -330,7 +330,8 @@ header .header-flex .profile button span {
           flex-direction: column;
 }
 
-.feeds .feed .feedHead .text .name {
+.feeds .feed .feedHead .text .name a {
+  text-decoration: none;
   color: #00BFFF;
   font-size: 18px;
   line-height: 1;
@@ -499,6 +500,11 @@ header .header-flex .profile button span {
   line-height: 1.5;
   display: inline-block;
   font-weight: 500;
+}
+
+.feeds .feed .footer .feedComments .feedComment .text .profile .name a {
+  text-decoration: none;
+  color: #00BFFF;
 }
 
 .feeds .feed .footer .feedComments .feedComment .text .profile .name span {

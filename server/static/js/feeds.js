@@ -150,7 +150,8 @@ class FriendRecommendOrganize {
         <div class="img">
             <img class="img" src="${profile}" alt="">
         </div>
-        <div class="fullname">${friend.fullName}
+        <div class="fullname">
+        <a href="/profile/${friend.id}" class="fullname">${friend.fullName}</a>
             <span>Recommend friends for you</span>
         </div>
     </div>
@@ -259,7 +260,8 @@ class FriendRequiredOrganize {
         <div class="img">
             <img class="img" src="${profile}" alt="">
         </div>
-        <div class="fullname">${friend.fullName}
+        <div class="fullname">
+        <a href="/profile/${friend.id}" class="fullname">${friend.fullName}</a>
             <span>wants to add you to friends</span>
         </div>
     </div>
@@ -367,8 +369,9 @@ class FriendContactsOrganize {
             <div class="profile">
                 <div class="img">
                     <img class="img" src="${profile}" alt="">
+                    
                 </div>
-                <div class="fullname">${friend.fullName}</div>
+                <a href="/profile/${friend.id}" class="fullname">${friend.fullName}</a>
             </div>
         </div>
     `;
@@ -1001,7 +1004,7 @@ class FeedsOrganize {
     <div class="text">
         <div class="profile">
             <div class="name">
-                ${data.user.fullName}
+                <a href="/profile/${data.user.id}" class="fullname">${data.user.fullName}</a>
                 <span>
                 ${data.content}
                 </span>
@@ -1052,7 +1055,7 @@ class FeedsOrganize {
     </div>
     <div class="text">
         <div class="name">
-            ${data.user.fullName}
+            <a href="/profile/${data.user.id}" class="fullname">${data.user.fullName}</a>
         </div>
         <div class="dateTime">
          ${timeAgo(data.created_at.$date)}

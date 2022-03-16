@@ -5,7 +5,7 @@
         </div>
         <div class="text">
             <div class="name">
-                {{ session['uName'] }}
+                <a href="/profile/{{ session['uId'] }}" class="fullname">{{ session['uName'] }}</a>
             </div>
             <div class="email">
                 {{ session['email'] }}
