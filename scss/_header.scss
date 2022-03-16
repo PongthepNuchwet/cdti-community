@@ -9,10 +9,10 @@ header {
     border-bottom: 1px solid $hr-color;
     padding: 3px 10px;
     .header-flex {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        justify-content: space-between;
+        // display: flex;
+        // flex-direction: row;
+        // align-items: center;
+        // justify-content: space-between;
         .logo {
             @include flex-aCenter-jCentent;
             column-gap: 5px;

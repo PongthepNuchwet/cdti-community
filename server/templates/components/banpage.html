@@ -1,20 +1,28 @@
-<center>
-    <div class="report">
-        <div class="header">
-            <h1>Your account has been suspended</h1>
-        </div>
-        <div class="title">
-            <p>{{session["email"]}}</p>
-            <p>Because : เรียนเก่งเกินไป</p>
-        </div>
+<div class="report">
+    <div class="header">
+        <h1>Your account has been suspended</h1>
+    </div>
+    <div class="title">
+        <p>Email :{{session["email"]}} </p>
+        <p>Feeds id : {{report['feed_id']}}</p>
+        <p>Because : {{report['content_admin']}}</p>
+
+    </div>
+
+
+    {% if report['content_appeal'] == None%}
+    <form action="" method="post">
         <div class="View">
             <div class="form">
-                <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+                <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="content"></textarea>
+                <input name="report_id" class="d-none" value="{{report['id']}}"></input>
             </div>
 
         </div>
         <div class="Ban">
-            <br>
             <button type="submit" class="btn btn-primary mb-3"><h1>ส่งคำร้อง</h1></button>
-    </div>
-</center>
+        </div>
+    </form>
+    {% else %}
+    <p>เราได้รับข้อความของคุณแล้ว รอการตรวจสอบจากผู้ดูแลระบบ</p>
+    {% endif %}

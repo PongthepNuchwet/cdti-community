@@ -16,18 +16,18 @@
     z-index: 1020;
 }
 
-.followers-contaner {
+.followings-contaner {
     background-color: white;
     padding: 10px;
     width: 80%;
     margin: 10px auto;
     border-radius: 10px;
-    .followers {
+    .followings {
         display: grid;
         grid-template-columns: 50% 50%;
         column-gap: 10px;
         row-gap: 10px;
-        .follower {
+        .following {
             border: 1px solid #dedede;
             width: 100%;
             background-color: white;

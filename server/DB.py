@@ -1,6 +1,9 @@
-from . import db
+# from . import db
 from flask_login import UserMixin
 from sqlalchemy.sql import func
+from flask_sqlalchemy import SQLAlchemy
+
+db = SQLAlchemy(session_options={"autoflush": True})
 
 
 class Users(db.Model, UserMixin):
@@ -18,9 +21,6 @@ class Users(db.Model, UserMixin):
     namespace = db.Column(db.String(150))
     created_at = db.Column(db.DateTime(timezone=True), default=func.now())
     update_at = db.Column(db.DateTime(timezone=True), default=func.now())
-
-    banlist = ["6310301094@cdti.ac.th", "6310301095@cdti.ac.th"]
-
     feeds = db.relationship("Feeds")
     likes = db.relationship("Likes")
     comments = db.relationship("Comments")
@@ -36,9 +36,7 @@ class Feeds(db.Model):
     img1 = db.Column(db.String(50))
     created_at = db.Column(db.DateTime(timezone=True), default=func.now())
     update_at = db.Column(db.DateTime(timezone=True), default=func.now())
-
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"))
-
     likes = db.relationship("Likes")
     comments = db.relationship("Comments")
 

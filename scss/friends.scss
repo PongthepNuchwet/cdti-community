@@ -4,6 +4,7 @@
 @import 'header';
 @import 'nav';
 @import 'friend';
+<<<<<<< HEAD
 
 .grid-content {
     margin-top: 56px;
@@ -21,3 +22,8 @@
     margin-right: auto;
     width: 50%;
   }
+=======
+@import 'friend-search';
+@import 'friend-suggestions';
+@import 'friend-required';
+>>>>>>> modify

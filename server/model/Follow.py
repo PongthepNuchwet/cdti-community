@@ -18,6 +18,24 @@ class FollowModel:
         new_accept.status = 1
         self.db.session.commit()
 
+    def delete_by_following_uid(self, following, user_id):
+        follow = self.Follow.query.filter_by(
+            following=following, user_id=user_id
+        ).first()
+        self.db.session.delete(follow)
+        self.db.session.commit()
+    
+    def update_status_by_following_uid(self,follower, user_id,status) :
+        follow =  self.Follow.query.filter_by(following=user_id, user_id=follower).first()
+        follow.status = status
+        self.db.session.commit()
+
+    def get_follower_by_uid_all(self, uid):
+        data = [
+            i.user_id for i in self.Follow.query.filter_by(following=uid,status=1).order_by(self.db.desc(self.Follow.created_at)).all()
+        ]
+        return data
+
     def get_uids_by_following_and_status(self, uids, state):
         data = [
             i.user_id for i in self.Follow.query.filter_by(following=uids, status=state).all()

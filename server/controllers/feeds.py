@@ -21,12 +21,11 @@ def Feeds(storage):
             imgPath = ""
             for key, f in request.files.items():
                 if key.startswith("file"):
-                    # newName = secure_filename(f.filename)
                     newName = secure_filename(new_name(f.filename))
-                    profilePath = f"feeds/{newName}"
-                    imgPath += f"{profilePath},"
-                    storage.child(profilePath).put(f)
-                    # f.save(os.path.join("server/static/feedImage/", newName))
+                    path = f"feeds/{newName}"
+                    imagepath = f"https://firebasestorage.googleapis.com/v0/b/cdti-community.appspot.com/o/feeds%2F{newName}?alt=media"
+                    imgPath += f"{imagepath},"
+                    storage.child(path).put(f)
             return jsonify(imgPath=imgPath)
         else:
             return "upload"

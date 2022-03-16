@@ -9,7 +9,7 @@ from bson import json_util
 import json
 
 
-class FollowerNamespace(Namespace):
+class FriendsNamespace(Namespace):
     def __init__(self, namespace, db, Feed, Follow, Like, Comment, User, Report, storage, token):
         super().__init__(namespace)
         self.db = db
@@ -21,6 +21,19 @@ class FollowerNamespace(Namespace):
         self.Report = Report
         self.storage = storage
         self.token = token
+
+    def emiting_friend_required(self):
+        requried = self.Follow.get_uids_by_following_and_status(
+            session['uId'], 0)
+        friend_requried = self.User.get_users_by_in_uid(requried)
+        emit("friend_Required", friend_requried, broadcast=False)
+
+    def emiting_friend_recommend(self):
+        follwing = self.Follow.get_following_by_uid_all(session["uId"])
+        follwing.append(session["uId"])
+        friend_recommend = self.User.get_users_by_notin_uids(
+            follwing)
+        emit("friend_recommend", friend_recommend, broadcast=False)
 
     def emit_to(self, event, data, uid):
         sid ,namespace = self.get_socket_id_by_uid(uid)
@@ -68,16 +81,35 @@ class FollowerNamespace(Namespace):
         emit("follower", self.default_json(users), broadcast=False)
 
     def on_connect(self):
-        print("page", request.args.get('page'))
-        uid = request.args.get('uid')
-        print("follower uid", uid)
-        if request.args.get('page') == 'follower':
-            self.update_socket_id(
-                namespace=request.args.get('page'), sid=request.sid)
-            uid = request.args.get('uid')
-            print("profile", request.args.get('uid'))
-            self.emiting_profile(uid=uid)
-            self.emiting_follower(uid)
+        self.update_socket_id(
+            namespace=request.args.get('page'), sid=request.sid)
+        self.emiting_friend_recommend()
+        self.emiting_friend_required()
+        
+
+    def on_Keydown(self,msg):
+        print("on_keypress")
+        users = self.User.like_by_nameans_notid(msg['query'],session['uId'])
+        if users :
+            emit("friends-search-success", self.default_json(users), broadcast=False)
+        else :
+            emit("friends-search-notFound", broadcast=False)
+
+    def on_follow(self, msg):
+        print("on_follow", msg)
+        try:
+            self.Follow.new(
+                following=msg["follow_id"], uid=session["uId"], status=0)
+        except IndexError:
+            emit("newFollowError", broadcast=False)
+        else:
+            user = self.User.get_user_by_uid(session['uId'])
+            emit("newFollowSuccess",{"follow_id":msg["follow_id"],"tab":msg["tab"]} ,broadcast=False)
+            self.emit_to(
+                "follower", f"{user['fullName']} sent a request to follow you.", msg["follow_id"])
+            self.emit_to("friend_Required_interrupt",
+                         user, msg["follow_id"])
+
 
     def on_disconnect(self):
         self.remove_socket_id()
@@ -109,5 +141,5 @@ class FollowerNamespace(Namespace):
             emit("accept_success",{"follower_id": msg["follow_id"]} ,broadcast=False)
             user = self.User.get_user_by_uid(session['uId'])
             self.emit_to(
-                "Accept", f"{user['fullName']} has accepted you to follow.", msg["follow_id"])
+                "Accept", f"{user.fullName} has accepted you to follow.", msg["follow_id"])
             self.emit_to("concacts_interrupt", user, msg["follow_id"])
