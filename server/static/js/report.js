@@ -90,7 +90,7 @@ class Report {
     createNone() {
         let elm = document.createElement('div')
         elm.setAttribute('class', `h-none`)
-        elm.innerHTML = 'None'
+        elm.innerHTML = '<button type="submit" disabled id="ban" class="btn btn-primary mb-3" style="background-color:blue; border-color:blue; color:white">No sent report.</button>'
         this.h_report_container.appendChild(elm)
     }
 
@@ -185,7 +185,7 @@ class Report {
         } else {
             this.elm_ban.classList.remove('ban')
             this.elm_ban.classList.add('Unban')
-            this.elm_ban.innerHTML = 'Un Ban'
+            this.elm_ban.innerHTML = 'UnBan'
             this.elm_ban.addEventListener("click", function() {
                 reportOrganize.unBan(id)
             });

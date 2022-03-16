@@ -11,5 +11,10 @@ def Report():
     ##@login_required
     def reports():
         return render_template("reports.html")
-    return report
     
+
+    @report.route("/logout1")
+    def logout1():
+        return render_template("signup.html")
+
+    return report

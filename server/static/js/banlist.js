@@ -101,7 +101,9 @@ class Banlist {
         <td>${data.email}</td>
         <td>${data.fullName}</td>
         <td>
+        <div class="Unbanned">
             <button type="submit" onClick="banlistOrganize.unBan(${data.id})" class="btn btn-primary btn-sm mb-3">UnBanned</button>
+        </div>
         </td>`
         elm.innerHTML = html
         return elm

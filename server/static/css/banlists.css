@@ -172,6 +172,11 @@ header .header-flex .profile button span {
   text-align: center;
 }
 
+.banlist .Unbanned button {
+  background-color: green;
+  border-color: green;
+}
+
 .grid-content {
   margin-top: 56px;
 }

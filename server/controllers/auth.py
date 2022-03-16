@@ -138,7 +138,7 @@ def Auth(socketio, Users, db,storage):
                     login_user(user, remember=True)
                     if email in idAdmin:
                         return redirect(url_for("auth.reports"))
-                    else:
+                    else:   
                         return redirect(url_for("feeds.home"))
 
                 else:
