@@ -4,6 +4,26 @@
 @import 'header';
 @import 'nav';
 @import 'friend';
+<<<<<<< HEAD
 @import 'friend-search';
 @import 'friend-suggestions';
 @import 'friend-required';
+=======
+
+.grid-content {
+    margin-top: 56px;
+}
+
+.sticky-56 {
+    position: sticky;
+    top: 56px;
+    z-index: 1020;
+}
+
+.center {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 50%;
+  }
+>>>>>>> fp
