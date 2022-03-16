@@ -271,12 +271,12 @@ class FeedsOrganize {
         let html = ''
         if (count < 1) {
             html = `<div class="carousel-item active">
-                <img src="/api/image?file=${data}" class="d-block w-100 animate__animated animate__fadeIn" alt="...">
+                <img src="${data}" class="d-block w-100 animate__animated animate__fadeIn" alt="...">
             </div>`
             return html
         } else {
             html = `<div class="carousel-item ">
-                <img src="/api/image?file=${data}" class="d-block w-100 animate__animated animate__fadeIn" alt="...">
+                <img src="${data}" class="d-block w-100 animate__animated animate__fadeIn" alt="...">
             </div>`
             return html
         }
