@@ -23,7 +23,7 @@ def Feeds(storage):
                 if key.startswith("file"):
                     newName = secure_filename(new_name(f.filename))
                     path = f"feeds/{newName}"
-                    imagepath = f"https://firebasestorage.googleapis.com/v0/b/cdti-community.appspot.com/o/feeds%2F{path}?alt=media"
+                    imagepath = f"https://firebasestorage.googleapis.com/v0/b/cdti-community.appspot.com/o/feeds%2F{newName}?alt=media"
                     imgPath += f"{imagepath},"
                     storage.child(path).put(f)
             return jsonify(imgPath=imgPath)
