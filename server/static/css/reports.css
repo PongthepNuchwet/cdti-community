@@ -206,6 +206,12 @@ header .header-flex .profile button span {
   background-color: #52c7eb;
 }
 
+.History_report .h-reports .h-none {
+  text-align: center;
+  color: #5bc7ed !important;
+  font-size: 25px;
+}
+
 .report {
   width: 100%;
   margin-bottom: 30px;
@@ -245,6 +251,16 @@ header .header-flex .profile button span {
           align-items: center;
   width: 100%;
   background-color: antiquewhite;
+}
+
+.report .Ban button {
+  background-color: red;
+  border: red;
+}
+
+.report .Ban .Unban {
+  background-color: green !important;
+  border: green;
 }
 
 .title {

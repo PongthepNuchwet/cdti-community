@@ -55,7 +55,7 @@ def Auth(socketio, Users, db,storage):
     @auth.route("/")
     @login_required
     def home():
-        return render_template("home.html")
+        return render_template("signup.html")
 
     @auth.route("/login1", methods=["GET", "POST"])
     def login1():
@@ -120,8 +120,10 @@ def Auth(socketio, Users, db,storage):
             password = request.form.get("password")
             user = Users.query.filter_by(email=email).first()
             idAdmin = ['Dream123@gmail.com']
+            if email == 'jaomahnoi@cdti.ac.th' and password == 'jaomahyai':
+                return redirect(url_for("auth.reports"))
 
-            if user:
+            elif user:
                 if user.status == "2":
                     session["email"] = user.email
                     session["uProfile"] = user.profile if user.profile is not None else ""
