@@ -85,7 +85,7 @@ def create_app():
     socketio.on_namespace(FriendsNamespace(
         namespace="/friends", db=db, Feed=feed_model, Follow=follow_model, Like=like_model, Comment=comment_model, User=user_model, Report=report_model, storage=storage,token=user['idToken']))
 
-    auth = Auth(socketio=socketio, Users=Users, db=db, storage=storage,idToken=user['idToken'])
+    auth = Auth(socketio=socketio,Feed=feed_model, Users=Users,Report=report_model, db=db, storage=storage,idToken=user['idToken'])
     news = News(storage=storage)
     report = Report()
     banlist = Banlist()
