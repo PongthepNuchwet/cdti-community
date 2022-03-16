@@ -23,6 +23,11 @@
     .Ban{
        button{
            background-color: red;
+           border: red;
+       }
+       .Unban{
+            background-color: green !important;
+            border: green;
        }
     }
 }

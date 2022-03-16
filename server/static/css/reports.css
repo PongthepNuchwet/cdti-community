@@ -255,6 +255,12 @@ header .header-flex .profile button span {
 
 .report .Ban button {
   background-color: red;
+  border: red;
+}
+
+.report .Ban .Unban {
+  background-color: green !important;
+  border: green;
 }
 
 .title {

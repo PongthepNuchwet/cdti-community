@@ -185,7 +185,7 @@ class Report {
         } else {
             this.elm_ban.classList.remove('ban')
             this.elm_ban.classList.add('Unban')
-            this.elm_ban.innerHTML = 'Un Ban'
+            this.elm_ban.innerHTML = 'UnBan'
             this.elm_ban.addEventListener("click", function() {
                 reportOrganize.unBan(id)
             });
