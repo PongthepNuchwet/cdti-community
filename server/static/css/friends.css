@@ -283,6 +283,13 @@ header .header-flex .profile button span {
   row-gap: 10px;
 }
 
+.sticky-56 {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 56px;
+  z-index: 1020;
+}
+
 .friend-search .search {
   display: -webkit-box;
   display: -ms-flexbox;
@@ -740,4 +747,22 @@ header .header-flex .profile button span {
 .friend-requests .friends .friend .action .action-remove:hover {
   background-color: #9F9F9F;
   color: #ffffff;
+}
+
+.grid-content {
+  margin-top: 56px;
+}
+
+.sticky-56 {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 56px;
+  z-index: 1020;
+}
+
+.center {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 50%;
 }
