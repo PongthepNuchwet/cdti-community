@@ -49,7 +49,7 @@ def new_name(name) :
 def new_namegg() :
     return str(uuid.uuid4()) + '.jpg'
 
-def Auth(socketio, Users, db,storage,idToken):
+def Auth(socketio, Users,Report, db,storage,idToken,Feed):
     auth = Blueprint("auth", __name__)
 
     @auth.route("/")
@@ -102,11 +102,24 @@ def Auth(socketio, Users, db,storage,idToken):
 
     @auth.route("/banpage", methods=["GET", "POST"])
     def banpage():
-        return render_template("banpage.html")
+        if request.method == "GET":
+            feeds = Feed.get_feeds_by_in_uid([session['uId']])
+            feed_id = []
+            for feed in feeds :
+                feed_id.append(feed['id'])
+            print("feed_id",feed_id)
+            reports = Report.get_report_by_in_feed_id(feed_id)
+            print("report",reports)
+            return render_template("banpage.html",report=reports[0],name="555")
+        else:
+            content = request.form.get("content")
+            report_id = request.form.get("report_id")
+            Report.update_content_appeal_by_id(report_id,content)
+            return redirect(url_for("auth.banpage"))
     
-    @auth.route("/reports", methods=["GET", "POST"])
-    def reports():
-        return render_template("reports.html")
+    # @auth.route("/reports", methods=["GET", "POST"])
+    # def reports():
+    #     return render_template("reports.html")
 
     @auth.route("/login", methods=["GET", "POST"])
     def login():
@@ -118,6 +131,8 @@ def Auth(socketio, Users, db,storage,idToken):
 
             if user:
                 if user.status == "2":
+                    session["uId"] = user.id
+                    session["uName"] = user.fullName
                     session["email"] = user.email
                     session["uProfile"] = user.profile if user.profile is not None else ""
                     return redirect(url_for("auth.banpage"))
@@ -130,7 +145,7 @@ def Auth(socketio, Users, db,storage,idToken):
                     session["uProfile"] = user.profile if user.profile is not None else ""
                     login_user(user, remember=True)
                     if email in idAdmin:
-                        return redirect(url_for("auth.reports"))
+                        return redirect(url_for("banlists.banlist"))
                     else:   
                         return redirect(url_for("feeds.home"))
 

@@ -1,3 +1,4 @@
+from flask import session
 from sqlalchemy.sql import func
 class ReportModel:
     def __init__(self, db, model) -> None:
@@ -40,5 +41,19 @@ class ReportModel:
             {"id":i.id ,"content_user":i.content_user,"content_admin":i.content_admin,"created_at":i.created_at,"feed_id":i.feed_id,"user_id":i.user_id,"status_admin":i.status_admin,"status_user":i.status_user} for i in self.Report.query.order_by(self.db.desc(self.Report.update_at)).all()
         ]
         return reports
+
+    def get_report_by_in_feed_id(self,feed_id):
+        print(9999999999999999999999999999999999)
+        reports = [
+            {"id":i.id ,"content_user":i.content_user,"content_admin":i.content_admin,"created_at":i.created_at,"feed_id":i.feed_id,"user_id":i.user_id,"status_admin":i.status_admin,"status_user":i.status_user,"content_appeal":i.content_appeal} for i in self.Report.query.filter(self.Report.id.in_(feed_id)).all()
+        ]
+        print("get_report_by_uid",reports)
+        return reports
+
+    def update_content_appeal_by_id(self,id,content):
+        report = self.Report.query.filter_by(id=id).first()
+        report.content_appeal = content
+        report.update_at = func.now()
+        self.db.session.commit()
 
 
