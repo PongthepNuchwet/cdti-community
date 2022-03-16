@@ -17,6 +17,7 @@ from server.socket.report import ReportNamespace
 from server.socket.banlist import BanlistNamespace
 from server.socket.follower import FollowerNamespace
 from server.socket.following import FollowingNamespace
+from server.socket.friends import FriendsNamespace
 from server.model.User import UserModel
 from server.model.Feed import FeedModel
 from server.model.Follow import FollowModel
@@ -81,6 +82,8 @@ def create_app():
         namespace="/follower", db=db, Feed=feed_model, Follow=follow_model, Like=like_model, Comment=comment_model, User=user_model, Report=report_model, storage=storage,token=user['idToken']))
     socketio.on_namespace(FollowingNamespace(
         namespace="/following", db=db, Feed=feed_model, Follow=follow_model, Like=like_model, Comment=comment_model, User=user_model, Report=report_model, storage=storage,token=user['idToken']))
+    socketio.on_namespace(FriendsNamespace(
+        namespace="/friends", db=db, Feed=feed_model, Follow=follow_model, Like=like_model, Comment=comment_model, User=user_model, Report=report_model, storage=storage,token=user['idToken']))
 
     auth = Auth(socketio=socketio, Users=Users, db=db, storage=storage,idToken=user['idToken'])
     news = News(storage=storage)

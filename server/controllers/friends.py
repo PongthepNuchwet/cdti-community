@@ -8,7 +8,8 @@ def Friends():
     friends = Blueprint("friends", __name__)
 
     @friends.route("/")
-    def home():
+    def search():
         return render_template("friends.html")
+
 
     return friends

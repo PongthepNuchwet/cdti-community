@@ -25,7 +25,9 @@
                 <div class="sticky-56">{% include "components/nav.html" ignore missing %}</div>
             </div>
             <div class="col-xl-9  col-12">
-                {% include "components/friend.html" ignore missing %}
+                <div class="friends-container">
+                    {% include "components/friend-control.html" ignore missing %} {% include "components/search.html" ignore missing %} {% include "components/friend-suggestions.html" ignore missing %} {% include "components/friend-requests.html" ignore missing %}
+                </div>
             </div>
 
         </div>
