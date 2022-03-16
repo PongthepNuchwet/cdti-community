@@ -19,16 +19,16 @@ os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"
 GOOGLE_CLIENT_ID = "684748119335-ij41pqcpn9tb5u0dj2jaqchscoklt7u4.apps.googleusercontent.com"
 client_secrets_file = os.path.join(pathlib.Path(__file__).parent, "client_secret.json")
 
-flow = Flow.from_client_secrets_file(
-    client_secrets_file=client_secrets_file,
-    scopes=["https://www.googleapis.com/auth/userinfo.profile", "https://www.googleapis.com/auth/userinfo.email", "openid"],
-    redirect_uri="http://127.0.0.1:5000/callback"
-)
 # flow = Flow.from_client_secrets_file(
 #     client_secrets_file=client_secrets_file,
 #     scopes=["https://www.googleapis.com/auth/userinfo.profile", "https://www.googleapis.com/auth/userinfo.email", "openid"],
-#     redirect_uri="http://cdti-community.herokuapp.com/callback"
+#     redirect_uri="http://127.0.0.1:5000/callback"
 # )
+flow = Flow.from_client_secrets_file(
+    client_secrets_file=client_secrets_file,
+    scopes=["https://www.googleapis.com/auth/userinfo.profile", "https://www.googleapis.com/auth/userinfo.email", "openid"],
+    redirect_uri="http://cdti-community.herokuapp.com/callback"
+)
 
 
 def login_is_required(function):
