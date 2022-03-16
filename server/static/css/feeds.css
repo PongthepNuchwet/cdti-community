@@ -534,6 +534,17 @@ header .header-flex .profile button span {
   font-weight: 400;
 }
 
+.feeds .feed .feedCount button {
+  color: #3D3D3D;
+  font-size: 14px;
+  font-weight: 400;
+  background-color: white;
+  border: none;
+  border-radius: 5px;
+  overflow: hidden;
+  padding: 3px 7px;
+}
+
 .feeds .feed .feedCount .comment-count {
   margin-left: 15px;
 }
@@ -1274,4 +1285,64 @@ header .header-flex .profile button span {
   position: sticky;
   top: 56px;
   z-index: 1020;
+}
+
+.showLike {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  row-gap: 5px;
+}
+
+.showLike .Like {
+  display: -ms-grid;
+  display: grid;
+  -ms-grid-columns: 10% 90%;
+      grid-template-columns: 10% 90%;
+}
+
+.showLike .Like .img {
+  border-radius: 20%;
+  overflow: hidden;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  background-color: #B1BBD0;
+  height: 30px;
+  width: 30px;
+}
+
+.showLike .Like .img img {
+  width: 100%;
+}
+
+.showLike .Like .img img {
+  width: 100%;
+}
+
+.showLike .Like a {
+  text-decoration: none;
+  color: #3D3D3D;
+  text-align: left;
+  -webkit-transition: .5s;
+  transition: .5s;
+}
+
+.showLike .Like:hover {
+  -webkit-text-decoration-line: underline;
+          text-decoration-line: underline;
 }

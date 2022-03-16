@@ -109,7 +109,7 @@ class FollowingNamespace(Namespace):
             emit("follow_error", broadcast=False)
         else:
             emit("follow_success", {
-                 "following_id": msg['following_id']}, broadcast=False)
+                 "following_id": msg['follow_id']}, broadcast=False)
             user = self.User.get_user_by_uid(session['uId'])
             self.emit_to(
                 "follower", f"{user['fullName']} sent a request to follow you.", msg["follow_id"])

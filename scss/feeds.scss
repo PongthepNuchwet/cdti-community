@@ -17,3 +17,30 @@
     top: 56px;
     z-index: 1020;
 }
+
+.showLike {
+    display: flex;
+    flex-direction: column;
+    row-gap: 5px;
+    .Like {
+        display: grid;
+        grid-template-columns: 10% 90%;
+        .img {
+            @include profile-over;
+            height: 30px;
+            width: 30px;
+            img {
+                width: 100%;
+            }
+        }
+        a {
+            text-decoration: none;
+            color: $color-secondary;
+            text-align: left;
+            transition: .5s;
+        }
+        &:hover {
+            text-decoration-line: underline;
+        }
+    }
+}

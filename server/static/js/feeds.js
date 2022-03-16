@@ -9,6 +9,7 @@ document.addEventListener('scroll', function(e) {
 var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port + '/feeds', { query: 'page=feeds' });
 
 
+
 var imagePath = [];
 var friend_recommend = [];
 
@@ -51,6 +52,37 @@ var mySwal = Swal.mixin({
     },
     buttonsStyling: false
 })
+
+
+
+async function showLike(id) {
+    console.log("🚀 ~ file: feeds.js ~ line 58 ~ showLike ~ id", id)
+    let feed_index = feedsOrganize.find_feed_index(id)
+    let data = feedsOrganize.feeds[feed_index]
+    console.log("🚀 ~ file: feeds.js ~ line 61 ~ showLike ~ data", data)
+    let html = `<div class="showLike">`
+    for (let i = 0; i < data.like.length; i++) {
+        console.log(data.like[i])
+        html += `
+        <div class="Like"><div class="img"><img src="${data.like[i].user.profile}"></img></div> <a href="/profile/${data.like[i].user.id}">${data.like[i].user.fullName}</a></div>
+        `
+    }
+    html += `</div>`
+
+
+    mySwal.fire({
+
+        html: html,
+        showCloseButton: false,
+        showCancelButton: false,
+        focusConfirm: false,
+        showConfirmButton: false,
+        confirmButtonText: '<i class="fa fa-thumbs-up"></i> Great!',
+        confirmButtonAriaLabel: 'Thumbs up, great!',
+        cancelButtonText: '<i class="fa fa-thumbs-down"></i>',
+        cancelButtonAriaLabel: 'Thumbs down'
+    })
+}
 
 
 class Profile {
@@ -940,9 +972,9 @@ class FeedsOrganize {
         let elm = document.createElement('div')
         elm.setAttribute('class', `feedCount`)
         let html = `
-        <span class="love-count" id="feed_${data.id}_count_love">
+        <button class="love-count" onclick="showLike(${data.id})" id="feed_${data.id}_count_love">
         ${data.like_count} likes
-        </span>
+        </button>
         <span class="comment-count" id="feed_${data.id}_count_comment">
             ${data.comment_count} comments
         </span>

@@ -407,6 +407,17 @@ header .header-flex .profile button span {
   font-weight: 400;
 }
 
+.feeds .feed .feedCount button {
+  color: #3D3D3D;
+  font-size: 14px;
+  font-weight: 400;
+  background-color: white;
+  border: none;
+  border-radius: 5px;
+  overflow: hidden;
+  padding: 3px 7px;
+}
+
 .feeds .feed .feedCount .comment-count {
   margin-left: 15px;
 }

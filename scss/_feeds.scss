@@ -75,6 +75,16 @@
                 font-size: 14px;
                 font-weight: 400;
             }
+            button {
+                color: $text-color;
+                font-size: 14px;
+                font-weight: 400;
+                background-color: white;
+                border: none;
+                border-radius: 5px;
+                overflow: hidden;
+                padding: 3px 7px;
+            }
             .comment-count {
                 margin-left: 15px;
             }

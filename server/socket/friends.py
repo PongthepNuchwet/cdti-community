@@ -88,8 +88,11 @@ class FriendsNamespace(Namespace):
         
 
     def on_Keydown(self,msg):
+        follwing = self.Follow.get_following_by_uid_and_all(
+                uid=session["uId"])
+        follwing.append(session['uId'])
         print("on_keypress")
-        users = self.User.like_by_nameans_notid(msg['query'],session['uId'])
+        users = self.User.like_by_nameans_notid(msg['query'],follwing)
         if users :
             emit("friends-search-success", self.default_json(users), broadcast=False)
         else :

@@ -10,7 +10,7 @@ class UserModel:
         self.User = model
 
     def like_by_nameans_notid(self,query,uid):
-        users = self.User.query.filter(self.User.fullName.like(f'%{query}%'),self.User.id.isnot(uid)).limit(10).all()
+        users = self.User.query.filter(self.User.fullName.like(f'%{query}%'),self.User.id.notin_(uid)).limit(10).all()
         print(len(users))
         if len(users) > 0 :
             res = []

@@ -53,3 +53,9 @@ class FollowModel:
             i.following for i in self.Follow.query.filter_by(user_id=uid, status=state).all()
         ]
         return data
+
+    def get_following_by_uid_and_all(self, uid):
+        data = [
+            i.following for i in self.Follow.query.filter_by(user_id=uid).all()
+        ]
+        return data
