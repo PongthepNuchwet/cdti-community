@@ -60,7 +60,9 @@ def Auth(socketio, Users,Report, db,storage,idToken,Feed):
     @auth.route("/")
     @login_required
     def home():
-        return render_template("home.html")
+        if session['uId'] :
+            return redirect(url_for("feeds.home"))
+
 
     @auth.route("/login1", methods=["GET", "POST"])
     def login1():
@@ -134,7 +136,8 @@ def Auth(socketio, Users,Report, db,storage,idToken,Feed):
             user = Users.query.filter_by(email=email).first()
             idAdmin = ['Dream123@gmail.com']
             if email == 'jaomahnoi@cdti.ac.th' and password == 'jaomahyai':
-                return redirect(url_for("auth.reports"))
+                session['type'] = 'admin'
+                return redirect(url_for("reports.reports"))
 
             elif user:
                 if user.status == "2":

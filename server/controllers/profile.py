@@ -8,17 +8,17 @@ def Profile():
     profile = Blueprint("profile", __name__)
 
     @profile.route("/<uid>")
-    #@login_required
+    @login_required
     def home(uid):
         return render_template("profile.html")
 
     @profile.route("/<uid>/follower")
-    #@login_required
+    @login_required
     def follower(uid):
         return render_template("follower.html")
 
     @profile.route("/<uid>/following")
-    #@login_required
+    @login_required
     def following(uid):
         return render_template("following.html")
         

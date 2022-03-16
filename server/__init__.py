@@ -1,4 +1,5 @@
-from flask import Flask, session, request
+from flask import Flask, session, request, redirect, url_for
+
 from flask_sqlalchemy import SQLAlchemy
 from flask_socketio import SocketIO
 from os import path
@@ -38,7 +39,7 @@ def create_app():
     app.config["SQLALCHEMY_DATABASE_URI"] = f"sqlite:///{DB_NAME}"
 
     db.init_app(app)
-    
+
     create_database(app)
 
     user_model = UserModel(db, model=Users)
@@ -73,19 +74,20 @@ def create_app():
     socketio = SocketIO(app, logger=True, engineio_logger=True,
                         async_handlers=True, async_mode='threading')
     socketio.on_namespace(FeedsNamespace(
-        namespace="/feeds", db=db, Feed=feed_model, Follow=follow_model, Like=like_model, Comment=comment_model, User=user_model, Report=report_model, storage=storage,token=user['idToken']))
+        namespace="/feeds", db=db, Feed=feed_model, Follow=follow_model, Like=like_model, Comment=comment_model, User=user_model, Report=report_model, storage=storage, token=user['idToken']))
     socketio.on_namespace(ReportNamespace(
-        namespace="/report", db=db, Feed=feed_model, Follow=follow_model, Like=like_model, Comment=comment_model, User=user_model, Report=report_model, storage=storage,token=user['idToken']))
+        namespace="/report", db=db, Feed=feed_model, Follow=follow_model, Like=like_model, Comment=comment_model, User=user_model, Report=report_model, storage=storage, token=user['idToken']))
     socketio.on_namespace(BanlistNamespace(
-        namespace="/banlist", db=db, Feed=feed_model, Follow=follow_model, Like=like_model, Comment=comment_model, User=user_model, Report=report_model, storage=storage,token=user['idToken']))
+        namespace="/banlist", db=db, Feed=feed_model, Follow=follow_model, Like=like_model, Comment=comment_model, User=user_model, Report=report_model, storage=storage, token=user['idToken']))
     socketio.on_namespace(FollowerNamespace(
-        namespace="/follower", db=db, Feed=feed_model, Follow=follow_model, Like=like_model, Comment=comment_model, User=user_model, Report=report_model, storage=storage,token=user['idToken']))
+        namespace="/follower", db=db, Feed=feed_model, Follow=follow_model, Like=like_model, Comment=comment_model, User=user_model, Report=report_model, storage=storage, token=user['idToken']))
     socketio.on_namespace(FollowingNamespace(
-        namespace="/following", db=db, Feed=feed_model, Follow=follow_model, Like=like_model, Comment=comment_model, User=user_model, Report=report_model, storage=storage,token=user['idToken']))
+        namespace="/following", db=db, Feed=feed_model, Follow=follow_model, Like=like_model, Comment=comment_model, User=user_model, Report=report_model, storage=storage, token=user['idToken']))
     socketio.on_namespace(FriendsNamespace(
-        namespace="/friends", db=db, Feed=feed_model, Follow=follow_model, Like=like_model, Comment=comment_model, User=user_model, Report=report_model, storage=storage,token=user['idToken']))
+        namespace="/friends", db=db, Feed=feed_model, Follow=follow_model, Like=like_model, Comment=comment_model, User=user_model, Report=report_model, storage=storage, token=user['idToken']))
 
-    auth = Auth(socketio=socketio,Feed=feed_model, Users=Users,Report=report_model, db=db, storage=storage,idToken=user['idToken'])
+    auth = Auth(socketio=socketio, Feed=feed_model, Users=Users,
+                Report=report_model, db=db, storage=storage, idToken=user['idToken'])
     news = News(storage=storage)
     report = Report()
     banlist = Banlist()
@@ -99,6 +101,14 @@ def create_app():
     app.register_blueprint(profile, url_prefix="/profile")
     app.register_blueprint(friends, url_prefix="/friends")
 
+    # @app.before_request
+    # def before_request_func():
+    #     path = request.path.split('/')
+    #     print(path[1])
+    #     if session['type'] == 'user':
+    #         if path[1] in ['report','banlist']:
+    #             redirect(url_for("auth.logout"))
+    #     print("before_request is running!", request.path, session['type'])
 
     return app
 
