@@ -3,31 +3,30 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_socketio import SocketIO
 from os import path
 from flask_login import LoginManager
+from dotenv import dotenv_values, load_dotenv
 
 import pyrebase
 
+from server.controllers.api import Api
 from server.controllers.auth import Auth
 from server.controllers.feeds import Feeds as News
 from server.controllers.report import Report
 from server.controllers.banlist import Banlist
 from server.controllers.profile import Profile
-from server.controllers.friends import Friends
 from server.socket.feeds import FeedsNamespace
 from server.socket.report import ReportNamespace
 from server.socket.banlist import BanlistNamespace
 from server.socket.follower import FollowerNamespace
 from server.socket.following import FollowingNamespace
-from server.socket.friends import FriendsNamespace
 from server.model.User import UserModel
 from server.model.Feed import FeedModel
 from server.model.Follow import FollowModel
 from server.model.Like import LikeModel
 from server.model.Comment import CommentModel
 from server.model.Report import ReportModel
-from server.DB import db, Users, Feeds, Likes, Comments, Follow, Report as ReportDB
 
 
-# db = SQLAlchemy(session_options={"autoflush": True})
+db = SQLAlchemy(session_options={"autoflush": True})
 DB_NAME = "database.db"
 
 
@@ -38,7 +37,7 @@ def create_app():
     app.config["SQLALCHEMY_DATABASE_URI"] = f"sqlite:///{DB_NAME}"
 
     db.init_app(app)
-    
+    from server.DB import Users, Feeds, Likes, Comments, Follow, Report as ReportDB
     create_database(app)
 
     user_model = UserModel(db, model=Users)
@@ -69,6 +68,7 @@ def create_app():
     email = "6310301004@cdti.ac.th"
     password = "6310301004"
     user = auth.sign_in_with_email_and_password(email, password)
+    # user['idToken']
 
     socketio = SocketIO(app, logger=True, engineio_logger=True,
                         async_handlers=True, async_mode='threading')
@@ -82,23 +82,20 @@ def create_app():
         namespace="/follower", db=db, Feed=feed_model, Follow=follow_model, Like=like_model, Comment=comment_model, User=user_model, Report=report_model, storage=storage,token=user['idToken']))
     socketio.on_namespace(FollowingNamespace(
         namespace="/following", db=db, Feed=feed_model, Follow=follow_model, Like=like_model, Comment=comment_model, User=user_model, Report=report_model, storage=storage,token=user['idToken']))
-    socketio.on_namespace(FriendsNamespace(
-        namespace="/friends", db=db, Feed=feed_model, Follow=follow_model, Like=like_model, Comment=comment_model, User=user_model, Report=report_model, storage=storage,token=user['idToken']))
 
-    auth = Auth(socketio=socketio, Users=Users, db=db, storage=storage,idToken=user['idToken'])
+    api = Api(storage=storage, idToken=user['idToken'])
+    auth = Auth(socketio=socketio, Users=Users, db=db, storage=storage)
     news = News(storage=storage)
     report = Report()
     banlist = Banlist()
     profile = Profile()
-    friends = Friends()
 
     app.register_blueprint(auth, url_prefix="/")
     app.register_blueprint(news, url_prefix="/feeds")
+    app.register_blueprint(api, url_prefix="/api")
     app.register_blueprint(report, url_prefix="/report")
     app.register_blueprint(banlist, url_prefix="/banlist")
     app.register_blueprint(profile, url_prefix="/profile")
-    app.register_blueprint(friends, url_prefix="/friends")
-
 
     return app
 

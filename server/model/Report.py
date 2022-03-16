@@ -37,7 +37,7 @@ class ReportModel:
 
     def get_report(self):
         reports = [
-            {"id":i.id ,"content_user":i.content_user,"content_admin":i.content_admin,"created_at":i.created_at,"feed_id":i.feed_id,"user_id":i.user_id,"status_admin":i.status_admin,"status_user":i.status_user,"content_appeal":i.content_appeal} for i in self.Report.query.order_by(self.db.desc(self.Report.update_at)).all()
+            {"id":i.id ,"content_user":i.content_user,"content_admin":i.content_admin,"created_at":i.created_at,"feed_id":i.feed_id,"user_id":i.user_id,"status_admin":i.status_admin,"status_user":i.status_user} for i in self.Report.query.order_by(self.db.desc(self.Report.update_at)).all()
         ]
         return reports
 

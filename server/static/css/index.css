@@ -36,14 +36,3 @@ body {
 .mySwal_cancel:hover {
   background-color: #0193c4;
 }
-
-.grid-content {
-  margin-top: 56px;
-}
-
-.sticky-56 {
-  position: -webkit-sticky;
-  position: sticky;
-  top: 56px;
-  z-index: 1020;
-}

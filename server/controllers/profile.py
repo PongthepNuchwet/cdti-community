@@ -10,7 +10,7 @@ def Profile():
     @profile.route("/<uid>")
     #@login_required
     def home(uid):
-        return render_template("profile.html")
+        return render_template("profile.html",uid=uid)
 
     @profile.route("/<uid>/follower")
     #@login_required
