@@ -24,11 +24,6 @@ flow = Flow.from_client_secrets_file(
     scopes=["https://www.googleapis.com/auth/userinfo.profile", "https://www.googleapis.com/auth/userinfo.email", "openid"],
     redirect_uri="http://127.0.0.1:5000/callback"
 )
-# flow = Flow.from_client_secrets_file(
-#     client_secrets_file=client_secrets_file,
-#     scopes=["https://www.googleapis.com/auth/userinfo.profile", "https://www.googleapis.com/auth/userinfo.email", "openid"],
-#     redirect_uri="http://cdti-community.herokuapp.com/callback"
-# )
 
 
 def login_is_required(function):
@@ -85,6 +80,11 @@ def Auth(socketio, Users,Report, db,storage,idToken,Feed):
             request=token_request,
             audience=GOOGLE_CLIENT_ID
         )
+
+        #response = requests.get(id_info.get("picture"))
+        #newName = secure_filename(new_namegg())
+       # profilePath = f"profile/{newName}"
+        #storage.child(profilePath).put(response.content)
 
         user = Users.query.filter_by(email=id_info.get("email")).first()
         if not user:
@@ -175,9 +175,10 @@ def Auth(socketio, Users,Report, db,storage,idToken,Feed):
         if request.method == "POST":
             f = request.files.get("file")
             newName = secure_filename(new_name(f.filename))
-            path = f"profile/{newName}"
-            storage.child(path).put(f)
-            imagepath = f"https://firebasestorage.googleapis.com/v0/b/cdti-community.appspot.com/o/profile%2F{newName}?alt=media"
+            profilePath = f"profile/{newName}"
+            storage.child(profilePath).put(f)
+            # f.save(os.path.join("server/static/profile/", newName))
+
             email = request.form.get("email")
             fullName = request.form.get("fullName")
             password1 = request.form.get("password1")
@@ -198,7 +199,7 @@ def Auth(socketio, Users,Report, db,storage,idToken,Feed):
                 flash("Password must be at least 7 characters.", category="error")
             else:
                 new_user = Users(
-                    profile=imagepath,
+                    profile=profilePath,
                     email=email,
                     fullName=fullName,
                     password=generate_password_hash(

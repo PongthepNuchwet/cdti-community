@@ -61,19 +61,6 @@ report.on('message', async(msg) => {
     })
 });
 
-function Open(id) {
-    console.log("🚀 ~ file: report.js ~ line 66 ~ Open ~ id", id)
-    reportOrganize.Open(id)
-}
-
-function Ban(id) {
-    reportOrganize.ban(id)
-}
-
-function Unban(id) {
-    reportOrganize.unBan(id)
-}
-
 class Report {
     constructor() {
         this.reports = []
@@ -83,11 +70,11 @@ class Report {
         this.time = document.getElementById("time")
         this.elm_ban = document.getElementById('ban')
         this.elm_input = document.getElementById('input')
-        this.appeal = document.getElementById('appeal')
         this.temp_highlight
     }
 
     highlight(elm) {
+        console.log(this.temp_highlight)
         if (this.temp_highlight !== undefined) {
             this.temp_highlight.classList.remove('open')
             this.temp_highlight = elm
@@ -96,13 +83,14 @@ class Report {
             this.temp_highlight = elm
             this.temp_highlight.classList.add('open')
         }
+
     }
 
 
     createNone() {
         let elm = document.createElement('div')
         elm.setAttribute('class', `h-none`)
-        elm.innerHTML = 'None'
+        elm.innerHTML = '<button type="submit" disabled id="ban" class="btn btn-primary mb-3" style="background-color:blue; border-color:blue; color:white">No sent report.</button>'
         this.h_report_container.appendChild(elm)
     }
 
@@ -131,11 +119,9 @@ class Report {
         let elm = document.createElement('button')
         elm.setAttribute('class', `h-report`)
         elm.setAttribute('id', `h_report_${data.id}`)
-        elm.setAttribute('onClick', `Open(${data.id})`)
-
-        // elm.addEventListener("click", function() {
-        //     reportOrganize.open(data.id)
-        // });
+        elm.addEventListener("click", function() {
+            reportOrganize.open(data.id)
+        });
         if (data.status_admin == '0') {
             elm.classList.add('active')
         }
@@ -174,7 +160,8 @@ class Report {
         }
     }
 
-    Open(id) {
+    open(id) {
+        // h_report_${data.id
         report.emit("open", {
             id: id,
         });
@@ -183,25 +170,28 @@ class Report {
         this.elm_input.disabled = false
         let list = document.getElementById(`h_report_${id}`)
         this.highlight(list)
-
         let index = this.find_report_index(id)
-        console.log("🚀 ~ file: report.js ~ line 180 ~ Report ~ Open ~ index", index)
         let data = this.reports[index]
-        console.log("🚀 ~ file: report.js ~ line 182 ~ Report ~ Open ~ data", data)
-        console.log("🚀 ~ file: report.js ~ line 186 ~ Report ~ Open ~ data.feed.user.status", data.feed[0].user.status)
+        console.log("🚀 ~ file: report.js ~ line 143 ~ Report ~ open ~ data.status", data.status)
+        console.log("🚀 ~ file: report.js ~ line 144 ~ Report ~ open ~ data.user.status", data.user.status)
 
-        if (data.feed[0].user.status == 0) {
+        if (data.user.status == '0') {
             this.elm_ban.innerHTML = 'Ban'
             this.elm_ban.classList.remove('Unban')
             this.elm_ban.classList.add('ban')
-            this.elm_ban.setAttribute('onClick', `Ban(${id})`)
+            this.elm_ban.addEventListener("click", function() {
+                reportOrganize.ban(id)
+            });
         } else {
             this.elm_ban.classList.remove('ban')
             this.elm_ban.classList.add('Unban')
             this.elm_ban.innerHTML = 'Un Ban'
-            this.elm_ban.setAttribute('onClick', `Unban(${id})`)
-        }
+            this.elm_ban.addEventListener("click", function() {
+                reportOrganize.unBan(id)
+            });
 
+        }
+        console.log("🚀 ~ file: report.js ~ line 162 ~ Report ~ open ~ data.status", data.status)
         if (data.status_admin == '0') {
             list.classList.remove('active')
         }
@@ -209,12 +199,6 @@ class Report {
         this.user_email.innerHTML = data.user.email
         this.content.innerHTML = data.content_user
         this.time.innerHTML = data.created_at.$date
-        if (data.content_appeal != null) {
-            this.appeal.innerHTML = data.content_appeal
-        } else {
-            this.appeal.innerHTML = '-'
-        }
-
         feedsOrganize.add(data)
         feedsOrganize.Execute()
     }
@@ -224,21 +208,18 @@ class Report {
         this.elm_ban.innerHTML = 'Un Ban'
         this.elm_ban.classList.remove('ban')
         this.elm_ban.classList.add('Unban')
-            // this.elm_ban.addEventListener("click", function() {
-            //     reportOrganize.unBan(id)
-            // });
-        this.elm_ban.setAttribute('onClick', `Unban(${id})`)
-
+        this.elm_ban.addEventListener("click", function() {
+            reportOrganize.unBan(id)
+        });
     }
     unBan_success(id) {
         this.elm_input.value = ''
         this.elm_ban.innerHTML = 'Ban'
         this.elm_ban.classList.remove('Unban')
         this.elm_ban.classList.add('ban')
-            // this.elm_ban.addEventListener("click", function() {
-            //     reportOrganize.ban(id)
-            // });
-        this.elm_ban.setAttribute('onClick', `Ban(${id})`)
+        this.elm_ban.addEventListener("click", function() {
+            reportOrganize.ban(id)
+        });
     }
 
 
@@ -343,7 +324,6 @@ function timeAgo(dateParam) {
 
     return getFormattedDate(date); // 10. January 2017. at 10:20
 }
-
 
 class FeedsOrganize {
     constructor() {
@@ -491,7 +471,7 @@ class FeedsOrganize {
         let html = ''
         if (data !== undefined) {
             html = `<div class="img">
-        <img class="img" src="${data.user.profile}" alt="">
+        <img class="img" src="/api/profile?file=${data.user.profile}" alt="">
     </div>
     <div class="text">
         <div class="profile">
@@ -543,7 +523,7 @@ class FeedsOrganize {
         let elm = document.createElement('div')
         elm.setAttribute('class', `feedHead `)
         let html = `<div class="img">
-        <img class="img" src="${data.user.profile}" alt="">
+        <img class="img" src="/api/profile?file=${data.user.profile}" alt="">
     </div>
     <div class="text">
         <div class="name">
@@ -614,7 +594,7 @@ class FeedsOrganize {
         let elm = document.createElement('div')
         elm.setAttribute('class', `comment `)
         let html = `<div class="img">
-        <img class="img" src="${profile.profile}" alt="">
+        <img class="img" src="/api/profile?file=${profile.profile}" alt="">
     </div>
     <div class="user-input-comment">
         <textarea name="feed_${data.id}_inputComment" class="" id="feed_${data.id}_inputComment" placeholder="Write a comment..."></textarea>
@@ -713,9 +693,6 @@ class FeedsOrganize {
 }
 var reportOrganize = new Report();
 var feedsOrganize = new FeedsOrganize();
-
-
-
 report.on('report', async(msg) => {
     console.log("report", msg)
     reportOrganize.add(msg)

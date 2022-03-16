@@ -55,7 +55,6 @@ var mySwal = Swal.mixin({
 
 class Profile {
     constructor() {
-        this.id = ''
         this.fullName = ''
         this.email = ''
         this.profile = ''
@@ -482,6 +481,7 @@ socket.on("newFeedError", (reason) => {
 });
 socket.on("newFeedSuccess", async(reason) => {
     let target = document.getElementById('newFeed-upload-btn')
+    console.log("🚀 ~ file: feeds.js ~ line 508 ~ socket.on ~ reason newFeedSuccess", reason)
     target.innerHTML = `<i class="bi bi-link-45deg"></i> Post It.`
     document.getElementById("newFeed-content").value = "";
     myDropzone.removeAllFiles(true);
@@ -583,12 +583,11 @@ socket.on('message', async(msg) => {
 });
 
 async function love(id) {
-    let index = feedsOrganize.find_feed_index(id)
     socket.emit("love", {
         feed_id: id,
-        user_id: feedsOrganize.feeds[index].user.id
     });
 }
+
 
 
 async function DeleteComment(feed_id, id) {
@@ -652,21 +651,18 @@ async function feed_delete(id) {
     }).then((result) => {
         if (result.isConfirmed) {
             feedsOrganize.delete_feed(id)
+            console.log("🚀 ~ file: feeds.js ~ line 636 ~ feed_delete ~ id", id)
         }
     })
 }
 
-async function feed_option(id, uid) {
-    let html = `<div class="feed-option">`
-    html += `<button onclick="report('${id}');" class='report'>Report</button>`
-    console.log(profile.id, id)
-    if (profile.id == uid) {
-        html += `<button onclick="feed_delete('${id}');" class='delete'>Delete</button>`
-    }
-    html += `</div>`
+async function feed_option(id) {
     mySwal.fire({
         title: '<strong>Option</strong>',
-        html: html,
+        html: `<div class="feed-option">
+        <button onclick="report('${id}');" class='report'>Report</button>
+        <button onclick="feed_delete('${id}');" class='delete'>Delete</button>
+    </div>`,
         showCloseButton: false,
         showCancelButton: false,
         focusConfirm: false,
@@ -685,51 +681,6 @@ class FeedsOrganize {
         this.queue = []
         this.container = document.getElementById("feeds")
         this.htmlTemp = ``
-    }
-
-    add_like(data) {
-        let index = this.find_feed_index(data.feed_id)
-        if (index >= 0) {
-            this.feeds[index].like.push(data)
-            this.feeds[index].like_count += 1
-            document.getElementById(`feed_${data.feed_id}_count_love`).innerHTML = this.feeds[index].like_count + ' likes'
-        }
-    }
-    async delete_like(data) {
-        let feed_index = this.find_feed_index(data.feed_id)
-        if (feed_index >= 0) {
-            let like_index = await this.find_like_index(feed_index, data.feed_id, data.user_id);
-            if (like_index >= 0) {
-                let remove = await this.feeds[feed_index].like.splice(like_index)
-                this.feeds[feed_index].like_count -= 1
-                document.getElementById(`feed_${data.feed_id}_count_love`).innerHTML = this.feeds[feed_index].like_count + ' likes'
-            }
-        }
-    }
-
-
-    like_interrupt(msg) {
-        if (msg['type'] == 'add') {
-            this.add_like(msg.like)
-        } else if (msg['type'] == 'delete') {
-            this.delete_like(msg)
-        }
-    }
-    comment_interrupt(msg) {
-
-        let feed_index = this.find_feed_index(msg.feed_id)
-        if (feed_index >= 0) {
-            if (msg.type == 'add') {
-                this.feeds[feed_index].comment_count += 1
-            } else {
-                this.feeds[feed_index].comment_count -= 1
-                let parent = document.getElementById(`feed_${msg.feed_id}_coments`)
-                let child = document.getElementById(`feed_${msg.feed_id}_comment_${msg.comment.comment.id}`)
-                parent.removeChild(child)
-            }
-
-        }
-        document.getElementById(`feed_${msg.feed_id}_count_comment`).innerHTML = this.feeds[feed_index].comment_count + ' comments'
     }
 
     report(text, feed_id) {
@@ -756,18 +707,17 @@ class FeedsOrganize {
 
     async delete_feed_success(msg) {
         let index = await this.find_feed_index(msg['feed_id'])
+        console.log("🚀 ~ file: feeds.js ~ line 691 ~ FeedsOrganize ~ delete_feed_success ~ index", index)
         let child = document.getElementById(`feed_id_${msg.feed_id}`)
+        console.log("🚀 ~ file: feeds.js ~ line 693 ~ FeedsOrganize ~ delete_feed_success ~ child", child)
         this.feeds.splice(index)
         this.container.removeChild(child)
     }
 
     delete_comment(feed_id, id) {
-        let index = feedsOrganize.find_feed_index(feed_id)
-
         socket.emit("delete_comment", {
             feed_id: feed_id,
-            id: id,
-            user_id: feedsOrganize.feeds[index].user.id
+            id: id
         });
     }
     delete_feed(feed_id) {
@@ -827,6 +777,7 @@ class FeedsOrganize {
     }
 
     add(data) {
+        console.log("🚀 ~ file: feeds.js ~ line 780 ~ FeedsOrganize ~ add ~ data", data)
         for (let i = 0; i < data.length; i++) {
             this.queue.push(data[i])
         }
@@ -851,12 +802,12 @@ class FeedsOrganize {
         let html = ''
         if (count < 1) {
             html = `<div class="carousel-item active">
-            <img src="${data}" class="d-block w-100 animate__animated animate__fadeIn" alt="...">
+            <img src="/api/image?file=${data}" class="d-block w-100 animate__animated animate__fadeIn" alt="...">
         </div>`
             return html
         } else {
             html = `<div class="carousel-item ">
-            <img src="${data}" class="d-block w-100 animate__animated animate__fadeIn" alt="...">
+            <img src="/api/image?file=${data}" class="d-block w-100 animate__animated animate__fadeIn" alt="...">
         </div>`
             return html
         }
@@ -958,7 +909,7 @@ class FeedsOrganize {
         let html = ''
         if (data !== undefined) {
             html = `<div class="img">
-        <img class="img" src="${data.user.profile}" alt="">
+        <img class="img" src="/api/profile?file=${data.user.profile}" alt="">
     </div>
     <div class="text">
         <div class="profile">
@@ -1010,7 +961,7 @@ class FeedsOrganize {
         let elm = document.createElement('div')
         elm.setAttribute('class', `feedHead `)
         let html = `<div class="img">
-        <img class="img" src="${data.user.profile}" alt="">
+        <img class="img" src="/api/profile?file=${data.user.profile}" alt="">
     </div>
     <div class="text">
         <div class="name">
@@ -1020,7 +971,7 @@ class FeedsOrganize {
          ${timeAgo(data.created_at.$date)}
         </div>
     </div>
-    <div class="action" onClick="feed_option(${data.id},${data.user.id})">
+    <div class="action" onClick="feed_option(${data.id})">
         <button class="feed-action"><i class="bi bi-three-dots"></i></button>
     </div>`
         elm.innerHTML = html
@@ -1081,7 +1032,7 @@ class FeedsOrganize {
         let elm = document.createElement('div')
         elm.setAttribute('class', `comment `)
         let html = `<div class="img">
-        <img class="img" src="${profile.profile}" alt="">
+        <img class="img" src="/api/profile?file=${profile.profile}" alt="">
     </div>
     <div class="user-input-comment">
         <textarea name="feed_${data.id}_inputComment" class="" id="feed_${data.id}_inputComment" placeholder="Write a comment..."></textarea>
@@ -1187,13 +1138,11 @@ var feedsOrganize = new FeedsOrganize();
 async function Comment(id) {
     let content = await document.getElementById(`feed_${id}_inputComment`).value
     console.log(content, content.length)
-    let index = feedsOrganize.find_feed_index(id)
 
     if (content.length > 0) {
         await socket.emit("comment", {
             feed_id: id,
-            content: content,
-            user_id: feedsOrganize.feeds[index].user.id
+            content: content
         });
     } else {
         alertMini.fire({
@@ -1203,14 +1152,6 @@ async function Comment(id) {
     }
 
 }
-socket.on('love_Interrupt', async(msg) => {
-    feedsOrganize.like_interrupt(msg)
-});
-
-socket.on('comment_Interrupt', async(msg) => {
-    console.log("🚀 ~ file: feeds.js ~ line 1193 ~ socket.on ~ msg comment_Interrupt", msg)
-    feedsOrganize.comment_interrupt(msg)
-});
 socket.on('feeds', async(msg) => {
     await feedsOrganize.add(msg)
     await feedsOrganize.Execute()
@@ -1228,6 +1169,7 @@ socket.on('report_success', async(msg) => {
     });
 });
 socket.on('delete_feed_success', async(msg) => {
+    console.log("🚀 ~ file: feeds.js ~ line 1133 ~ socket.on ~ msg", msg)
     feedsOrganize.delete_feed_success(msg)
     alertMini.fire({
         icon: 'success',
@@ -1235,6 +1177,7 @@ socket.on('delete_feed_success', async(msg) => {
     });
 });
 socket.on('delete_feed_error', async(msg) => {
+    console.log("🚀 ~ file: feeds.js ~ line 1140 ~ socket.on ~ msg", msg)
     alertMini.fire({
         icon: 'error',
         title: 'Failed to delete.'
@@ -1242,6 +1185,7 @@ socket.on('delete_feed_error', async(msg) => {
 });
 
 socket.on('delete_comment_error', async(msg) => {
+    console.log("🚀 ~ file: feeds.js ~ line 1147 ~ socket.on ~ msg", msg)
     alertMini.fire({
         icon: 'error',
         title: msg['msg']
@@ -1288,7 +1232,6 @@ socket.on('profile', async(msg) => {
     profile.fullName = msg.fullName
     profile.email = msg.email
     profile.profile = msg.profile
-    profile.id = msg.id
 });
 
 socket.on('follower', async(msg) => {
@@ -1359,5 +1302,4 @@ socket.on('concacts_interrupt', async(msg) => {
 });
 socket.on('ban', async(msg) => {
     console.log("ban")
-    document.location.href = '/banpage'
 });
