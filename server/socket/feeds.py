@@ -48,7 +48,7 @@ class FeedsNamespace(Namespace):
     def get_socket_id_by_uid(self, uid):
         user = self.User.get_user_by_uid(uid)
         print(user)
-        return user['socket_id'] ,user['namespace']
+        return user['socket_id'], user['namespace']
 
     def remove_socket_id(self):
         try:
@@ -56,10 +56,11 @@ class FeedsNamespace(Namespace):
         except IndexError:
             print(IndexError)
 
-    def update_socket_id(self,namespace, sid):
+    def update_socket_id(self, namespace, sid):
         print("update_socket_id")
         try:
-            self.User.update_socket_id_by_uid(sid=sid, uid=session["uId"],namespace='/'+namespace)
+            self.User.update_socket_id_by_uid(
+                sid=sid, uid=session["uId"], namespace='/'+namespace)
         except IndexError:
             print(IndexError)
 
@@ -112,7 +113,7 @@ class FeedsNamespace(Namespace):
             response = self.get_detail_feed(Feeds=Feeds)
             return response
         elif page == 'profile':
-            print("get_feeds uid",uid)
+            print("get_feeds uid", uid)
             Feeds = self.Feed.get_feeds_by_in_uid([uid])
             response = self.get_detail_feed(Feeds=Feeds)
             return response
@@ -133,13 +134,15 @@ class FeedsNamespace(Namespace):
                 uid=session["uId"], state=1)
             self.emiting_feeds(page='feeds', follwing=follwing)
             self.emiting_profile()
-            self.update_socket_id(namespace=request.args.get('page'),sid = request.sid)
+            self.update_socket_id(
+                namespace=request.args.get('page'), sid=request.sid)
             self.emiting_friend_recommend()
             self.emiting_friend_required()
             self.concacts(follwing)
             end = time.time()
         elif request.args.get('page') == 'profile':
-            self.update_socket_id(namespace=request.args.get('page'),sid = request.sid)
+            self.update_socket_id(
+                namespace=request.args.get('page'), sid=request.sid)
             uid = request.args.get('uid')
             print("profile", request.args.get('uid'))
             self.emiting_profile(uid=uid)
@@ -168,9 +171,9 @@ class FeedsNamespace(Namespace):
             emit("newFeedSuccess", res, broadcast=False)
 
     def emit_to(self, event, data, uid):
-        sid ,namespace = self.get_socket_id_by_uid(uid)
+        sid, namespace = self.get_socket_id_by_uid(uid)
         if sid is not None:
-            emit(event, data, to=sid , namespace=namespace)
+            emit(event, data, to=sid, namespace=namespace)
 
     def on_follow(self, msg):
         print("on_follow", msg)
@@ -202,6 +205,17 @@ class FeedsNamespace(Namespace):
                 "Accept", f"{msg['name']} has accepted you to follow.", msg["follow_id"])
             self.emit_to("concacts_interrupt", user, msg["follow_id"])
 
+    def emit_commentInterrupt(self, comment, msg, type):
+        print(msg)
+        followings = self.Follow.get_following_by_uid_all(msg['user_id'])
+        if session['uId'] != msg['user_id']:
+            followings.remove(session['uId'])
+            followings.append(msg['user_id'])
+        print("followings", followings, session['uId'])
+        for following in followings:
+            self.emit_to('comment_Interrupt', self.default_json(
+                {"type": type, "comment": comment, "user_id": session['uId'], "feed_id": msg['feed_id']}), following)
+
     def on_comment(self, msg):
         print("on_comment", msg)
         id = None
@@ -217,11 +231,26 @@ class FeedsNamespace(Namespace):
             comment['user'] = self.User.get_user_by_uid(comment['user_id'])
             emit("commentSuccess", self.default_json(
                 {'feed_id': msg['feed_id'], "comment": comment}), broadcast=False)
+            self.emit_commentInterrupt(comment, msg,'add')
 
     def on_moreComment(self, msg):
         comment = self.get_comment(msg['feed_id'], 3, msg['comment_ids'])
         emit("moreComment", self.default_json(
             {"feed_id": msg['feed_id'], 'comment': comment}), broadcast=False)
+
+    def emit_loveInterrupt(self, like, msg, type):
+        followings = self.Follow.get_following_by_uid_all(msg['user_id'])
+        if session['uId'] != msg['user_id']:
+            followings.remove(session['uId'])
+            followings.append(msg['user_id'])
+        print("followings", followings, session['uId'])
+        for following in followings:
+            if type == 'add':
+                self.emit_to('love_Interrupt', self.default_json(
+                    {"like": like, "type": type, "user_id": session['uId'], "feed_id": msg['feed_id']}), following)
+            else:
+                self.emit_to('love_Interrupt', self.default_json(
+                    {"type": type, "user_id": session['uId'], "feed_id": msg['feed_id']}), following)
 
     def on_love(self, msg):
         if self.Like.ensure(msg['feed_id'], session['uId']) < 1:
@@ -230,11 +259,13 @@ class FeedsNamespace(Namespace):
             like['user'] = self.User.get_user_by_uid(session['uId'])
             emit("love", self.default_json(
                 {"feed_id": msg['feed_id'], 'status': 'love', "like": like}), broadcast=False)
+            self.emit_loveInterrupt(like, msg, 'add')
         else:
             self.Like.delete(msg['feed_id'], session['uId'])
             user = self.User.get_user_by_uid(session['uId'])
             emit("love", self.default_json(
                 {"feed_id": msg['feed_id'], 'status': 'unLove', "user": user}), broadcast=False)
+            self.emit_loveInterrupt(None, msg, 'delete')
 
     def on_delete_comment(self, msg):
         comment = self.Comment.get_comment_by_id_obj(msg['id'])
@@ -245,6 +276,7 @@ class FeedsNamespace(Namespace):
                                "user_id": i.user_id, "content": i.content} for i in [comment]][0]
             emit("delete_comment_success",
                  self.default_json(res), broadcast=False)
+            self.emit_commentInterrupt(res, msg,'delete')
         else:
             res['comment'] = [{"id": i.id, "created_at": i.created_at, "feed_id": i.feed_id,
                                "user_id": i.user_id, "content": i.content} for i in [comment]][0]
@@ -282,5 +314,5 @@ class FeedsNamespace(Namespace):
             emit("delete_feed_success", {
                  'feed_id': msg['feed_id']}, broadcast=False)
         else:
-            
+
             emit("delete_feed_error", broadcast=False)
