@@ -93,9 +93,9 @@ def Auth(socketio, Users,Report, db,storage,idToken,Feed):
             user = Users.query.filter_by(email=id_info.get("email")).first()
             friend_recommend_interrupt(
                 socketio=socketio, email=id_info.get("email"), Users=Users)
-
-        session["uName"] = id_info.get("name")
-        session["email"] = id_info.get("email")
+        session['type'] = 'user'
+        session["uName"] = user.fullName
+        session["email"] = user.email
         session["uProfile"] = user.profile if user.profile is not None else ""
         login_user(user, remember=True)
         return redirect(url_for("feeds.home"))
@@ -131,6 +131,7 @@ def Auth(socketio, Users,Report, db,storage,idToken,Feed):
 
             if user:
                 if user.status == "2":
+                    session['type'] = 'user'
                     session["uId"] = user.id
                     session["uName"] = user.fullName
                     session["email"] = user.email
@@ -139,21 +140,22 @@ def Auth(socketio, Users,Report, db,storage,idToken,Feed):
 
                 elif check_password_hash(user.password, password):
                     flash("Logout in successfully!", category="success")
+                    session['type'] = 'user'
                     session["uId"] = user.id
                     session["uName"] = user.fullName
                     session["email"] = user.email
                     session["uProfile"] = user.profile if user.profile is not None else ""
                     login_user(user, remember=True)
                     if email in idAdmin:
+                        session['type'] = 'admin'
                         return redirect(url_for("banlists.banlist"))
                     else:   
                         return redirect(url_for("feeds.home"))
-
                 else:
                     flash("Incorrect password ,try again", category="error")
             else:
                 flash("Can't find your email", category="error")
-
+                
         return redirect(url_for("auth.sign_up"))
 
     @auth.route("/logout")
