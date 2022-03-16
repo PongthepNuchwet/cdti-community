@@ -91,3 +91,5 @@ class ReportNamespace(Namespace):
             emit("unBan_error", broadcast=False)
         else:
             emit("unBan_success", {"id":msg['id']} ,broadcast=False)
+
+
